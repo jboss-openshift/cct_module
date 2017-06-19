@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+SOURCES_DIR="/tmp/artifacts"
+
+# for backward compatibility.  jolokia is now located in /opt/jolokia.
+# Add Jolokia (http://www.jolokia.org/) to expose all MBeans
+cp -p ${SOURCES_DIR}/jolokia-jvm-*-agent.jar "$JWS_HOME/lib/jolokia.jar"

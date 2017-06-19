@@ -1,0 +1,4 @@
+#!/bin/sh
+# if using vim, do ':set ft=zsh' for easier reading
+
+exec $JBOSS_HOME/bin/kieserver-launch.sh

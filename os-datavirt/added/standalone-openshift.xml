@@ -1,0 +1,651 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<server xmlns="urn:jboss:domain:1.8">
+    <extensions>
+        <extension module="org.jboss.as.clustering.infinispan"/>
+        <extension module="org.jboss.as.clustering.jgroups"/>
+        <extension module="org.jboss.as.connector"/>
+        <extension module="org.jboss.as.deployment-scanner"/>
+        <extension module="org.jboss.as.ee"/>
+        <extension module="org.jboss.as.ejb3"/>
+        <extension module="org.jboss.as.jaxrs"/>
+        <extension module="org.jboss.as.jdr"/>
+        <extension module="org.jboss.as.jmx"/>
+        <extension module="org.jboss.as.jpa"/>
+        <extension module="org.jboss.as.jsf"/>
+        <extension module="org.jboss.as.logging"/>
+        <extension module="org.jboss.as.mail"/>
+        <!-- ##MESSAGING_EXTENSION## -->
+        <extension module="org.jboss.as.naming"/>
+        <extension module="org.jboss.as.pojo"/>
+        <extension module="org.jboss.as.remoting"/>
+        <extension module="org.jboss.as.sar"/>
+        <extension module="org.jboss.as.security"/>
+        <extension module="org.jboss.as.threads"/>
+        <extension module="org.jboss.as.transactions"/>
+        <extension module="org.jboss.as.web"/>
+        <extension module="org.jboss.as.webservices"/>
+        <extension module="org.jboss.as.weld"/>
+        <!-- ##KEYCLOAK_EXTENSION## -->
+        <extension module="org.modeshape"/>
+        <extension module="org.jboss.teiid"/>
+    </extensions>
+
+    <management>
+        <security-realms>
+            <security-realm name="ManagementRealm">
+                <authentication>
+                    <local default-user="$local" skip-group-loading="true"/>
+                    <properties path="mgmt-users.properties" relative-to="jboss.server.config.dir"/>
+                </authentication>
+                <authorization map-groups-to-roles="false">
+                    <properties path="mgmt-groups.properties" relative-to="jboss.server.config.dir"/>
+                </authorization>
+            </security-realm>
+            <security-realm name="ApplicationRealm">
+                <authentication>
+                    <local default-user="$local" allowed-users="*" skip-group-loading="true"/>
+                    <properties path="application-users.properties" relative-to="jboss.server.config.dir"/>
+                </authentication>
+                <authorization>
+                    <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
+                </authorization>
+            </security-realm>
+        </security-realms>
+        <audit-log>
+            <formatters>
+                <json-formatter name="json-formatter"/>
+            </formatters>
+            <handlers>
+                <file-handler name="file" formatter="json-formatter" relative-to="jboss.server.data.dir" path="audit-log.log"/>
+            </handlers>
+            <logger log-boot="true" log-read-only="false" enabled="false">
+                <handlers>
+                    <handler name="file"/>
+                </handlers>
+            </logger>
+        </audit-log>
+        <management-interfaces>
+            <native-interface security-realm="ManagementRealm">
+                <socket-binding native="management-native"/>
+            </native-interface>
+            <http-interface console-enabled="false">
+                <socket-binding http="management-http"/>
+            </http-interface>
+        </management-interfaces>
+        <access-control provider="simple">
+            <role-mapping>
+                <role name="SuperUser">
+                    <include>
+                        <user name="$local"/>
+                    </include>
+                </role>
+            </role-mapping>
+        </access-control>
+    </management>
+    <profile>
+        <subsystem xmlns="urn:jboss:domain:logging:1.5">
+            <console-handler name="CONSOLE">
+                <formatter>
+                    <named-formatter name="COLOR-PATTERN"/>
+                </formatter>
+            </console-handler>
+            <logger category="com.arjuna">
+                <level name="WARN"/>
+            </logger>
+            <logger category="org.apache.tomcat.util.modeler">
+                <level name="WARN"/>
+            </logger>
+            <logger category="org.jboss.as.config">
+                <level name="DEBUG"/>
+            </logger>
+            <logger category="sun.rmi">
+                <level name="WARN"/>
+            </logger>
+            <logger category="jacorb">
+                <level name="WARN"/>
+            </logger>
+            <logger category="jacorb.config">
+                <level name="ERROR"/>
+            </logger>
+            <root-logger>
+                <level name="INFO"/>
+                <handlers>
+                    <handler name="CONSOLE"/>
+                </handlers>
+            </root-logger>
+            <formatter name="OPENSHIFT">
+                <custom-formatter module="org.jboss.logmanager.ext" class="org.jboss.logmanager.ext.formatters.LogstashFormatter">
+                    <properties>
+                        <property name="metaData" value="log-handler=CONSOLE"/>
+                    </properties>
+                </custom-formatter>
+            </formatter>
+            <formatter name="COLOR-PATTERN">
+                <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
+            </formatter>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:datasources:1.2">
+            <datasources>
+                <!-- ##DATASOURCES## -->
+                <datasource jndi-name="java:/datasources/ModeShapeDS" pool-name="ModeShapeDS" enabled="true" use-java-context="true">
+                    <connection-url>jdbc:jcr:jndi:jcr?repositoryName=dv</connection-url>
+                    <connection-property name="teiidsupport">
+                        true
+                    </connection-property>
+                    <driver>modeshape</driver>
+                    <security>
+                        <security-domain>encrypted-modeshape</security-domain>
+                    </security>
+                </datasource>
+                <drivers>
+                    <driver name="h2" module="com.h2database.h2">
+                        <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
+                    </driver>
+                    <driver name="mysql" module="com.mysql">
+                        <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+                    </driver>
+                    <driver name="postgresql" module="org.postgresql">
+                        <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+                    </driver>
+                     <driver name="modeshape" module="org.modeshape.jdbc">
+                        <driver-class>org.modeshape.jdbc.LocalJcrDriver</driver-class>
+                    </driver>
+                    <driver name="teiid" module="org.jboss.teiid.client">
+                        <driver-class>org.teiid.jdbc.TeiidDriver</driver-class>
+                        <xa-datasource-class>org.teiid.jdbc.TeiidDataSource</xa-datasource-class>
+                    </driver>
+                    <driver name="teiid-local" module="org.jboss.teiid">
+                        <driver-class>org.teiid.jdbc.TeiidDriver</driver-class>
+                        <xa-datasource-class>org.teiid.jdbc.TeiidDataSource</xa-datasource-class>
+                    </driver>
+                    <!-- ##DRIVERS## -->
+                </drivers>
+            </datasources>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:deployment-scanner:1.1">
+            <deployment-scanner path="deployments" relative-to="jboss.server.base.dir" scan-interval="5000" auto-deploy-exploded="##AUTO_DEPLOY_EXPLODED##"/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:ee:1.2">
+            <spec-descriptor-property-replacement>false</spec-descriptor-property-replacement>
+            <jboss-descriptor-property-replacement>true</jboss-descriptor-property-replacement>
+            <annotation-property-replacement>false</annotation-property-replacement>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:ejb3:1.5">
+            <session-bean>
+                <stateless>
+                    <bean-instance-pool-ref pool-name="slsb-strict-max-pool"/>
+                </stateless>
+                <stateful default-access-timeout="5000" cache-ref="simple" clustered-cache-ref="clustered"/>
+                <singleton default-access-timeout="5000"/>
+            </session-bean>
+            <mdb>
+                <resource-adapter-ref resource-adapter-name="${ejb.resource-adapter-name:hornetq-ra}"/>
+                <bean-instance-pool-ref pool-name="mdb-strict-max-pool"/>
+            </mdb>
+            <pools>
+                <bean-instance-pools>
+                    <strict-max-pool name="slsb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
+                    <strict-max-pool name="mdb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
+                </bean-instance-pools>
+            </pools>
+            <caches>
+                <cache name="simple" aliases="NoPassivationCache"/>
+                <cache name="passivating" passivation-store-ref="file" aliases="SimpleStatefulCache"/>
+                <cache name="clustered" passivation-store-ref="infinispan" aliases="StatefulTreeCache"/>
+            </caches>
+            <passivation-stores>
+                <file-passivation-store name="file"/>
+                <cluster-passivation-store name="infinispan" cache-container="ejb"/>
+            </passivation-stores>
+            <async thread-pool-name="default"/>
+            <!-- ##TIMER_SERVICE## -->
+            <remote connector-ref="remoting-connector" thread-pool-name="default"/>
+            <thread-pools>
+                <thread-pool name="default">
+                    <max-threads count="10"/>
+                    <keepalive-time time="100" unit="milliseconds"/>
+                </thread-pool>
+            </thread-pools>
+            <default-security-domain value="other"/>
+            <default-missing-method-permissions-deny-access value="true"/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:infinispan:1.5">
+            <cache-container name="singleton" aliases="cluster ha-partition" default-cache="default">
+                <transport lock-timeout="60000"/>
+                <replicated-cache name="default" mode="SYNC" batching="true">
+                    <locking isolation="REPEATABLE_READ"/>
+                </replicated-cache>
+            </cache-container>
+            <cache-container name="web" aliases="standard-session-cache" default-cache="repl" module="org.jboss.as.clustering.web.infinispan">
+                <transport lock-timeout="60000"/>
+                <replicated-cache name="repl" mode="ASYNC" batching="true">
+                    <file-store/>
+                </replicated-cache>
+                <replicated-cache name="sso" mode="SYNC" batching="true"/>
+                <distributed-cache name="dist" mode="ASYNC" batching="true" l1-lifespan="0">
+                    <file-store/>
+                </distributed-cache>
+            </cache-container>
+            <cache-container name="ejb" aliases="sfsb sfsb-cache" default-cache="repl" module="org.jboss.as.clustering.ejb3.infinispan">
+                <transport lock-timeout="60000"/>
+                <replicated-cache name="repl" mode="ASYNC" batching="true">
+                    <eviction strategy="LRU" max-entries="10000"/>
+                    <file-store/>
+                </replicated-cache>
+                <!--
+                  ~  Clustered cache used internally by EJB subsytem for managing the client-mapping(s) of
+                  ~                 the socketbinding referenced by the EJB remoting connector
+                  -->
+                <replicated-cache name="remote-connector-client-mappings" mode="SYNC" batching="true"/>
+                <distributed-cache name="dist" mode="ASYNC" batching="true" l1-lifespan="0">
+                    <eviction strategy="LRU" max-entries="10000"/>
+                    <file-store/>
+                </distributed-cache>
+            </cache-container>
+            <cache-container name="hibernate" default-cache="local-query" module="org.jboss.as.jpa.hibernate:4">
+                <transport lock-timeout="60000"/>
+                <local-cache name="local-query">
+                    <transaction mode="NONE"/>
+                    <eviction strategy="LRU" max-entries="10000"/>
+                    <expiration max-idle="100000"/>
+                </local-cache>
+                <invalidation-cache name="entity" mode="SYNC">
+                    <transaction mode="NON_XA"/>
+                    <eviction strategy="LRU" max-entries="10000"/>
+                    <expiration max-idle="100000"/>
+                </invalidation-cache>
+                <replicated-cache name="timestamps" mode="ASYNC">
+                    <transaction mode="NONE"/>
+                    <eviction strategy="NONE"/>
+                </replicated-cache>
+            </cache-container>
+            <cache-container name="modeshape" default-cache="dv" module="org.modeshape">
+                <transport lock-timeout="60000"/>
+                <replicated-cache name="dv" mode="ASYNC" batching="true">
+                    <locking isolation="READ_COMMITTED"/>
+                    <transaction mode="NON_XA"/>
+                    <eviction strategy="LIRS" max-entries="1024"/>
+                    <expiration lifespan="7200000"/>
+                </replicated-cache>
+            </cache-container>
+            <cache-container name="teiid-cache" default-cache="resultset">
+                <transport lock-timeout="60000"/>
+                <replicated-cache name="resultset-repl" mode="SYNC" batching="true">
+                    <locking isolation="READ_COMMITTED"/>
+                    <transaction mode="NON_XA"/>
+                    <eviction strategy="LIRS" max-entries="1024"/>
+                    <expiration lifespan="7200000"/>
+                </replicated-cache>
+                <local-cache name="resultset" batching="true">
+                    <locking isolation="READ_COMMITTED"/>
+                    <transaction mode="NON_XA"/>
+                    <eviction strategy="LIRS" max-entries="1024"/>
+                    <expiration lifespan="7200000"/>
+                </local-cache>
+                <local-cache name="preparedplan" batching="true">
+                    <locking isolation="READ_COMMITTED"/>
+                    <eviction strategy="LIRS" max-entries="512"/>
+                    <expiration lifespan="28800"/>
+                </local-cache>
+            </cache-container>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
+        <subsystem xmlns="urn:jboss:domain:jca:1.1">
+            <archive-validation enabled="true" fail-on-error="true" fail-on-warn="false"/>
+            <bean-validation enabled="true"/>
+            <default-workmanager>
+                <short-running-threads>
+                    <core-threads count="50"/>
+                    <queue-length count="50"/>
+                    <max-threads count="50"/>
+                    <keepalive-time time="10" unit="seconds"/>
+                </short-running-threads>
+                <long-running-threads>
+                    <core-threads count="50"/>
+                    <queue-length count="50"/>
+                    <max-threads count="50"/>
+                    <keepalive-time time="10" unit="seconds"/>
+                </long-running-threads>
+            </default-workmanager>
+            <cached-connection-manager/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:jdr:1.0"/>
+        <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="tcp">
+            <stack name="udp">
+                <transport type="UDP" socket-binding="jgroups-udp"/>
+                <protocol type="openshift.KUBE_PING"/>
+                <protocol type="MERGE3"/>
+                <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd"/>
+                <protocol type="FD"/>
+                <protocol type="VERIFY_SUSPECT"/>
+                <!-- ##JGROUPS_ENCRYPT## -->
+                <protocol type="pbcast.NAKACK"/>
+                <protocol type="UNICAST2"/>
+                <protocol type="pbcast.STABLE"/>
+                <!-- ##JGROUPS_AUTH## -->
+                <protocol type="pbcast.GMS"/>
+                <protocol type="UFC"/>
+                <protocol type="MFC"/>
+                <protocol type="FRAG2"/>
+                <protocol type="RSVP"/>
+            </stack>
+            <stack name="tcp">
+                <transport type="TCP" socket-binding="jgroups-tcp"/>
+                <protocol type="openshift.KUBE_PING"/>
+                <protocol type="MERGE2"/>
+                <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd"/>
+                <protocol type="FD"/>
+                <protocol type="VERIFY_SUSPECT"/>
+                <!-- ##JGROUPS_ENCRYPT## -->
+                <protocol type="pbcast.NAKACK"/>
+                <protocol type="UNICAST2"/>
+                <protocol type="pbcast.STABLE"/>
+                <!-- ##JGROUPS_AUTH## -->
+                <protocol type="pbcast.GMS"/>
+                <protocol type="UFC"/>
+                <protocol type="MFC"/>
+                <protocol type="FRAG2"/>
+                <protocol type="RSVP"/>
+            </stack>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:jmx:1.3">
+            <expose-resolved-model/>
+            <expose-expression-model/>
+            <remoting-connector/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:jpa:1.1">
+            <jpa default-datasource="" default-extended-persistence-inheritance="DEEP"/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:jsf:1.0"/>
+        <!-- ##KEYCLOAK_SUBSYSTEM## -->
+        <!-- ##KEYCLOAK_SAML_SUBSYSTEM## -->
+        <subsystem xmlns="urn:jboss:domain:mail:1.2">
+            <mail-session name="default" jndi-name="java:jboss/mail/Default">
+                <smtp-server outbound-socket-binding-ref="mail-smtp"/>
+            </mail-session>
+        </subsystem>
+        <!-- ##MESSAGING_SUBSYSTEM## -->
+        <subsystem xmlns="urn:jboss:domain:naming:1.4">
+            <remote-naming/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
+        <subsystem xmlns="urn:jboss:domain:remoting:1.2">
+            <connector name="remoting-connector" socket-binding="remoting" security-realm="ApplicationRealm"/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:resource-adapters:1.1">
+            <resource-adapters>
+                <!-- ##RESOURCE_ADAPTERS## -->
+                 <resource-adapter id="file">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.file"/>
+                </resource-adapter>
+                <resource-adapter id="google">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.google"/>
+                </resource-adapter>
+                <resource-adapter id="ldap">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.ldap"/>
+                </resource-adapter>
+                <resource-adapter id="salesforce">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.salesforce"/>
+                </resource-adapter>
+                <resource-adapter id="salesforce-34">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.salesforce-34"/>
+                </resource-adapter>
+                <resource-adapter id="webservice">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.webservice"/>
+                </resource-adapter>
+                <resource-adapter id="mongodb">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.mongodb"/>
+                </resource-adapter>
+                <resource-adapter id="cassandra">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.cassandra"/>
+                </resource-adapter>
+                <resource-adapter id="simpledb">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.simpledb"/>
+                </resource-adapter>
+                <resource-adapter id="accumulo">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.accumulo"/>
+                </resource-adapter>
+                <resource-adapter id="solr">
+                    <module slot="main" id="org.jboss.teiid.resource-adapter.solr"/>
+                </resource-adapter>
+            </resource-adapters>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
+        <subsystem xmlns="urn:jboss:domain:security:1.2">
+            <security-domains>
+                <security-domain name="other" cache-type="default">
+                    <authentication>
+                        <login-module code="Remoting" flag="optional">
+                            <module-option name="password-stacking" value="useFirstPass"/>
+                        </login-module>
+                        <login-module code="RealmDirect" flag="required">
+                            <module-option name="password-stacking" value="useFirstPass"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <security-domain name="jboss-web-policy" cache-type="default">
+                    <authorization>
+                        <policy-module code="Delegating" flag="required"/>
+                    </authorization>
+                </security-domain>
+                <security-domain name="jboss-ejb-policy" cache-type="default">
+                    <authorization>
+                        <policy-module code="Delegating" flag="required"/>
+                    </authorization>
+                </security-domain>
+                <security-domain name="teiid-security" cache-type="default">
+                    <authentication>
+                        <login-module code="RealmDirect" flag="sufficient">
+                            <module-option name="password-stacking" value="useFirstPass"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <security-domain name="modeshape-security">
+                    <authentication>
+                        <login-module code="RealmDirect" flag="required">
+                            <module-option name="password-stacking" value="useFirstPass"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <security-domain name="encrypted-modeshape">
+                    <authentication>
+                        <login-module code="org.picketbox.datasource.security.SecureIdentityLoginModule" flag="required">
+                            <module-option name="username" value="##MODESHAPE_USERNAME##"/>
+                            <module-option name="password" value="##MODESHAPE_PASSWORD##"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <!-- ##KEYCLOAK_SECURITY_DOMAIN## -->
+                <!-- ##ADDITIONAL_SECURITY_DOMAINS## -->
+            </security-domains>
+        </subsystem>
+         <subsystem xmlns="urn:jboss:domain:threads:1.1">
+            <unbounded-queue-thread-pool name="teiid-async">
+                <max-threads count="4"/>
+            </unbounded-queue-thread-pool>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:transactions:1.5">
+            <core-environment node-identifier="${jboss.node.name}">
+                <process-id>
+                    <uuid/>
+                </process-id>
+            </core-environment>
+            <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
+            <coordinator-environment default-timeout="300"/>
+            <!-- ##JDBC_STORE## -->
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:web:2.2" default-virtual-server="default-host" native="false">
+            <connector name="http" protocol="HTTP/1.1" scheme="http" socket-binding="http"/>
+            <!-- ##HTTPS## -->
+            <virtual-server name="default-host" enable-welcome-root="false"/>
+            <valve name="accessLog" module="org.jboss.openshift" class-name="org.jboss.openshift.valves.StdoutAccessLogValve">
+                <param param-name="pattern" param-value="%h %l %u %t &quot;%r&quot; %s %b" />
+            </valve>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:webservices:1.2">
+            <modify-wsdl-address>true</modify-wsdl-address>
+            <wsdl-host>jbossws.undefined.host</wsdl-host>
+            <endpoint-config name="Standard-Endpoint-Config"/>
+            <endpoint-config name="Recording-Endpoint-Config">
+                <pre-handler-chain name="recording-handlers" protocol-bindings="##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM">
+                    <handler name="RecordingHandler" class="org.jboss.ws.common.invocation.RecordingServerHandler"/>
+                </pre-handler-chain>
+            </endpoint-config>
+            <client-config name="Standard-Client-Config"/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:weld:1.0"/>
+         <subsystem xmlns="urn:jboss:domain:modeshape:1.0">
+            <repository name="dv" cache-name="dv" cache-container="modeshape" anonymous-roles="readonly">
+                <workspaces>
+                    <initial-content>
+                        initial-content-default.xml
+                    </initial-content>
+                </workspaces>
+                <sequencers>
+                    <sequencer name="delimited-text-sequencer" classname="org.modeshape.sequencer.text.DelimitedTextSequencer" module="org.modeshape.sequencer.text" splitPattern="," path-expression="/files(//*.csv[*])/jcr:content[@jcr:data] => /derived/text/delimited/$1"/>
+                    <sequencer name="fixed-width-text-sequencer" classname="org.modeshape.sequencer.text.FixedWidthTextSequencer" module="org.modeshape.sequencer.text" commentMarker="#" path-expression="/files(//*.txt[*])/jcr:content[@jcr:data] => /derived/text/fixedWidth/$1"/>
+                    <sequencer name="cnd-sequencer" classname="cnd" module="org.modeshape" path-expression="/files(//*.cnd[*])/jcr:content[@jcr:data] => /derived/cnd/$1"/>
+                    <sequencer name="xsd-sequencer" classname="xsd" module="org.modeshape.sequencer.xsd" path-expression="/files(//*.xsd[*])/jcr:content[@jcr:data] => /derived/xsd/$1"/>
+                    <sequencer name="wsdl-sequencer" classname="wsdl" module="org.modeshape.sequencer.wsdl" path-expression="/files(//*.wsdl[*])/jcr:content[@jcr:data] => /derived/wsdl/$1"/>
+                    <sequencer name="xml-sequencer" classname="xml" module="org.modeshape.sequencer.xml" path-expression="/files(//*.xml[*])/jcr:content[@jcr:data] => /derived/xml/$1"/>
+                    <sequencer name="zip-sequencer" classname="zip" module="org.modeshape.sequencer.zip" path-expression="/files(//*.zip[*])/jcr:content[@jcr:data] => /derived/zip/$1"/>
+                    <sequencer name="teiid-ddl-sequencer" classname="org.teiid.modeshape.sequencer.ddl.TeiidDdlSequencer" module="org.jboss.teiid.modeshape.sequencer.ddl" path-expression="/files(//*.ddl[*])/jcr:content[@jcr:data] => /derived/ddl/$1"/>
+                    <sequencer name="teiid-model-sequencer" classname="org.teiid.modeshape.sequencer.vdb.model.ModelSequencer" module="org.jboss.teiid.modeshape.sequencer.vdb" path-expression="/files(//*.xmi[*])/jcr:content[@jcr:data] => /derived/teiid/models/$1"/>
+                    <sequencer name="teiid-vdb-sequencer" classname="org.teiid.modeshape.sequencer.vdb.VdbSequencer" module="org.jboss.teiid.modeshape.sequencer.vdb" path-expression="/files(//*.vdb[*])/jcr:content[@jcr:data] => /derived/teiid/vdbs/$1"/>
+                </sequencers>
+            </repository>
+            <webapp name="modeshape-rest.war"/>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:teiid:1.0">
+            <async-thread-pool>teiid-async</async-thread-pool>
+            <distributed-cache jgroups-stack="tcp"/>
+            <policy-decider-module>org.jboss.teiid</policy-decider-module>
+            <resultset-cache infinispan-container="teiid-cache"/>
+            <preparedplan-cache infinispan-container="teiid-cache"/>
+            <transport name="embedded"/>
+            <transport name="odata">
+                <authentication security-domain="teiid-security"/>
+            </transport>
+            <transport name="jdbc" socket-binding="teiid-jdbc" protocol="teiid">
+                <authentication security-domain="teiid-security"/>
+            </transport>
+            <!-- ##TEIID_SECURE_TRANSPORT## -->
+            <transport name="odbc" socket-binding="teiid-odbc" protocol="pg">
+                <authentication security-domain="teiid-security"/>
+            </transport>
+            <translator name="jdbc-simple" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="jdbc-ansi" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="access" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="db2" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="derby" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="h2" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="hsql" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="informix" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="metamatrix" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="mysql" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="mysql5" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="oracle" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="postgresql" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="greenplum" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="sqlserver" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="sybase" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="sybaseiq" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="teiid" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="teradata" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="modeshape" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="ingres" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="ingres93" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="intersystems-cache" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="netezza" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="file" module="org.jboss.teiid.translator.file"/>
+            <translator name="ldap" module="org.jboss.teiid.translator.ldap"/>
+            <translator name="loopback" module="org.jboss.teiid.translator.loopback"/>
+            <translator name="olap" module="org.jboss.teiid.translator.olap"/>
+            <translator name="ws" module="org.jboss.teiid.translator.ws"/>
+            <translator name="salesforce" module="org.jboss.teiid.translator.salesforce"/>
+            <translator name="salesforce-34" module="org.jboss.teiid.translator.salesforce" slot="34"/>
+            <translator name="hive" module="org.jboss.teiid.translator.hive"/>
+            <translator name="google-spreadsheet" module="org.jboss.teiid.translator.google"/>
+            <translator name="odata" module="org.jboss.teiid.translator.odata"/>
+            <translator name="sap-gateway" module="org.jboss.teiid.translator.odata"/>
+            <translator name="sap-nw-gateway" module="org.jboss.teiid.translator.odata"/>
+            <translator name="mongodb" module="org.jboss.teiid.translator.mongodb"/>
+            <translator name="cassandra" module="org.jboss.teiid.translator.cassandra"/>
+            <translator name="accumulo" module="org.jboss.teiid.translator.accumulo"/>
+            <translator name="solr" module="org.jboss.teiid.translator.solr"/>
+            <translator name="excel" module="org.jboss.teiid.translator.excel"/>
+            <translator name="impala" module="org.jboss.teiid.translator.hive"/>
+            <translator name="prestodb" module="org.jboss.teiid.translator.prestodb"/>
+            <translator name="hbase" module="org.jboss.teiid.translator.hbase"/>
+            <translator name="hana" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="vertica" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="actian-vector" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="osisoft-pi" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="odata4" module="org.jboss.teiid.translator.odata4"/>
+            <translator name="redshift" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="jpa2" module="org.jboss.teiid.translator.jpa"/>
+            <translator name="ucanaccess" module="org.jboss.teiid.translator.jdbc"/>
+            <translator name="simpledb" module="org.jboss.teiid.translator.simpledb"/>
+
+            <translator name="infinispan-cache-dsl" module="org.jboss.teiid.translator.infinispan.dsl"/>
+            <translator name="infinispan-cache" module="org.jboss.teiid.translator.infinispan.cache"/>
+
+            <!-- ##TEIID_TRANSLATORS## -->
+        </subsystem>
+    </profile>
+    <interfaces>
+        <interface name="management">
+            <inet-address value="${jboss.bind.address.management:127.0.0.1}"/>
+        </interface>
+         <interface name="any">
+            <inet-address value="0.0.0.0"/>
+        </interface>
+        <interface name="public">
+            <nic name="eth0"/>
+        </interface>
+        <!-- TODO - only show this if the jacorb subsystem is added  -->
+        <interface name="unsecure">
+            <!--
+              ~  Used for IIOP sockets in the standard configuration.
+              ~                  To secure JacORB you need to setup SSL
+              -->
+            <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
+        </interface>
+    </interfaces>
+    <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
+        <socket-binding name="management-native" interface="management" port="${jboss.management.native.port:9999}"/>
+        <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:9990}"/>
+        <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:9443}"/>
+        <socket-binding name="http" port="8080"/>
+        <socket-binding name="https" port="8443"/>
+        <socket-binding name="jgroups-mping" port="0" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45700"/>
+        <socket-binding name="jgroups-tcp" port="7600"/>
+        <socket-binding name="jgroups-tcp-fd" port="57600"/>
+        <socket-binding name="jgroups-udp" port="55200" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45688"/>
+        <socket-binding name="jgroups-udp-fd" port="54200"/>
+        <!-- ##MESSAGING_PORTS## -->
+        <socket-binding name="remoting" port="4447"/>
+        <socket-binding name="teiid-jdbc" port="31000" interface="any"/>
+        <socket-binding name="secure-teiid-jdbc" port="31443" interface="any"/>
+        <socket-binding name="teiid-odbc" port="35432"/>
+        <socket-binding name="txn-recovery-environment" port="4712"/>
+        <socket-binding name="txn-status-manager" port="4713"/>
+        <outbound-socket-binding name="mail-smtp">
+            <remote-destination host="localhost" port="25"/>
+        </outbound-socket-binding>
+    </socket-binding-group>
+
+    <!--deployments>
+        <deployment name="ModeShape.vdb" runtime-name="ModeShape.vdb">
+            <fs-exploded path="dataVirtualization/vdb/ModeShape.vdb/" relative-to="jboss.home.dir"/>
+        </deployment>
+        <deployment name="teiid-odata.war" runtime-name="teiid-odata.war">
+            <fs-exploded path="dataVirtualization/vdb/teiid-odata.war/" relative-to="jboss.home.dir"/>
+        </deployment>
+        <deployment name="teiid-olingo-odata4.war" runtime-name="teiid-olingo-odata4.war">
+            <fs-exploded path="dataVirtualization/vdb/teiid-olingo-odata4.war/" relative-to="jboss.home.dir"/>
+        </deployment>
+    </deployments-->
+
+</server>

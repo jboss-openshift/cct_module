@@ -1,0 +1,8 @@
+#!/bin/sh
+# Configure HTTPS for JWS
+set -e
+
+SCRIPT_DIR=$(dirname $0)
+ADDED_DIR=${SCRIPT_DIR}/added
+
+cp -p "$ADDED_DIR/https.sh" "$JWS_HOME/bin/launch/"

@@ -1,0 +1,84 @@
+<ejb-jar id="ejb-jar_ID" version="3.1"
+      xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                          http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd">
+
+  <enterprise-beans>
+    <!-- added in OpenShift so we can filter this file to override what is in KieServerMDB -->
+    <message-driven>
+      <ejb-name>KieServerMDB</ejb-name>
+      <ejb-class>org.kie.server.jms.KieServerMDB</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destinationJndiName</activation-config-property-name>
+          <activation-config-property-value>queue/KIE.SERVER.REQUEST</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>queue/KIE.SERVER.REQUEST</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+    </message-driven>
+    <message-driven>
+    <!-- added in OpenShift so we can filter this file to override what is in KieExecutorMDB -->
+      <ejb-name>KieExecutorMDB</ejb-name>
+      <ejb-class>org.kie.server.jms.executor.KieExecutorMDB</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destinationJndiName</activation-config-property-name>
+          <activation-config-property-value>queue/KIE.SERVER.EXECUTOR</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>queue/KIE.SERVER.EXECUTOR</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+    </message-driven>
+  <!-- enable when external signals are required and queue and connection factory is defined -->
+  <!--
+    <message-driven>
+      <ejb-name>JMSSignalReceiver</ejb-name>
+      <ejb-class>org.jbpm.process.workitem.jms.JMSSignalReceiver</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>java:/queue/KIE.SERVER.SIGNAL</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+    </message-driven>
+  -->
+  </enterprise-beans>
+
+  <assembly-descriptor>
+    <!-- added in OpenShift so we can intercept Messages to KieServerMDB -->
+    <interceptor-binding>
+      <ejb-name>KieServerMDB</ejb-name>
+      <interceptor-class>org.openshift.kieserver.jms.redirect.RedirectInterceptor</interceptor-class>
+    </interceptor-binding>
+  </assembly-descriptor>
+
+</ejb-jar>

@@ -1,0 +1,17 @@
+#!/bin/sh
+set -u
+set -e
+
+# miscellaneous things to do, TODO: split into more scripts?
+# these expect to run as root
+
+# Use /dev/urandom to speed up startups.
+echo securerandom.source=file:/dev/urandom >> /usr/lib/jvm/java/jre/lib/security/java.security
+
+# Add jboss user to the root group
+usermod -g root -G jboss jboss
+
+# Necessary to permit running with a randomised UID
+mkdir -p /deployments/data \
+ && chmod -R "g+rwX" /deployments \
+ && chown -R jboss:root /deployments

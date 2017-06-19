@@ -1,0 +1,6 @@
+#!/bin/sh
+# Define a standard location for the deployment directory
+set -e
+
+# https://issues.jboss.org/browse/CLOUD-128
+ln -s "/deployments" "$JWS_HOME/webapps"

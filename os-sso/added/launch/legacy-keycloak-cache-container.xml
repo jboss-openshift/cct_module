@@ -1,0 +1,14 @@
+<cache-container name="keycloak" jndi-name="infinispan/Keycloak">
+                <transport lock-timeout="60000"/>
+                <invalidation-cache name="realms" mode="SYNC"/>
+                <invalidation-cache name="users" mode="SYNC">
+                    <eviction max-entries="10000" strategy="LRU"/>
+                </invalidation-cache>
+                <replicated-cache name="sessions" mode="SYNC"/>
+                <replicated-cache name="offlineSessions" mode="SYNC"/>
+                <replicated-cache name="loginFailures" mode="SYNC"/>
+                <replicated-cache name="work" mode="SYNC"/>
+                <local-cache name="realmVersions">
+                    <transaction mode="BATCH" locking="PESSIMISTIC"/>
+                </local-cache>
+            </cache-container>

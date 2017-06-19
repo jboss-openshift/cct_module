@@ -1,0 +1,19 @@
+#!/bin/sh
+# JSON logging for JWS
+set -e
+
+SCRIPT_DIR="$(dirname $0)"
+ADDED_DIR="$SCRIPT_DIR/added"
+SOURCES_DIR="/tmp/artifacts"
+
+# Logging
+cp -p "$ADDED_DIR/log4j.properties" "$JWS_HOME/lib/"
+cp -p "$SOURCES_DIR/jsonevent-layout-1.7-redhat-1.jar" "$JWS_HOME/lib/"
+cp -p "$SOURCES_DIR/commons-lang-2.6.0.redhat-4.jar" "$JWS_HOME/lib/"
+cp -p "$SOURCES_DIR/json-smart-1.1.1.jar" "$JWS_HOME/lib/"
+
+cp -p "$JWS_HOME/extras/log4j-eap6.jar" "$JWS_HOME/lib"
+cp -p "$JWS_HOME/extras/tomcat-juli-adapters.jar" "$JWS_HOME/lib"
+cp -p "$JWS_HOME/extras/tomcat-juli.jar" "$JWS_HOME/bin"
+
+rm "$JWS_HOME/conf/logging.properties"
