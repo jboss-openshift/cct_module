@@ -1,0 +1,1 @@
+<secure-deployment name="##KEYCLOAK_DEPLOYMENT##">##KEYCLOAK_SAML_SP##</secure-deployment>

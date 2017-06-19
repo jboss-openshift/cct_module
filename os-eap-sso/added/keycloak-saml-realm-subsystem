@@ -1,0 +1,1 @@
+<subsystem xmlns="urn:jboss:domain:keycloak-saml:1.1">##KEYCLOAK_DEPLOYMENT_SUBSYSTEM##</subsystem>

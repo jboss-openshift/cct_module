@@ -1,0 +1,7 @@
+#!/bin/sh
+set -u
+set -e
+
+# CLOUD-783 - remove default files
+rm -rf $JWS_HOME/webapps/docs
+rm -rf $JWS_HOME/webapps/host-manager

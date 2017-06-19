@@ -1,0 +1,15 @@
+#!/bin/sh
+# JWS launch script and helpers
+set -e
+
+SCRIPT_DIR=$(dirname $0)
+ADDED_DIR=${SCRIPT_DIR}/added
+
+# Add custom launch script and dependent scripts/libraries/snippets
+cp -rf ${ADDED_DIR}/* $JWS_HOME/bin/
+
+chown jboss:root "$JWS_HOME/bin/launch.sh"
+chmod ug+x "$JWS_HOME/bin/launch.sh"
+
+chown -R jboss:root "$JWS_HOME/bin/launch"
+chmod -R g+rwX "$JWS_HOME/bin/launch"

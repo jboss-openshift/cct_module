@@ -1,0 +1,1304 @@
+#
+# Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
+# and other contributors as indicated by the @author tags.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+---
+subsystem:
+  enabled: "${hawkular.agent.enabled:true}"
+  immutable: "${hawkular.agent.immutable:true}"
+  in-container: "${hawkular.agent.in-container:false}"
+  auto-discovery-scan-period-secs: 600
+  min-collection-interval-secs: "${hawkular.agent.minCollectionIntervalSecs:30}"
+
+diagnostics:
+  enabled:    true
+  report-to:  LOG
+  interval:   1
+  time-units: minutes
+
+storage-adapter:
+  type:      HAWKULAR
+  tenant-id: "${hawkular.rest.tenantId:hawkular}"
+  feed-id:   "${hawkular.rest.feedId:autogenerate}"
+  url:       "${hawkular.rest.host}"
+  username:  "${hawkular.rest.user}"
+  password:  "${hawkular.rest.password}"
+  ###HAWKULAR_SECURITY_REALM_FIELD###
+
+###HAWKULAR_SECURITY_REALM_OBJECT###
+
+# DMR
+
+metric-set-dmr:
+- name: WildFly Memory Metrics
+  metric-dmr:
+  - name: Heap Used
+    interval:     30
+    time-units:   seconds
+    metric-units: bytes
+    metric-type:  gauge
+    path:         /core-service=platform-mbean/type=memory
+    attribute:    heap-memory-usage#used
+  - name: Heap Committed
+    interval:     1
+    time-units:   minutes
+    metric-units: bytes
+    metric-type:  gauge
+    path:         /core-service=platform-mbean/type=memory
+    attribute:    heap-memory-usage#committed
+  - name: Heap Max
+    interval:     1
+    time-units:   minutes
+    metric-units: bytes
+    metric-type:  gauge
+    path:         /core-service=platform-mbean/type=memory
+    attribute:    heap-memory-usage#max
+  - name: NonHeap Used
+    interval:     30
+    time-units:   seconds
+    metric-units: bytes
+    path:         /core-service=platform-mbean/type=memory
+    attribute:    non-heap-memory-usage#used
+  - name: NonHeap Committed
+    interval:     1
+    time-units:   minutes
+    metric-units: bytes
+    path:         /core-service=platform-mbean/type=memory
+    attribute:    non-heap-memory-usage#committed
+  - name: Accumulated GC Duration
+    interval:     1
+    time-units:   minutes
+    metric-units: milliseconds
+    metric-type:  counter
+    path:         "/core-service=platform-mbean/type=garbage-collector/name=*"
+    attribute:    collection-time
+- name: WildFly Threading Metrics
+  metric-dmr:
+  - name: Thread Count
+    interval:     2
+    time-units:   minutes
+    metric-type:  gauge
+    path:         /core-service=platform-mbean/type=threading
+    attribute:    thread-count
+- name: WildFly Aggregated Web Metrics
+  metric-dmr:
+  - name: Aggregated Active Web Sessions
+    interval:   1
+    time-units: minutes
+    path:       "/deployment=*/subsystem=web"
+    attribute:  active-sessions
+  - name: Aggregated Max Active Web Sessions
+    interval:   1
+    time-units: minutes
+    path:       "/deployment=*/subsystem=web"
+    attribute:  max-active-sessions
+  - name: Aggregated Expired Web Sessions
+    interval:   1
+    time-units: minutes
+    path:       "/deployment=*/subsystem=web"
+    attribute:  expired-sessions
+  - name: Aggregated Rejected Web Sessions
+    interval:   1
+    time-units: minutes
+    path:       "/deployment=*/subsystem=web"
+    attribute:  rejected-sessions
+  - name: Aggregated Servlet Request Time
+    interval:   1
+    time-units: minutes
+    path:       "/deployment=*/subsystem=web/servlet=*"
+    attribute:  processingTime
+  - name: Aggregated Servlet Request Count
+    interval:   1
+    time-units: minutes
+    path:       "/deployment=*/subsystem=web/servlet=*"
+    attribute:  requestCount
+- name: Web Subsystem Metrics
+  metric-dmr:
+  - name: Active Sessions
+    interval:   2
+    time-units: minutes
+    path:       "/subsystem=web"
+    attribute:  active-sessions
+  - name: Sessions Created
+    interval:   2
+    time-units: minutes
+    path:       "/subsystem=web"
+    attribute:  sessions-created
+    metric-type: counter
+  - name: Expired Sessions
+    interval:   2
+    time-units: minutes
+    path:       "/subsystem=web"
+    attribute:  expired-sessions
+    metric-type: counter
+  - name: Rejected Sessions
+    interval:   2
+    time-units: minutes
+    path:       "/subsystem=web"
+    attribute:  rejected-sessions
+    metric-type: counter
+  - name: Max Active Sessions
+    interval:   2
+    time-units: minutes
+    path:       "/subsystem=web"
+    attribute:  max-active-sessions
+- name: Servlet Metrics
+  metric-dmr:
+  - name: Max Request Time
+    interval:     5
+    time-units:   minutes
+    attribute:    maxTime
+    metric-units: milliseconds
+  - name: Min Request Time
+    interval:     5
+    time-units:   minutes
+    attribute:    min-time
+    metric-units: milliseconds
+  - name: Total Request Time
+    interval:     5
+    time-units:   minutes
+    attribute:    processingTime
+    metric-units: milliseconds
+  - name: Request Count
+    interval:     5
+    time-units:   minutes
+    attribute:    requestCount
+    metric-type:  counter
+- name: Singleton EJB Metrics
+  metric-dmr:
+  - name: Execution Time
+    interval:     5
+    time-units:   minutes
+    attribute:    execution-time
+  - name: Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    invocations
+    metric-type:  counter
+  - name: Peak Concurrent Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    peak-concurrent-invocations
+  - name: Wait Time
+    interval:     5
+    time-units:   minutes
+    attribute:    wait-time
+- name: Message Driven EJB Metrics
+  metric-dmr:
+  - name: Execution Time
+    interval:     5
+    time-units:   minutes
+    attribute:    execution-time
+  - name: Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    invocations
+    metric-type:  counter
+  - name: Peak Concurrent Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    peak-concurrent-invocations
+  - name: Wait Time
+    interval:     5
+    time-units:   minutes
+    attribute:    wait-time
+  - name: Pool Available Count
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-available-count
+  - name: Pool Create Count
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-create-count
+  - name: Pool Current Size
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-current-size
+  - name: Pool Max Size
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-max-size
+  - name: Pool Remove Count
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-remove-count
+- name: Stateless Session EJB Metrics
+  metric-dmr:
+  - name: Execution Time
+    interval:     5
+    time-units:   minutes
+    attribute:    execution-time
+  - name: Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    invocations
+    metric-type:  counter
+  - name: Peak Concurrent Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    peak-concurrent-invocations
+  - name: Wait Time
+    interval:     5
+    time-units:   minutes
+    attribute:    wait-time
+  - name: Pool Available Count
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-available-count
+  - name: Pool Create Count
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-create-count
+  - name: Pool Current Size
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-current-size
+  - name: Pool Max Size
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-max-size
+  - name: Pool Remove Count
+    interval:     5
+    time-units:   minutes
+    attribute:    pool-remove-count
+- name: Stateful Session EJB Metrics
+  metric-dmr:
+  - name: Execution Time
+    interval:     5
+    time-units:   minutes
+    attribute:    execution-time
+  - name: Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    invocations
+    metric-type:  counter
+  - name: Peak Concurrent Invocations
+    interval:     5
+    time-units:   minutes
+    attribute:    peak-concurrent-invocations
+  - name: Wait Time
+    interval:     5
+    time-units:   minutes
+    attribute:    wait-time
+  - name: Cache Size
+    interval:     5
+    time-units:   minutes
+    attribute:    cache-size
+  - name: Total Size
+    interval:     5
+    time-units:   minutes
+    attribute:    total-size
+- name: Datasource JDBC Metrics
+  metric-dmr:
+  - name: Prepared Statement Cache Access Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=jdbc"
+    attribute:    PreparedStatementCacheAccessCount
+  - name: Prepared Statement Cache Add Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=jdbc"
+    attribute:    PreparedStatementCacheAddCount
+  - name: Prepared Statement Cache Current Size
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=jdbc"
+    attribute:    PreparedStatementCacheCurrentSize
+  - name: Prepared Statement Cache Delete Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=jdbc"
+    attribute:    PreparedStatementCacheDeleteCount
+  - name: Prepared Statement Cache Hit Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=jdbc"
+    attribute:    PreparedStatementCacheHitCount
+  - name: Prepared Statement Cache Miss Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=jdbc"
+    attribute:    PreparedStatementCacheMissCount
+- name: Datasource Pool Metrics
+  metric-dmr:
+  - name: Active Count
+    interval:     30
+    time-units:   seconds
+    path:         "/statistics=pool"
+    attribute:    ActiveCount
+  - name: Available Count
+    interval:     30
+    time-units:   seconds
+    path:         "/statistics=pool"
+    attribute:    AvailableCount
+  - name: Average Blocking Time
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    AverageBlockingTime
+  - name: Average Creation Time
+    interval:     30
+    time-units:   seconds
+    path:         "/statistics=pool"
+    attribute:    AverageCreationTime
+  - name: Created Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    CreatedCount
+  - name: Destroyed Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    DestroyedCount
+  - name: In Use Count
+    interval:     30
+    time-units:   seconds
+    path:         "/statistics=pool"
+    attribute:    InUseCount
+  - name: Max Creation Time
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    MaxCreationTime
+  - name: Max Used Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    MaxUsedCount
+  - name: Max Wait Count
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    MaxWaitCount
+  - name: Max Wait Time
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    MaxWaitTime
+  - name: Timed Out
+    interval:     30
+    time-units:   seconds
+    path:         "/statistics=pool"
+    attribute:    TimedOut
+  - name: Total Blocking Time
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    TotalBlockingTime
+  - name: Total Creation Time
+    interval:     10
+    time-units:   minutes
+    path:         "/statistics=pool"
+    attribute:    TotalCreationTime
+- name: Transactions Metrics
+  metric-dmr:
+  - name: Number of Aborted Transactions
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-aborted-transactions
+    metric-type:  counter
+  - name: Number of Application Rollbacks
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-application-rollbacks
+    metric-type:  counter
+  - name: Number of Committed Transactions
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-committed-transactions
+    metric-type:  counter
+  - name: Number of Heuristics
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-heuristics
+    metric-type:  counter
+  - name: Number of In-Flight Transactions
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-inflight-transactions
+  - name: Number of Nested Transactions
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-nested-transactions
+    metric-type:  counter
+  - name: Number of Resource Rollbacks
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-resource-rollbacks
+    metric-type:  counter
+  - name: Number of Timed Out Transactions
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-timed-out-transactions
+    metric-type:  counter
+  - name: Number of Transactions
+    interval:     30
+    time-units:   seconds
+    attribute:    number-of-transactions
+    metric-type:  counter
+- name: JMS Queue Metrics
+  metric-dmr:
+  - name: Consumer Count
+    interval:     30
+    time-units:   seconds
+    attribute:    consumer-count
+  - name: Delivering Count
+    interval:     30
+    time-units:   seconds
+    attribute:    delivering-count
+  - name: Message Count
+    interval:     30
+    time-units:   seconds
+    attribute:    message-count
+  - name: Messages Added
+    interval:     30
+    time-units:   seconds
+    attribute:    messages-added
+    metric-type:  counter
+  - name: Scheduled Count
+    interval:     30
+    time-units:   seconds
+    attribute:    scheduled-count
+- name: JMS Topic Metrics
+  metric-dmr:
+  - name: Durable Message Count
+    interval:     30
+    time-units:   seconds
+    attribute:    durable-message-count
+  - name: Durable Subscription Count
+    interval:     30
+    time-units:   seconds
+    attribute:    durable-subscription-count
+  - name: Delivering Count
+    interval:     30
+    time-units:   seconds
+    attribute:    delivering-count
+  - name: Message Count
+    interval:     30
+    time-units:   seconds
+    attribute:    message-count
+  - name: Messages Added
+    interval:     30
+    time-units:   seconds
+    attribute:    messages-added
+    metric-type:  counter
+  - name: Non-Durable Message Count
+    interval:     30
+    time-units:   seconds
+    attribute:    non-durable-message-count
+  - name: Non-Durable Subscription Count
+    interval:     30
+    time-units:   seconds
+    attribute:    non-durable-subscription-count
+  - name: Subscription Count
+    interval:     30
+    time-units:   seconds
+    attribute:    subscription-count
+
+avail-set-dmr:
+- name: Server Availability
+  avail-dmr:
+  - name: Server Availability
+    interval:   30
+    time-units: seconds
+    attribute:  server-state
+    up-regex:   "run.*"
+- name: Deployment Status
+  avail-dmr:
+  - name: Deployment Status
+    interval:   1
+    time-units: minutes
+    attribute:  status
+    up-regex:   "OK"
+
+resource-type-set-dmr:
+- name: Standalone Environment
+  resource-type-dmr:
+  - name: WildFly Server
+    resource-name-template: "WildFly Server [%ManagedServerName]"
+    notification-dmr:
+    - name: resource-added
+    metric-sets:
+    - WildFly Memory Metrics
+    - WildFly Threading Metrics
+    - WildFly Aggregated Web Metrics
+    avail-sets:
+    - Server Availability
+    resource-config-dmr:
+    - name: Name
+      attribute: name
+    - name: Product Name
+      attribute: product-name
+    - name: Version
+      attribute: product-version
+    - name: Running Mode
+      attribute: running-mode
+    - name: Server State
+      attribute: server-state
+    - name: Home Directory
+      attribute: home-dir
+      path:      /core-service=server-environment
+    - name: Node Name
+      attribute: node-name
+      path:      /core-service=server-environment
+    - name: Hostname
+      attribute: qualified-host-name
+      path:      /core-service=server-environment
+    - name: Bound Address
+      attribute: bound-address
+      path:     /socket-binding-group=standard-sockets/socket-binding=http
+    operation-dmr:
+    - name: JDR
+      internal-name: generate-jdr-report
+      modifies:      true
+      path:          /subsystem=jdr
+    - name: Reload
+      internal-name: reload
+      modifies:      true
+      params:
+      - name: admin-only
+        type:          bool
+        default-value: "false"
+        description:   Whether the server should start in running mode ADMIN_ONLY when it restarts
+      - name: use-current-server-config
+        type:          bool
+        default-value: "false"
+    - name: Shutdown
+      internal-name: shutdown
+      modifies:      true
+      params:
+      - name: restart
+        type:          bool
+        default-value: "false"
+        description:   "Should the server be restarted after shutdown?"
+    - name: Deploy
+      internal-name: deploy
+      modifies:      true
+    - name: Undeploy
+      internal-name: undeploy
+      modifies:      true
+    - name: Enable Deployment
+      internal-name: enable-deployment
+      modifies:      true
+    - name: Disable Deployment
+      internal-name: disable-deployment
+      modifies:      true
+    - name: Restart Deployment
+      internal-name: restart-deployment
+      modifies:      true
+
+- name: Domain Environment
+  resource-type-dmr:
+  - name: Host Controller
+    resource-name-template: "Host Controller [%ManagedServerName]"
+    notification-dmr:
+    - name: resource-added
+    resource-config-dmr:
+    - name: Product Name
+      attribute: product-name
+    - name: Version
+      attribute: product-version
+    - name: Process Type
+      attribute: process-type
+    - name: Local Host Name
+      attribute: local-host-name
+    operation-dmr:
+    - name: Restart Servers
+      internal-name: restart-servers
+      modifies:      true
+    - name: Start Servers
+      internal-name: start-servers
+      modifies:      true
+    - name: Stop Servers
+      internal-name: stop-servers
+      modifies:      true
+    - name: Deploy
+      internal-name: deploy
+      modifies:      true
+    - name: Undeploy
+      internal-name: undeploy
+      modifies:      true
+    - name: Enable Deployment
+      internal-name: enable-deployment
+      modifies:      true
+    - name: Disable Deployment
+      internal-name: disable-deployment
+      modifies:      true
+    - name: Restart Deployment
+      internal-name: restart-deployment
+      modifies:      true
+
+  - name: Domain Profile
+    resource-name-template: "Domain Profile [%-]"
+    path: "/profile=*"
+    parents:
+    - Host Controller
+    resource-config-dmr:
+    - name: Name
+      attribute: name
+
+  - name: Domain Server Group
+    resource-name-template: "Domain Server Group [%-]"
+    path: "/server-group=*"
+    parents:
+    - Host Controller
+    resource-config-dmr:
+    - name: Profile
+      attribute: profile
+    operation-dmr:
+    - name: Restart Servers
+      internal-name: restart-servers
+      modifies:      true
+    - name: Start Servers
+      internal-name: start-servers
+      modifies:      true
+    - name: Stop Servers
+      internal-name: stop-servers
+      modifies:      true
+
+  - name: Domain Host
+    resource-name-template: "Domain Host [%-]"
+    path: "/host=*"
+    parents:
+    - Host Controller
+    notification-dmr:
+    - name: resource-added
+    metric-sets:
+    - WildFly Memory Metrics
+    - WildFly Threading Metrics
+    resource-config-dmr:
+    - name: Name
+      attribute: name
+    - name: Product Name
+      attribute: product-name
+    - name: Version
+      attribute: product-version
+    - name: Is Domain Controller
+      attribute: master
+    - name: Host State
+      attribute: host-state
+    - name: Running Mode
+      attribute: running-mode
+    - name: Server State
+      attribute: server-state
+    - name: Home Directory
+      attribute: home-dir
+      path:      /core-service=server-environment
+    operation-dmr:
+    - name: Reload
+      internal-name: reload
+      modifies:      true
+    - name: Shutdown
+      internal-name: shutdown
+      modifies:      true
+      params:
+      - name: restart
+        type:        bool
+        description: If true, once shutdown the host controller will be restarted again.
+
+  - name: Domain WildFly Server
+    resource-name-template: "Domain WildFly Server [%-]"
+    path: "/server=*"
+    parents:
+    - Domain Host
+    notification-dmr:
+    - name: resource-added
+    metric-sets:
+    - WildFly Memory Metrics
+    - WildFly Threading Metrics
+    - WildFly Aggregated Web Metrics
+    avail-sets:
+    - Server Availability
+    resource-config-dmr:
+    - name: Name
+      attribute: name
+    - name: Host
+      attribute: host
+    - name: Product Name
+      attribute: product-name
+    - name: Version
+      attribute: product-version
+    - name: Profile Name
+      attribute: profile-name
+    - name: Server Group
+      attribute: server-group
+    - name: Running Mode
+      attribute: running-mode
+    - name: Server State
+      attribute: server-state
+    - name: Hostname
+      attribute: qualified-host-name
+      path:      /core-service=server-environment
+    - name: Node Name
+      attribute: node-name
+      path:      /core-service=server-environment
+    - name: Initial Running Mode
+      attribute: initial-running-mode
+      path:      /core-service=server-environment
+    - name: Base Directory
+      attribute: base-dir
+      path:      /core-service=server-environment
+
+  - name: Domain WildFly Server Controller
+    resource-name-template: "Domain WildFly Server Controller [%-]"
+    path: "/server-config=*"
+    parents:
+    - Domain Host
+    notification-dmr:
+    - name: resource-added
+    resource-config-dmr:
+    - name: Name
+      attribute: name
+    - name: Server Group
+      attribute: group
+    - name: Auto Start
+      attribute: auto-start
+    - name: Status
+      attribute: status
+    operation-dmr:
+    - name: Destroy
+      internal-name: destroy
+      modifies:      true
+    - name: Kill
+      internal-name: kill
+      modifies:      true
+    - name: Restart
+      internal-name: restart
+      modifies:      true
+      params:
+      - name: server
+        description: The name of the server.
+      - name: blocking
+        type:          bool
+        default-value: "false"
+        description:   Wait until the servers are stopped before returning from the operation.
+    - name: Start
+      internal-name: start
+      modifies:      true
+      params:
+      - name: server
+        description: The name of the server.
+      - name: blocking
+        type:          bool
+        default-value: "false"
+        description:   Wait until the servers are stopped before returning from the operation.
+    - name: Stop
+      internal-name: stop
+      modifies:      true
+      params:
+      - name: server
+        description: The name of the server.
+      - name: blocking
+        type:          bool
+        default-value: "false"
+        description:   Wait until the servers are stopped before returning from the operation.
+
+- name: Hawkular
+  resource-type-dmr:
+  - name: Hawkular WildFly Agent
+    resource-name-template: "Hawkular WildFly Agent"
+    path: "/subsystem=hawkular-wildfly-agent"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+    - Domain Host
+    resource-config-dmr:
+    - name: Immutable
+      attribute:           immutable
+      resolve-expressions: true
+    - name: In Container
+      attribute:           in-container
+      resolve-expressions: true
+    operation-dmr:
+    - name: Start
+      internal-name: start
+    - name: Stop
+      internal-name: stop
+    - name: Status
+      internal-name: status
+    - name: Inventory Discovery Scan
+      internal-name: fullDiscoveryScan
+    - name: Inventory Report
+      internal-name: inventoryReport
+
+- name: Deployment
+  resource-type-dmr:
+  - name: Deployment
+    resource-name-template: "Deployment [%-]"
+    path: "/deployment=*"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+    metric-sets:
+    - Web Subsystem Metrics
+    avail-sets:
+    - Deployment Status
+    operation-dmr:
+    - name: Redeploy
+      internal-name: redeploy
+      modifies: true
+    - name: Remove
+      internal-name: remove
+      modifies: true
+    - name: Undeploy
+      internal-name: undeploy
+      modifies: true
+  - name: SubDeployment
+    resource-name-template: "SubDeployment [%-]"
+    path: "/subdeployment=*"
+    parents:
+    - Deployment
+    metric-sets:
+    - Web Subsystem Metrics
+
+- name: Web Component
+  resource-type-dmr:
+  - name: Servlet
+    resource-name-template: "Servlet [%-]"
+    path: "/subsystem=web/servlet=*"
+    parents:
+    - Deployment
+    - SubDeployment
+    metric-sets:
+    - Servlet Metrics
+
+- name: EJB
+  resource-type-dmr:
+  - name: Singleton EJB
+    resource-name-template: "Singleton EJB [%-]"
+    path: "/subsystem=ejb3/singleton-bean=*"
+    parents:
+    - Deployment
+    - SubDeployment
+    metric-sets:
+    - Singleton EJB Metrics
+  - name: Message Driven EJB
+    resource-name-template: "Message Driven EJB [%-]"
+    path: "/subsystem=ejb3/message-driven-bean=*"
+    parents:
+    - Deployment
+    - SubDeployment
+    metric-sets:
+    - Message Driven EJB Metrics
+  - name: Stateless Session EJB
+    resource-name-template: "Stateless Session EJB [%-]"
+    path: "/subsystem=ejb3/stateless-session-bean=*"
+    parents:
+    - Deployment
+    - SubDeployment
+    metric-sets:
+    - Stateless Session EJB Metrics
+  - name: Stateful Session EJB
+    resource-name-template: "Stateful Session EJB [%-]"
+    path: "/subsystem=ejb3/stateful-session-bean=*"
+    parents:
+    - Deployment
+    - SubDeployment
+    metric-sets:
+    - Stateful Session EJB Metrics
+
+- name: Datasource
+  resource-type-dmr:
+  - name: Datasource
+    resource-name-template: "Datasource [%-]"
+    path: "/subsystem=datasources/data-source=*"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+    metric-sets:
+    - Datasource Pool Metrics
+    - Datasource JDBC Metrics
+    resource-config-dmr:
+    - name: Connection URL
+      attribute: connection-url
+      resolve-expressions: false
+    - name: Driver Name
+      attribute: driver-name
+    - name: Driver Class
+      attribute: driver-class
+    - name: Datasource Class
+      attribute: datasource-class
+    - name: Enabled
+      attribute: enabled
+    - name: JNDI Name
+      attribute: jndi-name
+    - name: Username
+      attribute: user-name
+    - name: Password
+      attribute: password
+    - name: Security Domain
+      attribute: security-domain
+    - name: Connection Properties
+      path:      "/connection-properties=*"
+      attribute: value
+
+- name: XA Datasource
+  resource-type-dmr:
+  - name: XA Datasource
+    resource-name-template: "XA Datasource [%-]"
+    path: "/subsystem=datasources/xa-data-source=*"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+    metric-sets:
+    - Datasource Pool Metrics
+    - Datasource JDBC Metrics
+    resource-config-dmr:
+    - name: Driver Name
+      attribute: driver-name
+    - name: XA Datasource Class
+      attribute: xa-datasource-class
+    - name: Enabled
+      attribute: enabled
+    - name: JNDI Name
+      attribute: jndi-name
+    - name: Username
+      attribute: user-name
+    - name: Password
+      attribute: password
+    - name: Security Domain
+      attribute: security-domain
+    - name: Datasource Properties
+      path:      "/xa-datasource-properties=*"
+      attribute: value
+
+- name: JDBC Driver
+  resource-type-dmr:
+  - name: JDBC Driver
+    resource-name-template: "JDBC Driver [%-]"
+    path: "/subsystem=datasources/jdbc-driver=*"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+    resource-config-dmr:
+    - name: Driver Class
+      attribute: driver-class-name
+    - name: Module Name
+      attribute: driver-module-name
+    - name: Driver Name
+      attribute: driver-name
+    - name: XA DS Class
+      attribute: driver-xa-datasource-class-name
+
+- name: Transaction Manager
+  resource-type-dmr:
+  - name: Transaction Manager
+    resource-name-template: Transaction Manager
+    path: "/subsystem=transactions"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+    metric-sets:
+    - Transactions Metrics
+
+- name: Messaging
+  resource-type-dmr:
+  - name: Messaging Server
+    resource-name-template: "Messaging Server [%-]"
+    path: "/subsystem=messaging/hornetq-server=*"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+  - name: JMS Queue
+    resource-name-template: "JMS Queue [%-]"
+    path: "/jms-queue=*"
+    parents:
+    - Messaging Server
+    metric-sets:
+    - JMS Queue Metrics
+  - name: JMS Topic
+    resource-name-template: "JMS Topic [%-]"
+    path: "/jms-topic=*"
+    parents:
+    - Messaging Server
+    metric-sets:
+    - JMS Topic Metrics
+
+- name: Socket Binding Group
+  resource-type-dmr:
+  - name: Socket Binding Group
+    resource-name-template: "Socket Binding Group [%-]"
+    path: "/socket-binding-group=*"
+    parents:
+    - WildFly Server
+    - Host Controller
+    resource-config-dmr:
+    - name: Name
+      attribute: name
+    - name: Port Offset
+      attribute: port-offset
+      resolve-expressions: false
+    - name: Default Interface
+      attribute: default-interface
+  - name: Socket Binding
+    resource-name-template: "Socket Binding [%-]"
+    path: "/socket-binding=*"
+    parents:
+    - Socket Binding Group
+    resource-config-dmr:
+    - name: Name
+      attribute: name
+    - name: Interface
+      attribute: interface
+    - name: Port
+      attribute: port
+      resolve-expressions: false
+    - name: Multicast Address
+      attribute: multicast-address
+      resolve-expressions: false
+    - name: Multicast Port
+      attribute: multicast-port
+  - name: Remote Destination Outbound Socket Binding
+    resource-name-template: "Remote Destination Outbound Socket Binding [%-]"
+    path: "/remote-destination-outbound-socket-binding=*"
+    parents:
+    - Socket Binding Group
+    resource-config-dmr:
+    - name: Host
+      attribute: host
+    - name: Port
+      attribute: port
+
+- name: Clustering
+  resource-type-dmr:
+  - name: ModCluster
+    resource-name-template: "ModCluster"
+    path:                   "/subsystem=modcluster"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+    resource-config-dmr:
+    - name: Connector
+      attribute: connector
+      path:      "/mod-cluster-config=configuration"
+    - name: Advertise Socket Binding
+      attribute: advertise-socket
+      path:      "/mod-cluster-config=configuration"
+  - name: JGroups
+    resource-name-template: "JGroups"
+    path:                   "/subsystem=jgroups"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+
+  - name: Infinispan
+    resource-name-template: "Infinispan"
+    path:                   "/subsystem=infinispan"
+    parents:
+    - WildFly Server
+    - Domain WildFly Server
+  - name: Infinispan Cache Container
+    resource-name-template: "Infinispan Cache Container [%-]"
+    path:                   "/cache-container=*"
+    parents:
+    - Infinispan
+    resource-config-dmr:
+    - name: Cluster Name
+      attribute: cluster-name
+    - name: Coordinator Address
+      attribute: coordinator-address
+    - name: Is Coordinator
+      attribute: is-coordinator
+
+# JMX
+
+metric-set-jmx:
+- name: Runtime Metrics
+  metric-jmx:
+  - name: VM Uptime
+    attribute:    Uptime
+    interval:     30
+    time-units:   seconds
+    metric-units: milliseconds
+    metric-type:  counter
+  - name: Used Heap Memory
+    object-name:  java.lang:type=Memory
+    attribute:    HeapMemoryUsage#used
+    interval:     30
+    time-units:   seconds
+    metric-units: bytes
+    metric-type:  gauge
+  - name: Aggregate GC Collection Time
+    object-name:  "java.lang:type=GarbageCollector,name=*"
+    attribute:    CollectionTime
+    interval:     30
+    time-units:   seconds
+    metric-units: milliseconds
+- name: Memory Pool Metrics
+  metric-jmx:
+  - name: Initial
+    attribute:    Usage#init
+    interval:     2
+    time-units:   minutes
+    metric-units: bytes
+    metric-type:  gauge
+  - name: Used
+    attribute:    Usage#used
+    interval:     1
+    time-units:   minutes
+    metric-units: bytes
+    metric-type:  gauge
+  - name: Committed
+    attribute:    Usage#committed
+    interval:     1
+    time-units:   minutes
+    metric-units: bytes
+    metric-type:  gauge
+  - name: Max
+    attribute:    Usage#max
+    interval:     2
+    time-units:   minutes
+    metric-units: bytes
+    metric-type:  gauge
+
+avail-set-jmx:
+- name: Runtime Availability
+  avail-jmx:
+  - name: VM Availability
+    interval:   30
+    time-units: seconds
+    attribute:  StartTime
+    up-regex:   "[0123456789]+"
+- name: Memory Pool Availability
+  avail-jmx:
+  - name: Memory Pool Availability
+    interval:   30
+    time-units: seconds
+    attribute:  Valid
+    up-regex:   "[tT].*"
+
+resource-type-set-jmx:
+- name: Main
+  resource-type-jmx:
+  - name: Runtime MBean
+    resource-name-template: JMX [%_ManagedServerName%][%type%]
+    object-name: java.lang:type=Runtime
+    metric-sets:
+    - Runtime Metrics
+    avail-sets:
+    - Runtime Availability
+    resource-config-jmx:
+    - name: OS Name
+      attribute:   Name
+      object-name: java.lang:type=OperatingSystem
+    - name: Java VM Name
+      attribute:   VmName
+- name: Memory Pool
+  resource-type-jmx:
+  - name: Memory Pool MBean
+    parents:
+    - Runtime MBean
+    resource-name-template: JMX [%_ManagedServerName%] %type% %name%
+    object-name: "java.lang:type=MemoryPool,name=*"
+    metric-sets:
+    - Memory Pool Metrics
+    avail-sets:
+    - Memory Pool Availability
+    resource-config-jmx:
+    - name: Type
+      attribute: Type
+- name: Hawkular
+  resource-type-jmx:
+  - name: Hawkular WildFly Agent
+    resource-name-template: "Hawkular WildFly Agent"
+    object-name: "org.hawkular:type=hawkular-javaagent"
+    resource-config-jmx:
+    - name: Immutable
+      attribute: Immutable
+    - name: In Container
+      attribute: InContainer
+    operation-jmx:
+    - name: Start
+      internal-name: start
+    - name: Stop
+      internal-name: stop
+    - name: Status
+      internal-name: status
+    - name: Inventory Discovery Scan
+      internal-name: fullDiscoveryScan
+    - name: Inventory Report
+      internal-name: inventoryReport
+
+# MANAGED SERVERS
+
+managed-servers:
+  local-dmr:
+    name: DISABLED Local DMR
+    enabled: false
+    resource-type-sets:
+    - Standalone Environment
+    - Deployment
+    - Web Component
+    - EJB
+    - Datasource
+    - XA Datasource
+    - JDBC Driver
+    - Transaction Manager
+    - Messaging
+    - Socket Binding Group
+    - Clustering
+    wait-for:
+    - name: /
+
+  local-jmx:
+    name: Local JMX
+    enabled: true
+    resource-type-sets:
+    - Main
+    - Memory Pool
+    - Hawkular
+    wait-for:
+    - name: java.lang:type=Runtime
+
+  remote-dmr:
+  # Local DMR for proper display in MiQ
+  - name: Local DMR
+    enabled: true
+    protocol: remote
+    host: 127.0.0.1
+    port: 9999
+    resource-type-sets:
+    - Standalone Environment
+    - Deployment
+    - Web Component
+    - EJB
+    - Datasource
+    - XA Datasource
+    - JDBC Driver
+    - Transaction Manager
+    - Messaging
+    - Socket Binding Group
+    - Clustering
+    wait-for:
+    - name: /
+
+  remote-jmx:
+  - name: Remote Jolokia Server
+    enabled: false
+    url: http://localhost:8080/jolokia-war
+    resource-type-sets:
+    - Main
+    - Memory Pool
+    wait-for:
+    - name: java.lang:type=Runtime
+
+platform:
+  enabled:      true
+  interval:     5
+  time-units:   minutes
+  #machine-id:   my-machine-id-here

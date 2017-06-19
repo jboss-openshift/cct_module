@@ -1,0 +1,52 @@
+#!/bin/sh
+
+MAVEN_CLEAR_REPO="false"
+export MAVEN_CLEAR_REPO
+
+/usr/local/s2i/assemble_eap
+
+LOCAL_SOURCE_DIR=/tmp/src
+
+function deploy_vdbs(){
+  source_dir="${1}"
+
+  if ls ${source_dir}/*-vdb.xml 1> /dev/null 2>&1; then
+    cp ${source_dir}/*-vdb.xml $JBOSS_HOME/standalone/deployments
+  fi
+  
+  if ls ${source_dir}/*-vdb.xml.dodeploy 1> /dev/null 2>&1; then
+    cp ${source_dir}/*-vdb.xml.dodeploy $JBOSS_HOME/standalone/deployments
+  fi
+
+  if ls ${source_dir}/*.vdb 1> /dev/null 2>&1; then
+    cp ${source_dir}/*.vdb $JBOSS_HOME/standalone/deployments
+  fi
+  
+  if ls ${source_dir}/*.vdb.dodeploy 1> /dev/null 2>&1; then
+    cp ${source_dir}/*.vdb.dodeploy $JBOSS_HOME/standalone/deployments
+  fi
+}
+
+function copy_vdbs(){
+  if [ -n "$VDB_DIRS" ]; then
+    for vdb_dir in $(echo $VDB_DIRS | sed "s/,/ /g"); do
+      deploy_vdbs ${LOCAL_SOURCE_DIR}/${vdb_dir}
+    done  
+  else
+    deploy_vdbs ${LOCAL_SOURCE_DIR}
+  fi
+
+  deploy_vdbs ${LOCAL_SOURCE_DIR}/deployments
+
+  if [ -n $CUSTOM_INSTALL_DIRECTORIES ]; then
+    IFS=',' read -a install_dir_entries <<< $CUSTOM_INSTALL_DIRECTORIES
+    for install_dir_entry in "${install_dir_entries[@]}"; do
+      for install_dir in $(find ${LOCAL_SOURCE_DIR}/$install_dir_entry -maxdepth 0 2>/dev/null); do
+        deploy_vdbs ${install_dir}/deployments
+      done
+    done
+  fi
+}
+
+copy_vdbs
+

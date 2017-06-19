@@ -1,0 +1,10 @@
+#!/bin/sh
+# Secure the JWS management console
+set -e
+
+SCRIPT_DIR=$(dirname $0)
+ADDED_DIR=${SCRIPT_DIR}/added
+
+cp -p "$ADDED_DIR/secure-mgmt-console.sh" "$JWS_HOME/bin/launch/"
+
+sed -i -e 's#</Context>#\n   <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1"/>\n</Context>#' $JWS_HOME/webapps/manager/META-INF/context.xml

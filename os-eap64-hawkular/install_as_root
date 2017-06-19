@@ -1,0 +1,9 @@
+#!/bin/bash
+# Set up Hawkular for EAP
+set -e
+
+SCRIPT_DIR=$(dirname $0)
+ADDED_DIR=${SCRIPT_DIR}/added
+
+# Overwrite the default configu for EAP
+cp --no-preserve=mode,ownership "$ADDED_DIR"/hawkular-javaagent-config.yaml /opt/hawkular/etc
