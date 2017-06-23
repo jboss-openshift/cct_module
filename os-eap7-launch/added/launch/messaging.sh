@@ -137,7 +137,6 @@ function generate_resource_adapter() {
   echo "Generating resource adapter configuration for service: $1 (${10})" >&2
   IFS=',' read -a queues <<< ${11}
   IFS=',' read -a topics <<< ${12}
-
   case "${10}" in
     "amq")
       prefix=$8
@@ -147,7 +146,7 @@ function generate_resource_adapter() {
                     <transaction-support>XATransaction</transaction-support>
                     <config-property name=\"UserName\">$3</config-property>
                     <config-property name=\"Password\">$4</config-property>
-                    <config-property name=\"ServerUrl\">$5://$6:$7?jms.rmIdFromConnectionId=true</config-property>
+                    <config-property name=\"ServerUrl\">tcp://$6:$7?jms.rmIdFromConnectionId=true</config-property>
                     <connection-definitions>
                         <connection-definition
                               class-name=\"org.apache.activemq.ra.ActiveMQManagedConnectionFactory\"
@@ -249,9 +248,9 @@ function inject_brokers() {
         protocol="tcp"
       fi
 
-      if [ "${protocol}" != "tcp" ] && [ "${protocol}" != "ssl" ]; then
+      if [ "${protocol}" != "tcp" ]; then
         echo "There is a problem with your service configuration!"
-        echo "Only openwire (tcp|ssl) transports are supported."
+        echo "Only openwire (tcp) transports are supported."
         continue
       fi
 
@@ -290,28 +289,6 @@ function inject_brokers() {
 
       # topics environment variable name format: [NAME]_[BROKER_TYPE]_TOPICS
       topics=$(find_env "${prefix}_TOPICS")
-
-      # RAR ssl setup
-      # key/trust store dir, format: [PREFIX]_CLIENT_KEYSTORE_TRUSTSTORE_DIR
-      storeDir=$(find_env "${prefix}_CLIENT_KEYSTORE_TRUSTSTORE_DIR")
-
-      # truststore file , format: [PREFIX]_CLIENT_TRUSTSTORE
-      trustStore=$(find_env "${prefix}_CLIENT_TRUSTSTORE")
-
-      # keystore file, format: [PREFIX]_CLIENT_KEYSTORE
-      keyStore=$(find_env "${prefix}_CLIENT_KEYSTORE")
-
-      # keystore password, format: [PREFIX]_CLIENT_KEYSTORE_PASSWORD
-      keyStorePassword=$(find_env "${prefix}_CLIENT_KEYSTORE_PASSWORD")
-
-      if [ ! "$storeDir" -o ! "$keyStore" -o ! "$trustStore" -o ! "$keyStorePassword" ] ; then
-        echo "WARNING! Partial resource adapter ssl configuration, the ssl context WILL NOT be configured. Falling back to tcp default configuration."
-        # override the protocol to tcp to avoid configuration mismatch
-        protocol="tcp"
-        port="61616"
-      else
-        JBOSS_MESSAGING_ARGS="${JBOSS_MESSAGING_ARGS} -Djavax.net.ssl.keyStore=$storeDir/$keyStore -Djavax.net.ssl.keyStorePassword=$keyStorePassword -Djavax.net.ssl.trustStore=$storeDir/$trustStore"
-      fi
 
       case "$type" in
         "AMQ")

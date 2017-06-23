@@ -503,10 +503,10 @@ function inject_datasource() {
     echo "Warning - DRIVER not set for datasource ${service_name}. Datasource will not be configured."
   else
     datasource=$(generate_datasource "${service,,}-${prefix}" "$jndi" "$username" "$password" "$host" "$port" "$database" "$checker" "$sorter" "$driver" "$service_name" "$jta" "$validate" "$url")
-  fi
 
-  if [ -n "$datasource" ]; then
-    sed -i "s|<!-- ##DATASOURCES## -->|${datasource}\n<!-- ##DATASOURCES## -->|" $CONFIG_FILE
+    if [ -n "$datasource" ]; then
+      sed -i "s|<!-- ##DATASOURCES## -->|${datasource}\n<!-- ##DATASOURCES## -->|" $CONFIG_FILE
+    fi
   fi
 }
 

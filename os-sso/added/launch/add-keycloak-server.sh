@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KEYCLOAK_SERVER_FILE=$JBOSS_HOME/standalone/configuration/keycloak-server.json
-LOCAL_SOURCE_DIR=${HOME}/source
+LOCAL_SOURCE_DIR=/tmp/src
 KEYCLOAK_CACHE_CONTAINER_FILE=$JBOSS_HOME/bin/launch/keycloak-cache-container.xml
 KEYCLOAK_LEGACY_CACHE_CONTAINER_FILE=$JBOSS_HOME/bin/launch/legacy-keycloak-cache-container.xml
 

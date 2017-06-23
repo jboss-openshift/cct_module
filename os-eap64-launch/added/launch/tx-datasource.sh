@@ -6,11 +6,11 @@ function clearTxDatasourceEnv() {
   tx_backend=${TX_DATABASE_PREFIX_MAPPING}
 
   if [ -n "${tx_backend}" ] ; then
-    service_name=${db_backend%=*}
+    service_name=${tx_backend%=*}
     service=${service_name^^}
     service=${service//-/_}
     db=${service##*_}
-    prefix=${db_backend#*=}
+    prefix=${tx_backend#*=}
 
     unset ${service}_SERVICE_HOST
     unset ${service}_SERVICE_PORT

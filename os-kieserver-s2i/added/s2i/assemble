@@ -40,9 +40,7 @@ if [ $ERR -ne 0 ]; then
     exit $ERR
 fi
 
-# Source code provided to S2I is at ${HOME}/source
-LOCAL_SOURCE_DIR=${HOME}/source
-mkdir -p $LOCAL_SOURCE_DIR
+LOCAL_SOURCE_DIR=/tmp/src
 # Copy KIE server resource files
 KIE_SERVER_WEBINF_CLASSES_DIR="${JBOSS_HOME}/standalone/deployments/kie-server.war/WEB-INF/classes"
 mkdir -p $KIE_SERVER_WEBINF_CLASSES_DIR
