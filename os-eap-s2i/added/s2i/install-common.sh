@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# we will move any code provided by s2i to here
-LOCAL_SOURCE_DIR=${HOME}/source
+LOCAL_SOURCE_DIR=/tmp/src
 
 # Resulting WAR files will be deployed to /opt/eap/standalone/deployments
 DEPLOY_DIR=$JBOSS_HOME/standalone/deployments

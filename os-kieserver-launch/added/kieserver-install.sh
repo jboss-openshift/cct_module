@@ -3,8 +3,7 @@
 
 . /opt/rh/rh-maven33/enable
 
-# Source code provided to S2I is at ${HOME}/source
-LOCAL_SOURCE_DIR=${HOME}/source
+LOCAL_SOURCE_DIR=/tmp/src
 
 # By this point, EAP deployments dir will contain everything outputted from s2i, including
 # maven-built artifacts in ~/target/, or artifacts copied from ~/source/deployments/.

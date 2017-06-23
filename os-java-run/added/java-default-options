@@ -10,6 +10,7 @@
 # JAVA_OPTIONS: Checked for already set options
 # JAVA_INITIAL_MEM_RATIO: Ratio of maximum memory to use for initial heap size
 #                         (i.e. -Xms).  Defaults to 100 (i.e -Xms=-Xmx).
+# JAVA_MAX_INITIAL_MEM: The maximum value of the initial heap size, defaults to 4G.
 # JAVA_MAX_MEM_RATIO: Ratio use to calculate a default maximum Memory, in percent.
 #                     E.g. the default value "50" implies that 50% of the Memory
 #                     given to the container is used as the maximum heap memory with
@@ -28,6 +29,7 @@
 
 __DEFAULT_JAVA_MAX_MEM_RATIO=50
 __DEFAULT_JAVA_INITIAL_MEM_RATIO=100
+__DEFAULT_JAVA_MAX_INITIAL_MEM=4096
 
 initialize_container_limits() {
   # we can't run without limits
@@ -77,7 +79,12 @@ initial_memory() {
     local max_ratio=${JAVA_MAX_MEM_RATIO:-${__DEFAULT_JAVA_MAX_MEM_RATIO}}
     local initial_ratio=${JAVA_INITIAL_MEM_RATIO:-${__DEFAULT_JAVA_INITIAL_MEM_RATIO}}
     local ms=$(echo "${max_mem} ${max_ratio} ${initial_ratio} 1048576" | awk '{printf "%d\n" , ($1*(($2*$3)/10000))/$4 + 0.5}')
-    echo "-Xms${ms}m"
+    local max_initial_memory=${JAVA_MAX_INITIAL_MEM:-${__DEFAULT_JAVA_MAX_INITIAL_MEM}}
+    if [ "${ms}" -lt "${max_initial_memory}" ] ; then
+      echo "-Xms${ms}m"
+    else
+      echo "-Xms${max_initial_memory}m"
+    fi
   fi
 }
 
