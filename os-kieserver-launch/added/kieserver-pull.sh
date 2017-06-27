@@ -53,6 +53,9 @@ for (( i=0; i<${KIE_CONTAINER_DEPLOYMENT_COUNT}; i++ )); do
     fi
 done
 
+# Remove _remote.repositories files so we can run offline: CLOUD-1839
+find ~/.m2/repository -name _remote.repositories | xargs rm
+
 # Necessary to permit running with a randomised UID
 chown -R jboss:root ${HOME}/.m2/repository
 chmod -R g+rwX ${HOME}/.m2/repository

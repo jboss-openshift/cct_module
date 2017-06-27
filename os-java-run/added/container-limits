@@ -37,16 +37,7 @@ core_limit() {
 }
 
 max_unbounded() {
-  local max_unbounded=0
-  for file in memory.limit_in_bytes memory.kmem.limit_in_bytes \
-      memory.kmem.tcp.limit_in_bytes memory.memsw.limit_in_bytes \
-      memory.soft_limit_in_bytes ; do
-    val="$(cat /sys/fs/cgroup/memory/${file})"
-    if [ "${val}" -gt "${max_unbounded}" ] ; then
-      max_unbounded="${val}"
-    fi
-  done
-  echo "${max_unbounded}"
+  cat /proc/meminfo | grep 'MemTotal:' | awk '{print $2*1024}'
 }
 
 container_memory() {
