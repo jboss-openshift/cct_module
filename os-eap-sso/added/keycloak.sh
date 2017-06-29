@@ -74,12 +74,12 @@ function configure_keycloak() {
     configure_extension
     configure_security_domain
 
-  elif [ -n "$SSO_URL" ]; then
+  elif [ -n "${SSO_URL%/}" ]; then
     enable_keycloak_deployments
     configure_extension
     configure_security_domain
 
-    sso_service="$SSO_URL"
+    sso_service="${SSO_URL%/}"
     if [ -n "$SSO_SERVICE_URL" ]; then
       sso_service="$SSO_SERVICE_URL"
     fi
@@ -109,7 +109,7 @@ function configure_keycloak() {
       sed -i "s|##KEYCLOAK_DISABLE_TRUST_MANAGER##|true|g" "${CONFIG_FILE}"
     fi
 
-    sed -i "s|##KEYCLOAK_URL##|${SSO_URL}|g" "${CONFIG_FILE}"
+    sed -i "s|##KEYCLOAK_URL##|${SSO_URL%/}|g" "${CONFIG_FILE}"
  
     if [ -n "$SSO_SAML_CERTIFICATE_NAME" ]; then 
       sed -i "s|##SSO_SAML_CERTIFICATE_NAME##|${SSO_SAML_CERTIFICATE_NAME}|g" "${CONFIG_FILE}"
