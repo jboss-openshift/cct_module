@@ -38,7 +38,7 @@ function configure() {
 }
 
 function configure_controller_access {
-    # TODO: this could become multiple controllers, separate from business central
+    # We will only support one controller, whether running by itself or in business central.
     local controllerService="${KIE_SERVER_CONTROLLER_SERVICE}"
     controllerService=${controllerService^^}
     controllerService=${controllerService//-/_}
@@ -55,79 +55,15 @@ function configure_controller_access {
         if [ "${kieServerControllerPort}" = "" ]; then
             kieServerControllerPort=$(find_env "${controllerService}_SERVICE_PORT" "8080")
         fi
-        local kieServerControllerContext="${KIE_SERVER_CONTROLLER_CONTEXT}"
-        if [ "${kieServerControllerContext}" = "" ]; then
-            kieServerControllerContext="business-central"
-        fi
-        # base url
-        local baseUrl="${kieServerControllerProtocol}://${kieServerControllerHost}:${kieServerControllerPort}/${kieServerControllerContext}"
-        # controller location
-        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller=${baseUrl}/rest/controller"
-        # controller user/pwd
+        # url
+        local kieServerControllerUrl="${kieServerControllerProtocol}://${kieServerControllerHost}:${kieServerControllerPort}/rest/controller"
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller=${kieServerControllerUrl}"
+        # user/pwd
         local kieServerControllerUser=$(find_env "KIE_SERVER_CONTROLLER_USER" "controllerUser")
         local kieServerControllerPwd=$(find_env "KIE_SERVER_CONTROLLER_PWD" "controller1!")
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.user=${kieServerControllerUser}"
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.pwd=${kieServerControllerPwd}"
-        # guvnor maven repository
-        local settingsXml="${HOME}/.m2/settings.xml"
-        local repoId="guvnor-m2-repo"
-        local profileId="guvnor-m2-profile"
-        addMavenServer "${settingsXml}" "${repoId}" "${kieServerControllerUser}" "${kieServerControllerPwd}"
-        addMavenProfile "${settingsXml}" "${profileId}" "${repoId}" "${baseUrl}/maven2"
-        activateMavenProfile "${settingsXml}" "${profileId}"
     fi
-}
-
-function addMavenServer() {
-    local settings="${1}"
-    local repo_id="${2}"
-    local repo_user="${3}"
-    local repo_pwd="${4}"
-    local xml="\n\
-    <server>\n\
-      <id>${repo_id}</id>\n\
-      <username>${repo_user}</username>\n\
-      <password><![CDATA[${repo_pwd}]]></password>\n\
-    </server>\n\
-    <!-- ### configured servers ### -->"
-    sed -i "s|<!-- ### configured servers ### -->|${xml}|" "${settings}"
-}
-
-function addMavenProfile() {
-    local settings="${1}"
-    local profile_id="${2}"
-    local repo_id="${3}"
-    local repo_url="${4}"
-    local xml="\n\
-    <profile>\n\
-      <id>${profile_id}</id>\n\
-      <repositories>\n\
-        <repository>\n\
-          <id>${repo_id}</id>\n\
-          <url>${repo_url}</url>\n\
-          <layout>default</layout>\n\
-          <releases>\n\
-            <enabled>true</enabled>\n\
-            <updatePolicy>always</updatePolicy>\n\
-          </releases>\n\
-          <snapshots>\n\
-            <enabled>true</enabled>\n\
-            <updatePolicy>always</updatePolicy>\n\
-          </snapshots>\n\
-        </repository>\n\
-      </repositories>\n\
-    </profile>\n\
-    <!-- ### configured profiles ### -->"
-    sed -i "s|<!-- ### configured profiles ### -->|${xml}|" "${settings}"
-}
-
-function activateMavenProfile() {
-    local settings="${1}"
-    local profile_id="${2}"
-    local xml="\n\
-    <activeProfile>${profile_id}</activeProfile>\n\
-    <!-- ### active profiles ### -->"
-    sed -i "s|<!-- ### active profiles ### -->|${xml}|" "${settings}"
 }
 
 function configure_drools_filter() {
@@ -154,13 +90,13 @@ function configure_server_id() {
             # chop off trailing unique "dash number" so all servers use the same template
             kieServerId=$(echo "${HOSTNAME}" | sed -e 's/\(.*\)-.*/\1/')
         else
-            kieServerId="$(generateRandomId)"
+            kieServerId="$(generate_random_id)"
         fi
     fi
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.id=${kieServerId}"
 }
 
-function generateRandomId() {
+function generate_random_id() {
     cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1
 }
 
@@ -184,7 +120,8 @@ function configure_server_location() {
         if [ "${KIE_SERVER_PORT}" = "" ]; then
             KIE_SERVER_PORT="8080"
         fi
-        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.location=${KIE_SERVER_PROTOCOL}://${KIE_SERVER_HOST}:${KIE_SERVER_PORT}/kie-execution-server/services/rest/server"
+        local kieServerUrl="${KIE_SERVER_PROTOCOL}://${KIE_SERVER_HOST}:${KIE_SERVER_PORT}/services/rest/server"
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.location=${kieServerUrl}"
     fi
 }
 
