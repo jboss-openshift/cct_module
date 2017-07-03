@@ -35,14 +35,18 @@ function configure_controller_security() {
 
 function configure_guvnor_settings() {
     # see scripts/os-bpmsuite-common/configure.sh
-    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.guvnor.m2repo.dir=${HOME}/.m2/repository"
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.jbpm.designer.perspective=full -Ddesignerdataobjects=false"
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.demo=false -Dorg.kie.example=false"
+    local bpmsuiteDataDir=DIR="${JBOSS_HOME}/standalone/data/bpmsuite"
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.guvnor.m2repo.dir=${bpmsuiteDataDir}/maven-repository"
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.uberfire.metadata.index.dir=${bpmsuiteDataDir}"
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.uberfire.nio.git.dir=${bpmsuiteDataDir}"
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.uberfire.nio.git.ssh.cert.dir=${bpmsuiteDataDir}"
 }
 
 function configure_misc_security() {
     add_management_interface_realm
-    configure_login_modules "org.kie.security.jaas.KieLoginModule" "optional" "deployment.business-central.war"
+    configure_login_modules "org.kie.security.jaas.KieLoginModule" "optional" "deployment.ROOT.war"
 }
 
 function configure_server_security() {
