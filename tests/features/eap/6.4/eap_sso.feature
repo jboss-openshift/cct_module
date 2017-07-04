@@ -1,4 +1,4 @@
-@openshift @jboss-eap-6/eap64-openshift 
+@jboss-eap-6/eap64-openshift 
 Feature: OpenShift EAP SSO tests
 
    Scenario: deploys the keycloak examples, then checks if it's deployed.

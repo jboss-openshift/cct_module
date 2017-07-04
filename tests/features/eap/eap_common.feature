@@ -1,4 +1,4 @@
-@openshift
+
 Feature: Openshift EAP common tests (EAP and EAP derived images)
 
   @jboss-eap-6/eap64-openshift @jboss-decisionserver-6 @jboss-processserver-6

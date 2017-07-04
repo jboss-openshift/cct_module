@@ -1,4 +1,4 @@
-@openshift @webserver_tomcat7 @webserver_tomcat8
+@webserver_tomcat7 @webserver_tomcat8
 Feature: Openshift tomcat basic tests
 
   Scenario: Ensure that the default ROOT web app is NOT running

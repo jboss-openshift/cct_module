@@ -1,4 +1,4 @@
-@openshift @jboss-datagrid-6/datagrid65-openshift
+@jboss-datagrid-6/datagrid65-openshift
 Feature: Openshift DataGrid tests
 
   Scenario: readinessProbe and livenessProbe runs successfully with user security

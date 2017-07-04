@@ -1,4 +1,4 @@
-@openshift @jboss-eap-6/eap64-openshift
+@jboss-eap-6/eap64-openshift
 Feature: Openshift EAP Messaging Tests
 
   Scenario: Check that RA generated for AMQ

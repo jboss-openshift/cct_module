@@ -1,4 +1,4 @@
-@openshift @redhat-sso-7
+@redhat-sso-7
 Feature: Openshift SSO jgroups secure
   Scenario: jgroups-encrypt
     When container is started with env

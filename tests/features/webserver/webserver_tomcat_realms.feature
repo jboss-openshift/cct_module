@@ -1,4 +1,4 @@
-@openshift @webserver_tomcat7 @webserver_tomcat8
+@webserver_tomcat7 @webserver_tomcat8
 Feature: Tomcat Openshift realms
 
   Scenario: check DataSourceRealm configured

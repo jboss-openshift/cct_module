@@ -1,4 +1,4 @@
-@openshift
+
 Feature: Openshift JDG REST tests
 
   @jboss-datagrid-6/datagrid65-openshift

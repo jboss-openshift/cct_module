@@ -1,4 +1,4 @@
-@openshift @webserver_tomcat7 @webserver_tomcat8
+@webserver_tomcat7 @webserver_tomcat8
 Feature: Openshift tomcat s2i tests
   # TODO: further testing: /opt/webservers/logs/localhost_access_log.2015-06-05.txt (replace date) should exist after a visit
   Scenario: custom configuration deployment

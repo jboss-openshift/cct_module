@@ -1,4 +1,4 @@
-@openshift @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+@jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
 Feature: EAP Openshift resource adapters
 
   Scenario: Test resource adapter extension

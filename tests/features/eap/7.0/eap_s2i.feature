@@ -1,4 +1,4 @@
-@openshift @jboss-eap-7/eap70-openshift
+@jboss-eap-7/eap70-openshift
 Feature: Openshift EAP s2i tests
 
   Scenario: deploys the binary example, then checks if both war files are deployed.

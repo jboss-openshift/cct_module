@@ -1,4 +1,4 @@
-@openshift @jboss-amq-6
+@jboss-amq-6
 Feature: Openshift AMQ s2i tests
 
   Scenario: custom configuration deployment

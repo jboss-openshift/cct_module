@@ -1,4 +1,4 @@
-@openshift @jboss-datagrid-6 @jboss-datagrid-7
+@jboss-datagrid-6 @jboss-datagrid-7
 Feature: Openshift DataGrid tests
 
   Scenario: readinessProbe and livenessProbe runs successfully with jolokia https default

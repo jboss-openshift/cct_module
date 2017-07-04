@@ -1,4 +1,4 @@
-@openshift @redhat-openjdk-18
+@redhat-openjdk-18
 Feature: Openshift OpenJDK Jolokia tests
 
   Scenario: Check Environment variable is correct

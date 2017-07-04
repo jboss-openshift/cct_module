@@ -1,4 +1,4 @@
-@openshift @redhat-sso-7/sso71-openshift
+@redhat-sso-7/sso71-openshift
 Feature: OpenShift SSO 7.1 tests
 
   Scenario: check for keycloak cache 7.1
