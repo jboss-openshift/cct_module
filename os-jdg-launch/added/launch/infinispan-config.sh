@@ -479,14 +479,19 @@ function configure_container_security() {
       local rolemapper="\
                         <$CONTAINER_SECURITY_ROLE_MAPPER $CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS/>"
     fi
+
     if [ -n "$CONTAINER_SECURITY_ROLES" ]; then
-      IFS=',' read -a roles <<< "$(find_env "CONTAINER_SECURITY_ROLES")"
-      if [ "${#roles[@]}" -ne "0" ]; then
-        for role in ${roles[@]}; do
-          local rolename=${role%=*}
-          local permissions=${role#*=}
-          local roles+="\
+      IFS=',' read -a roleslist <<< "$(find_env "CONTAINER_SECURITY_ROLES")"
+      if [ "${#roleslist[@]}" -ne "0" ]; then
+        rolecount=0
+        while [ $rolecount -lt ${#roleslist[@]} ]; do
+          role="${roleslist[$rolecount]}"
+
+          rolename=${role%=*}
+          permissions=${role#*=}
+          roles+="\
                         <role name=\"$rolename\" permissions=\"$permissions\"/>"
+          rolecount=$((rolecount+1))
         done
       fi
     fi
@@ -530,9 +535,14 @@ function configure_infinispan_endpoint() {
             fi
           fi
           if [ -n "$HOTROD_AUTHENTICATION" ]; then
+            local sasl_server_name="jdg-server"
+            if [ -n "$SASL_SERVER_NAME" ]; then
+              sasl_server_name="$SASL_SERVER_NAME"
+            fi
+
             authentication="\
               <authentication security-realm=\"ApplicationRealm\">\
-                  <sasl server-name=\"jdg-server\" mechanisms=\"DIGEST-MD5\" qop=\"auth\">\
+                  <sasl server-name=\"${sasl_server_name}\" mechanisms=\"DIGEST-MD5\" qop=\"auth\">\
                       <policy>\
                           <no-anonymous value=\"true\"/>\
                       </policy>\

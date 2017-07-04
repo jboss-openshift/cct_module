@@ -1,5 +1,7 @@
 # Openshift Datagrid launch script routines for configuring infinispan
 
+CACHE_CONTAINER_FILE=$JBOSS_HOME/bin/launch/cache-container.xml
+
 function clear_prefix() {
   local prefix="$1"
   unset ${prefix}_CACHE_MODE
@@ -174,8 +176,9 @@ function configure_infinispan_core() {
     locktimeout=" lock-timeout=\"$TRANSPORT_LOCK_TIMEOUT\""
   fi
   # We must always have a transport for a clustered cache otherwise it is treated as a local cache
+  
   transport="\
-                <transport$locktimeout/>"
+                <transport channel=\"cluster\" $locktimeout/>"
 
   if [ -z "$CACHE_NAMES" ]; then
     CACHE_NAMES="default,memcached"
@@ -193,7 +196,11 @@ function configure_infinispan_core() {
 
   configure_container_security
 
-  local containers="<cache-container name=\"clustered\" default-cache=\"$DEFAULT_CACHE\" $cache_container_start $cache_container_statistics>$transport $containersecurity <!-- ##INFINISPAN_CACHE## --></cache-container>"
+  local containers="<cache-container name=\"clustered\" default-cache=\"$DEFAULT_CACHE\" $cache_container_start $cache_container_statistics>"
+  containers="$containers $transport"
+  local cache_container_configuration=$(cat "${CACHE_CONTAINER_FILE}" | sed ':a;N;$!ba;s|\n|\\n|g')
+  containers="$containers ${cache_container_configuration}"
+  containers="$containers $containersecurity <!-- ##INFINISPAN_CACHE## --></cache-container>"
 
   sed -i "s|<!-- ##INFINISPAN_CORE## -->|$containers|" "$CONFIG_FILE"
 
@@ -329,7 +336,11 @@ function configure_cache() {
     cache="$cache mode=\"$CACHE_MODE\" $CACHE_QUEUE_SIZE $CACHE_QUEUE_FLUSH_INTERVAL $CACHE_REMOTE_TIMEOUT"
   fi
 
-  cache="$cache $CACHE_START $CACHE_BATCHING $CACHE_STATISTICS  $CACHE_OWNERS $CACHE_SEGMENTS $CACHE_L1_LIFESPAN>$eviction $expiration $jdbcstore $indexing $cachesecurity $partitionhandling $locking\
+  if [ "$CACHE_PROTOCOL_COMPATIBILITY" == "true" ]; then
+    compatibility="<compatibility enabled=\"true\"/>"
+  fi
+
+  cache="$cache $CACHE_START $CACHE_BATCHING $CACHE_STATISTICS  $CACHE_OWNERS $CACHE_SEGMENTS $CACHE_L1_LIFESPAN>$eviction $expiration $jdbcstore $indexing $cachesecurity $partitionhandling $locking $compatibility\
                 </$CACHE_TYPE-cache><!-- ##INFINISPAN_CACHE## -->"
 
   sed -i "s|<!-- ##INFINISPAN_CACHE## -->|$cache|" "$CONFIG_FILE"
@@ -473,14 +484,19 @@ function configure_container_security() {
       local rolemapper="\
                         <$CONTAINER_SECURITY_ROLE_MAPPER $CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS/>"
     fi
+
     if [ -n "$CONTAINER_SECURITY_ROLES" ]; then
-      IFS=',' read -a roles <<< "$(find_env "CONTAINER_SECURITY_ROLES")"
-      if [ "${#roles[@]}" -ne "0" ]; then
-        for role in ${roles[@]}; do
-          local rolename=${role%=*}
-          local permissions=${role#*=}
-          local roles+="\
+      IFS=',' read -a roleslist <<< "$(find_env "CONTAINER_SECURITY_ROLES")"
+      if [ "${#roleslist[@]}" -ne "0" ]; then
+        rolecount=0
+        while [ $rolecount -lt ${#roleslist[@]} ]; do
+          role="${roleslist[$rolecount]}"
+
+          rolename=${role%=*}
+          permissions=${role#*=}
+          roles+="\
                         <role name=\"$rolename\" permissions=\"$permissions\"/>"
+          rolecount=$((rolecount+1))
         done
       fi
     fi
@@ -520,13 +536,18 @@ function configure_infinispan_endpoint() {
               local topology_external_host=$(find_env "${HOTROD_SERVICE_NAME^^}_SERVICE_HOST")
               local topology_external_port=$(find_env "${HOTROD_SERVICE_NAME^^}_SERVICE_PORT" "11333")
               topology="\
-              <topology-state-transfer external-host=\"$topology_external_host\" external-port=\"$topology_external_port\"/>"
+              <topology-state-transfer lazy-retrieval=\"false\" external-host=\"$topology_external_host\" external-port=\"$topology_external_port\"/>"
             fi
           fi
           if [ -n "$HOTROD_AUTHENTICATION" ]; then
+            local sasl_server_name="jdg-server"
+            if [ -n "$SASL_SERVER_NAME" ]; then
+              sasl_server_name="$SASL_SERVER_NAME"
+            fi
+
             authentication="\
               <authentication security-realm=\"ApplicationRealm\">\
-                  <sasl server-name=\"jdg-server\" mechanisms=\"DIGEST-MD5\" qop=\"auth\">\
+                  <sasl server-name=\"${sasl_server_name}\" mechanisms=\"DIGEST-MD5\" qop=\"auth\">\
                       <policy>\
                           <no-anonymous value=\"true\"/>\
                       </policy>\
@@ -567,20 +588,8 @@ function configure_infinispan_endpoint() {
             rest_security_domain="security-realm=\"$REST_SECURITY_DOMAIN\""
           fi
 
-          # XXX: should probably rename this REST_AUTHENTICATION_METHOD
-          if [ -n "$REST_AUTHENTICATION_BASIC" ]; then
-            rest_authentication="<authentication $rest_security_domain auth-method=\"BASIC\"/>"
-          fi
-
-          # XXX: i wonder if this should be configuring a keystore or something
-          if [ -n "$REST_ENCRYPTION" ]; then
-            encryption="<encryption $rest_security_domain />"
-          fi
-
-          rest="\
-            <rest-connector socket-binding=\"rest\" cache-container=\"clustered\"> \
-               $rest_authentication \
-               $encryption \
+          rest="$rest \
+            <rest-connector name=\"rest\" socket-binding=\"rest\" cache-container=\"clustered\"> \
             </rest-connector>"
         ;;
       esac

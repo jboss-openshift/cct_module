@@ -1,0 +1,49 @@
+                <global-state/>
+                <distributed-cache-configuration name="transactional">
+                    <transaction mode="NON_XA" locking="PESSIMISTIC"/>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="async" mode="ASYNC"/>
+                <replicated-cache-configuration name="replicated"/>
+                <distributed-cache-configuration name="persistent-file-store">
+                    <file-store shared="false" fetch-state="true" passivation="false"/>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="indexed">
+                    <indexing index="LOCAL" auto-config="true"/>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="memory-bounded">
+                    <eviction strategy="LRU" size="10000000" type="MEMORY"/>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="persistent-file-store-passivation">
+                    <eviction strategy="LRU" size="10000"/>
+                    <file-store shared="false" fetch-state="true" passivation="true">
+                        <write-behind modification-queue-size="1024" thread-pool-size="1"/>
+                    </file-store>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="persistent-file-store-write-behind">
+                    <file-store shared="false" fetch-state="true" passivation="false">
+                        <write-behind modification-queue-size="1024" thread-pool-size="1"/>
+                    </file-store>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="persistent-leveldb-store">
+                    <leveldb-store shared="false" fetch-state="true" passivation="false"/>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="persistent-jdbc-string-keyed">
+                    <string-keyed-jdbc-store datasource="java:jboss/datasources/ExampleDS" fetch-state="true" preload="false" purge="false" shared="false" passivation="false">
+                        <string-keyed-table prefix="ISPN">
+                            <id-column name="id" type="VARCHAR"/>
+                            <data-column name="datum" type="BINARY"/>
+                            <timestamp-column name="version" type="BIGINT"/>
+                        </string-keyed-table>
+                        <write-behind modification-queue-size="1024" thread-pool-size="1"/>
+                    </string-keyed-jdbc-store>
+                </distributed-cache-configuration>
+                <distributed-cache-configuration name="persistent-jdbc-binary-keyed">
+                    <binary-keyed-jdbc-store datasource="java:jboss/datasources/ExampleDS" fetch-state="true" preload="true" purge="false" shared="false" passivation="false">
+                        <binary-keyed-table prefix="ISPN">
+                            <id-column name="id" type="VARCHAR"/>
+                            <data-column name="datum" type="BINARY"/>
+                            <timestamp-column name="version" type="BIGINT"/>
+                        </binary-keyed-table>
+                    </binary-keyed-jdbc-store>
+                </distributed-cache-configuration>
+
