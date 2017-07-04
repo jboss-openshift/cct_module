@@ -10,7 +10,7 @@ Feature: Openshift common tests
        | /Config/ExposedPorts    | 8778/tcp    |
 
   # CLOUD-1017: Option to enable script debugging
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @kieserver @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
   Scenario: Check that script debugging (set -x) can be enabled
     When container is started with env
        | variable     | value |
@@ -45,7 +45,7 @@ Feature: Openshift common tests
      And run sh -c 'test -L /usr/bin/xjc && echo "yes" || echo "no"' in container and immediately check its output for yes
      And run sh -c 'test -L /usr/bin/wsimport && echo "yes" || echo "no"' in container and immediately check its output for yes
 
-  @kieserver
+  @jboss-kieserver-6
   Scenario: CLOUD-892, Container should fail if the KIE_SERVER_USER is not created
     When container is started with env
        | variable 	 	| value                      |
@@ -55,7 +55,7 @@ Feature: Openshift common tests
     And container log should contain Failed to create the user openshift
     And container log should contain Exiting...
 
-  @kieserver @jboss-decisionserver-6 @jboss-processserver-6
+  @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: CLOUD-582, logs should not contain clustering warnings for kieserver
     When container is ready
     Then container log should not contain WARNING: Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined
