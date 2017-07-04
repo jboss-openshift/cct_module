@@ -1,7 +1,7 @@
 @openshift
 Feature: Openshift EAP common tests (EAP and EAP derived images)
 
-  @jboss-eap-6/eap64-openshift @decisionserver @processserver
+  @jboss-eap-6/eap64-openshift @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: Management interface is secured and JAVA_OPTS is modified
     When container is started with env
        | variable                    | value             |
@@ -34,7 +34,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
   #     works.  Note too that http interface is only bound to localhost.
   #     setting to @ignore for now.
   # For EAP 6.4 and derived images
-  @ignore @jboss-eap-6/eap64-openshift @decisionserver @processserver
+  @ignore @jboss-eap-6/eap64-openshift @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: Management interface is secured (no warning message)
     When container is ready
     # The below should complete faster than 'should not contain' alone
@@ -56,21 +56,21 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then container log should contain WFLYSRV0025
      And available container log should not contain No security realm defined for http management service; all access will be unrestricted.
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @sso
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @sso
   Scenario: Java 1.8 is installed and set as default one
     When container is ready
     Then run java -version in container and check its output for openjdk version "1.8.0
     Then run javac -version in container and check its output for javac 1.8.0
 
   # test readinessProbe and livenessProbe (CLOUD-612)
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @kieserver
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @kieserver
   # @sso excluded at the moment - needs to be investigated
   Scenario: readinessProbe runs successfully
     When container is ready
     Then run /opt/eap/bin/readinessProbe.sh in container once
     Then run /opt/eap/bin/livenessProbe.sh in container once
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @sso
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @sso
   # https://issues.jboss.org/browse/CLOUD-204
   Scenario: Check if kube ping protocol is used
     When container is ready
@@ -78,7 +78,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: Check if jolokia is configured correctly
     When container is ready
     Then container log should contain -javaagent:/opt/jolokia/jolokia.jar=config=/opt/jolokia/etc/jolokia.properties
@@ -97,7 +97,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then files at /opt/eap/modules/system/layers/openshift/org/jgroups/main should have count of 2
 
   # Disabling @sso for now - needs to be adjusted for EAP 7
-  @jboss-eap-6/eap64-openshift @decisionserver @processserver @jboss-datagrid-6/datagrid65-openshift
+  @jboss-eap-6/eap64-openshift @jboss-decisionserver-6 @jboss-processserver-6 @jboss-datagrid-6/datagrid65-openshift
   Scenario: Ensure transaction node name is set and we use urandom
     When container is ready
     Then container log should contain JBAS015874:
@@ -125,7 +125,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
      And all files under /opt/eap are writeable by current user
      And all files under /deployments are writeable by current user
 
-  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @jboss-datavirt-6 @jboss-datagrid-6 @jboss-datagrid-7 @processserver @decisionserver
+  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @jboss-datavirt-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-processserver-6 @jboss-decisionserver-6
   Scenario: HTTP proxy as java properties (CLOUD-865) and disable web console (CLOUD-1040)
     When container is started with env
       | variable   | value                 |

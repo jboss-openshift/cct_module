@@ -1,4 +1,4 @@
-@openshift @decisionserver_6_3
+@openshift @jboss-decisionserver-6/decisionserver63-openshift
 Feature: OpenShift Decision Server 6.3 basic tests
   
   Scenario: Check for add-user failures

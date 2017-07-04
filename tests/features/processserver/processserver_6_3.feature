@@ -1,4 +1,4 @@
-@openshift @processserver_6_3
+@openshift @jboss-processserver-6/processserver63-openshift
 Feature: OpenShift Process Server 6.3 basic tests
   
   Scenario: Check for add-user failures
