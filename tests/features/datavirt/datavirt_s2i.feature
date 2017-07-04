@@ -1,4 +1,4 @@
-@openshift @datavirt_6_3
+@openshift @jboss-datavirt-6/datavirt63-openshift
 Feature: Openshift JDV s2i tests
   Scenario: Test if VDBs,RAs, and datasources are deployed
     Given s2i build https://github.com/jboss-openshift/openshift-quickstarts from datavirt/dynamicvdb-datafederation/app with env

@@ -1,4 +1,4 @@
-@openshift @datavirt_6_3
+@openshift @jboss-datavirt-6/datavirt63-openshift
 Feature: OpenShift Datavirt tests
 
   Scenario: check for ModeShape datasource
