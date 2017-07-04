@@ -1,4 +1,4 @@
-@webserver_tomcat7 @webserver_tomcat8
+@jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
 Feature: Openshift tomcat s2i tests
   # TODO: further testing: /opt/webservers/logs/localhost_access_log.2015-06-05.txt (replace date) should exist after a visit
   Scenario: custom configuration deployment

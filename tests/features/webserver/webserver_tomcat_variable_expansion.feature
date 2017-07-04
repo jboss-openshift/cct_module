@@ -1,13 +1,13 @@
 
 Feature: Check correct variable expansion used
-  @webserver_tomcat7 @webserver_tomcat8
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
   Scenario: Set TOMCAT_SHUTDOWN
     When container is started with env
       | variable           | value                            |
       | TOMCAT_SHUTDOWN    | tombrady12                       |
     Then XML file /opt/webserver/conf/server.xml should contain value tombrady12 on XPath //Server/@shutdown
 
-  @webserver_tomcat7 @webserver_tomcat8
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
   Scenario: ErrorValve
     When container is started with env
       | variable           | value                            |
@@ -15,7 +15,7 @@ Feature: Check correct variable expansion used
     Then XML file /opt/webserver/conf/server.xml should contain value true on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.ErrorReportValve']/@showReport
     Then XML file /opt/webserver/conf/server.xml should contain value true on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.ErrorReportValve']/@showServerInfo
 
-  @webserver_tomcat7
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift
   Scenario: Set JWS_ADMIN_USERNAME to null
     When container is started with env
       | variable           | value                            |
@@ -23,7 +23,7 @@ Feature: Check correct variable expansion used
       | JWS_ADMIN_USERNAME |                                  |
     Then XML file /opt/webserver/conf/tomcat-users.xml should have 1 elements on XPath //user[@username='jwsadmin']
 
-  @webserver_tomcat8
+  @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
   Scenario: Set JWS_ADMIN_USERNAME to null
     Given XML namespaces
       | prefix | url                          |
@@ -34,7 +34,7 @@ Feature: Check correct variable expansion used
       | JWS_ADMIN_USERNAME |                                  |
     Then XML file /opt/webserver/conf/tomcat-users.xml should have 1 elements on XPath //ns:user[@username='jwsadmin']
 
-  @webserver_tomcat7 @webserver_tomcat8
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
   Scenario: Set JWS_REALM_DATASOURCE_NAME to null
     When container is started with env
       | variable                  | value                    |
@@ -46,7 +46,7 @@ Feature: Check correct variable expansion used
       | JWS_REALM_DATASOURCE_NAME |                          |
     Then XML file /opt/webserver/conf/server.xml should have 1 elements on XPath /Server/Service/Engine/Realm/Realm[@userTable="jws-realm-usertable" and @userNameCol="jws-realm-username-col" and @userCredCol="jws-realm-usercred-col" and @userRoleTable="jws-realm-userrole-table" and @roleNameCol="jws-realm-rolename-col" and @dataSourceName="jdbc/auth"]
 
-  @webserver_tomcat7 @webserver_tomcat8
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
   Scenario: Test setting ARTIFACT_DIR to null
     Given s2i build https://github.com/jboss-openshift/openshift-quickstarts.git from tomcat-websocket-chat using 1.1
        | variable     | value       |
