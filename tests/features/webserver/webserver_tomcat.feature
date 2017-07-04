@@ -1,4 +1,4 @@
-@webserver_tomcat7 @webserver_tomcat8
+@jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
 Feature: Openshift tomcat basic tests
 
   Scenario: Ensure that the default ROOT web app is NOT running
