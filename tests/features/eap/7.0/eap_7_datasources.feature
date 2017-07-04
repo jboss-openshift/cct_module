@@ -1,4 +1,4 @@
-@openshift @eap_7_0
+@openshift @jboss-eap-7/eap70-openshift
 Feature: EAP Openshift datasources
   Scenario: check mysql datasource
     Given XML namespaces

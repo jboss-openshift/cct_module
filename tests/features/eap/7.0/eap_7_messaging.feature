@@ -1,4 +1,4 @@
-@openshift @eap_7_0
+@openshift @jboss-eap-7/eap70-openshift
 Feature: Openshift EAP Messaging Tests
 
   Scenario: deploys the helloworld-mdb example, then checks if it's deployed properly.

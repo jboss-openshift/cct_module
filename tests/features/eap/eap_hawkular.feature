@@ -1,4 +1,4 @@
-@openshift @eap
+@jboss-eap-7 @jboss-eap-6
 Feature: OpenShift EAP Hawkular agent tests
 
    Scenario: Check default Hawkular
