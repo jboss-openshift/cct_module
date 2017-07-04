@@ -1,4 +1,4 @@
-@openshift @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @datagrid @datavirt
+@openshift @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @jboss-datagrid-6 @jboss-datagrid-7 @datavirt
 Feature: Openshift OpenJDK GC tests
 
   Scenario: Check default GC configuration

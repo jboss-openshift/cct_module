@@ -1,4 +1,4 @@
-@openshift @datagrid
+@openshift @jboss-datagrid-6 @jboss-datagrid-7
 Feature: Check correct variable expansion used
 
   Scenario: Set DEFAULT_CACHE to null

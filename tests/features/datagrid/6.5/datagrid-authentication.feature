@@ -1,4 +1,4 @@
-@openshift @datagrid_6_5
+@openshift @jboss-datagrid-6/datagrid65-openshift
 Feature: JDG OpenShift simple authentication
 
   Scenario: check username, password and roles
