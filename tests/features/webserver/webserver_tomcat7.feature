@@ -1,4 +1,4 @@
-@openshift
+
 Feature: Openshift Tomcat 7 tests
 
   @webserver_tomcat7_3_0

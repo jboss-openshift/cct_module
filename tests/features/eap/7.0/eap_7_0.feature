@@ -1,4 +1,4 @@
-@openshift @jboss-eap-7/eap70-openshift
+@jboss-eap-7/eap70-openshift
 Feature: Openshift EAP 7.0 basic tests
 
   # https://issues.jboss.org/browse/CLOUD-180

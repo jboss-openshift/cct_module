@@ -1,4 +1,4 @@
-@openshift
+
 Feature: Openshift JDG jgroups secure
 
   @jboss-datagrid-6/datagrid65-openshift

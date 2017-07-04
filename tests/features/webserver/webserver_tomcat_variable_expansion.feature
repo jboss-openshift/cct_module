@@ -1,4 +1,4 @@
-@openshift
+
 Feature: Check correct variable expansion used
   @webserver_tomcat7 @webserver_tomcat8
   Scenario: Set TOMCAT_SHUTDOWN

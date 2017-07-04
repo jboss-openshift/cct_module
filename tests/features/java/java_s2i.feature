@@ -1,4 +1,4 @@
-@openshift @redhat-openjdk-18
+@redhat-openjdk-18
 Feature: Openshift OpenJDK S2I tests
 # NOTE: these tests should be usable with the other images once we have refactored the JDK scripts.
 # These builds do not actually run maven. This is important, because the proxy

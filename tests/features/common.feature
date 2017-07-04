@@ -1,4 +1,4 @@
-@openshift
+
 Feature: Openshift common tests
 
   @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7

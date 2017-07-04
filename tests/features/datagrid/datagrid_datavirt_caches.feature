@@ -1,4 +1,4 @@
-@openshift @jboss-datagrid-6/datagrid65-openshift
+@jboss-datagrid-6/datagrid65-openshift
 Feature: Openshift JDG JDV caches
   Scenario: default jdv caches
     When container is started with env

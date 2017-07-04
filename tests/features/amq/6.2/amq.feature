@@ -1,4 +1,4 @@
-@openshift @jboss-amq-6/amq62-openshift
+@jboss-amq-6/amq62-openshift
 Feature: Openshift AMQ tests
 
   Scenario: check that container is started correctly

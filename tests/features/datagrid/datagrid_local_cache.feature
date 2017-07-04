@@ -1,4 +1,4 @@
-@openshift @jboss-datagrid-6 @jboss-datagrid-7
+@jboss-datagrid-6 @jboss-datagrid-7
 Feature: Openshift JDG local-cache tests
 
   Scenario: local-cache common variables test

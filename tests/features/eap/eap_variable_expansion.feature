@@ -1,4 +1,4 @@
-@openshift
+
 Feature: Check correct variable expansion used
   Scenario: Set EAP_ADMIN_USERNAME to null
     When container is started with env

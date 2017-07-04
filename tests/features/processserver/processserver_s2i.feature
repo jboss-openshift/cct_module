@@ -1,4 +1,4 @@
-@openshift @jboss-processserver-6
+@jboss-processserver-6
 Feature: Openshift Process Server s2i tests
 
   Scenario: deploys the library example, then checks if it's deployed.
