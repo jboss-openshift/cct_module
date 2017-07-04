@@ -1,4 +1,4 @@
-@openshift @datagrid_6_5
+@openshift @jboss-datagrid-6/datagrid65-openshift
 Feature: Openshift JDG distributed-cache tests
 
   Scenario: distributed-cache common variables test

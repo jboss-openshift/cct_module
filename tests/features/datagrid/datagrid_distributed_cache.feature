@@ -1,4 +1,4 @@
-@openshift @datagrid
+@openshift @jboss-datagrid-6 @jboss-datagrid-7
 Feature: Openshift JDG distributed-cache tests
 
   Scenario: distributed-cache default caches

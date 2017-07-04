@@ -97,7 +97,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then files at /opt/eap/modules/system/layers/openshift/org/jgroups/main should have count of 2
 
   # Disabling @sso for now - needs to be adjusted for EAP 7
-  @jboss-eap-6/eap64-openshift @decisionserver @processserver @datagrid_6_5
+  @jboss-eap-6/eap64-openshift @decisionserver @processserver @jboss-datagrid-6/datagrid65-openshift
   Scenario: Ensure transaction node name is set and we use urandom
     When container is ready
     Then container log should contain JBAS015874:
@@ -125,7 +125,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
      And all files under /opt/eap are writeable by current user
      And all files under /deployments are writeable by current user
 
-  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @datavirt @datagrid @processserver @decisionserver
+  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @datavirt @jboss-datagrid-6 @jboss-datagrid-7 @processserver @decisionserver
   Scenario: HTTP proxy as java properties (CLOUD-865) and disable web console (CLOUD-1040)
     When container is started with env
       | variable   | value                 |

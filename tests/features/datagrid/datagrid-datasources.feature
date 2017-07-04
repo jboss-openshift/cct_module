@@ -1,4 +1,4 @@
-@openshift @datagrid
+@openshift @jboss-datagrid-6 @jboss-datagrid-7
 Feature: JDG OpenShift datasources
 
   Scenario: check MySQL datasource

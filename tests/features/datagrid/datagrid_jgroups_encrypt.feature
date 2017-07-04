@@ -1,7 +1,7 @@
 @openshift
 Feature: Openshift JDG jgroups secure
 
-  @datagrid_6_5
+  @jboss-datagrid-6/datagrid65-openshift
   Scenario: jgroups-encrypt
     Given XML namespaces
      | prefix | url                            |
@@ -23,7 +23,7 @@ Feature: Openshift JDG jgroups secure
      # Make sure the SYM_ENCRYPT protocol is specified before pbcast.NAKACK2 for tcp stack
      And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value pbcast.NAKACK2 on XPath //ns:stack[@name='tcp']/ns:protocol[@type='ENCRYPT']/following-sibling::*[1]/@type
 
-  @datagrid_7_1
+  @jboss-datagrid-7/datagrid71-openshift
   Scenario: jgroups-encrypt
     When container is started with env
        | variable                                     | value                                  |
@@ -42,14 +42,14 @@ Feature: Openshift JDG jgroups secure
      # Make sure the SYM_ENCRYPT protocol is specified before pbcast.NAKACK2 for tcp stack
      And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value pbcast.NAKACK2 on XPath //*[local-name()='stack'][@name='tcp']/*[local-name()='protocol'][@type='SYM_ENCRYPT']/following-sibling::*[1]/@type
 
-  @datagrid
+  @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: CLOUD-336 Check if jgroups is secure
     When container is started with env
        | variable                 | value    |
        | JGROUPS_CLUSTER_PASSWORD | asdfasdf |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='AUTH']
 
-  @datagrid
+  @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check jgroups encryption does not create invalid configuration with missing name
     When container is started with env
        | variable                                     | value                                  |
@@ -59,7 +59,7 @@ Feature: Openshift JDG jgroups secure
        | JGROUPS_ENCRYPT_PASSWORD                     | mykeystorepass                         |
     Then available container log should contain WARNING! Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
 
-  @datagrid
+  @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check jgroups encryption does not create invalid configuration with missing password
     When container is started with env
        | variable                                     | value                                  |

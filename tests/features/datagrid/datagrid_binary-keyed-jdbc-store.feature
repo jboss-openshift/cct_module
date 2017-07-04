@@ -1,4 +1,4 @@
-@openshift @datagrid
+@openshift @jboss-datagrid-6 @jboss-datagrid-7
 Feature: Openshift JDG binary-keyed-jdbc-store tests
   Scenario: binary-keyed-jdbc-store
     When container is started with env

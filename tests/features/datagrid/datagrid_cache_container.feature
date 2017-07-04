@@ -1,4 +1,4 @@
- @openshift @datagrid
+ @openshift @jboss-datagrid-6 @jboss-datagrid-7
  Feature: Openshift JDG cache
 
   Scenario: jdg cache container eager start
