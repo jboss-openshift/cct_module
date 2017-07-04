@@ -1,4 +1,4 @@
-@openshift @eap_6_4
+@openshift @jboss-eap-6/eap64-openshift
 Feature: Openshift EAP s2i tests
 
   # test incremental builds; handles custom module test; custom config test

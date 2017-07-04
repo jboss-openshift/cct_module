@@ -1,4 +1,4 @@
-@openshift @eap_6_4 @eap_7_0 @webserver_tomcat7 @webserver_tomcat8
+@openshift @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @webserver_tomcat7 @webserver_tomcat8
 Feature: Openshift S2I tests
 # NOTE: these builds does not actually run maven. This is important, because the proxy
 # options supplied do not specify a valid HTTP proxy.

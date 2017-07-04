@@ -1,4 +1,4 @@
-@openshift @eap_6_4
+@openshift @jboss-eap-6/eap64-openshift
 Feature: Check correct variable expansion used
   Scenario: Set HTTPS_NAME to null
     Given XML namespaces
