@@ -87,6 +87,6 @@ class DmrProbe(BatchingProbe):
 
         if response.status_code != 200:
             self.logger.error("Probe request failed.  Status code: %s", response.status_code)
-            raise Exception("Probe request failed, code: " + str(response.status_code))
+            raise Exception("Probe request failed, code: " + str(response.status_code) + str(url) + str(request) + str(response.json(object_pairs_hook = OrderedDict)))
 
         return response.json(object_pairs_hook = OrderedDict)

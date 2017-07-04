@@ -34,9 +34,9 @@ Feature: Openshift JDG string-keyed-jdbc-store tests
        | DEFAULT_DATA_TYPE                                 | BINARY                           |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value java:jboss/datasources/ExampleDS on XPath //*[local-name()='string-keyed-jdbc-store']/@datasource
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value JDG on XPath //*[local-name()='string-keyed-jdbc-store']/*[local-name()='string-keyed-table']/@prefix
-    Then file /opt/datagrid/standalone/configuration/clustered-openshift.xml should not contain id-column
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 0 elements on XPath //*[local-name()='string-keyed-table'][@prefix='JDG']/*[local-name()='id-column']
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value BINARY on XPath //*[local-name()='string-keyed-jdbc-store']/*[local-name()='string-keyed-table']/*[local-name()='data-column']/@type
-    Then file /opt/datagrid/standalone/configuration/clustered-openshift.xml should not contain timestamp-column
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 0 elements on XPath //*[local-name()='string-keyed-table'][@prefix='JDG']/*[local-name()='timestamp-column']
 
   Scenario: string-keyed-jdbc-store with mysql
     When container is started with env

@@ -164,9 +164,9 @@
         </subsystem>
         <subsystem xmlns="urn:infinispan:server:jgroups:8.0">
             <channels default="cluster">
-                <channel name="cluster"/>
+                <channel name="cluster" stack="tcp"/>
             </channels>
-            <stacks default="${jboss.default.jgroups.stack:udp}">
+            <stacks>
                 <stack name="udp">
                     <transport type="UDP" socket-binding="jgroups-udp"/>
                     <protocol type="openshift.KUBE_PING"/>
@@ -295,7 +295,7 @@
     <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
         <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:9990}"/>
         <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:9993}"/>
-        <socket-binding name="hotrod-internal" port="11223"/>
+        <socket-binding name="hotrod-internal" port="11222"/>
         <socket-binding name="hotrod-external" port="11333"/>
         <socket-binding name="jgroups-mping" port="0" multicast-address="${jboss.default.multicast.address:234.99.54.14}" multicast-port="45700"/>
         <socket-binding name="jgroups-tcp" port="7600"/>
@@ -309,7 +309,7 @@
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
         <outbound-socket-binding name="remote-store-hotrod-server">
-            <remote-destination host="remote-host" port="11222"/>
+            <remote-destination host="remote-host" port="11333"/>
         </outbound-socket-binding>
         <outbound-socket-binding name="remote-store-rest-server">
             <remote-destination host="remote-host" port="8080"/>
