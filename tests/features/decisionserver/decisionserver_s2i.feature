@@ -1,4 +1,4 @@
-@openshift @decisionserver
+@openshift @jboss-decisionserver-6
 Feature: Openshift Decision Server s2i tests
 
   Scenario: deploys the hellorules example, then checks if it's deployed.

@@ -1,7 +1,7 @@
 @openshift
 Feature: Openshift common tests
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check jolokia port is available
     When container is ready
     Then check that port 8778 is open
@@ -10,7 +10,7 @@ Feature: Openshift common tests
        | /Config/ExposedPorts    | 8778/tcp    |
 
   # CLOUD-1017: Option to enable script debugging
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @kieserver @decisionserver @processserver @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @sso
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @kieserver @jboss-decisionserver-6 @jboss-processserver-6 @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @sso
   Scenario: Check that script debugging (set -x) can be enabled
     When container is started with env
        | variable     | value |
@@ -33,7 +33,7 @@ Feature: Openshift common tests
     Then container log should contain jboss.node.name = abcdefghijk
 
   # https://issues.jboss.org/browse/CLOUD-912
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6
   Scenario: Check that java binaries are linked properly
     When container is ready
     Then run sh -c 'test -L /usr/bin/java && echo "yes" || echo "no"' in container and immediately check its output for yes
@@ -55,7 +55,7 @@ Feature: Openshift common tests
     And container log should contain Failed to create the user openshift
     And container log should contain Exiting...
 
-  @kieserver @decisionserver @processserver
+  @kieserver @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: CLOUD-582, logs should not contain clustering warnings for kieserver
     When container is ready
     Then container log should not contain WARNING: Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined
