@@ -1,4 +1,4 @@
-@openshift @amq
+@openshift @jboss-amq-6
 Feature: Openshift AMQ tests
 
   @ci
