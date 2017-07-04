@@ -1,4 +1,4 @@
-@openshift @amq
+@openshift @jboss-amq-6
 Feature: Openshift OpenJDK GC tests
 
   Scenario: Check default GC configuration
