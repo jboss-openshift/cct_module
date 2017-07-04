@@ -118,14 +118,14 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then container log should contain VM Arguments:
      And available container log should contain -Djboss.modules.system.pkgs=org.jboss.logmanager,jdk.nashorn.api,org.foo.bar
 
-  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @datavirt
+  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @jboss-datavirt-6
   Scenario: check ownership when started as alternative UID
     When container is started as uid 26458
     Then run id -u in container and check its output contains 26458
      And all files under /opt/eap are writeable by current user
      And all files under /deployments are writeable by current user
 
-  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @datavirt @jboss-datagrid-6 @jboss-datagrid-7 @processserver @decisionserver
+  @jboss-eap-7/eap70-openshift @jboss-eap-6/eap64-openshift @sso @jboss-datavirt-6 @jboss-datagrid-6 @jboss-datagrid-7 @processserver @decisionserver
   Scenario: HTTP proxy as java properties (CLOUD-865) and disable web console (CLOUD-1040)
     When container is started with env
       | variable   | value                 |

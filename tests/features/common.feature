@@ -10,7 +10,7 @@ Feature: Openshift common tests
        | /Config/ExposedPorts    | 8778/tcp    |
 
   # CLOUD-1017: Option to enable script debugging
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @kieserver @decisionserver @processserver @webserver_tomcat7 @webserver_tomcat8 @amq @jboss-datagrid-6 @jboss-datagrid-7 @datavirt @sso
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @kieserver @decisionserver @processserver @webserver_tomcat7 @webserver_tomcat8 @amq @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @sso
   Scenario: Check that script debugging (set -x) can be enabled
     When container is started with env
        | variable     | value |
@@ -33,7 +33,7 @@ Feature: Openshift common tests
     Then container log should contain jboss.node.name = abcdefghijk
 
   # https://issues.jboss.org/browse/CLOUD-912
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @webserver_tomcat7 @webserver_tomcat8 @amq @jboss-datagrid-6 @jboss-datagrid-7 @datavirt
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @decisionserver @processserver @webserver_tomcat7 @webserver_tomcat8 @amq @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6
   Scenario: Check that java binaries are linked properly
     When container is ready
     Then run sh -c 'test -L /usr/bin/java && echo "yes" || echo "no"' in container and immediately check its output for yes
