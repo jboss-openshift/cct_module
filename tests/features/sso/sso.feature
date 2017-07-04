@@ -1,4 +1,4 @@
-@openshift @sso
+@openshift @redhat-sso-7
 Feature: OpenShift SSO tests
 
   Scenario: Test console is available

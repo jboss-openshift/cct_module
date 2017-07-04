@@ -10,7 +10,7 @@ Feature: Openshift common tests
        | /Config/ExposedPorts    | 8778/tcp    |
 
   # CLOUD-1017: Option to enable script debugging
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @kieserver @jboss-decisionserver-6 @jboss-processserver-6 @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @sso
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @kieserver @jboss-decisionserver-6 @jboss-processserver-6 @webserver_tomcat7 @webserver_tomcat8 @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
   Scenario: Check that script debugging (set -x) can be enabled
     When container is started with env
        | variable     | value |
