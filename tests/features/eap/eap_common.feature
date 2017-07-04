@@ -63,7 +63,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then run javac -version in container and check its output for javac 1.8.0
 
   # test readinessProbe and livenessProbe (CLOUD-612)
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @kieserver
+  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @jboss-kieserver-6
   # @redhat-sso-7 excluded at the moment - needs to be investigated
   Scenario: readinessProbe runs successfully
     When container is ready
