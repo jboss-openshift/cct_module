@@ -1,4 +1,4 @@
-@jboss-eap-7/eap70-openshift
+@jboss-eap-7
 Feature: Openshift EAP jgroups secure
   Scenario: jgroups-encrypt
     When container is started with env

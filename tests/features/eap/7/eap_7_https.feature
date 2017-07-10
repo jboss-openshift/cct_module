@@ -1,4 +1,4 @@
-@jboss-eap-7/eap70-openshift
+@jboss-eap-7
 Feature: Check HTTPS configuration
 
   Scenario: Configure HTTPS

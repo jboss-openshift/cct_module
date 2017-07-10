@@ -1,4 +1,4 @@
-@jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+@jboss-eap-6/eap64-openshift @jboss-eap-7
 Feature: Openshift EAP s2i tests
   # Always force IPv4 (CLOUD-188)
   # Append user-supplied arguments (CLOUD-412)

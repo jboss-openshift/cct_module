@@ -1,7 +1,7 @@
 
 Feature: Openshift common tests
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check jolokia port is available
     When container is ready
     Then check that port 8778 is open
@@ -10,7 +10,7 @@ Feature: Openshift common tests
        | /Config/ExposedPorts    | 8778/tcp    |
 
   # CLOUD-1017: Option to enable script debugging
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
   Scenario: Check that script debugging (set -x) can be enabled
     When container is started with env
        | variable     | value |
@@ -18,14 +18,14 @@ Feature: Openshift common tests
     Then container log should contain + echo 'Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed'
 
   # CLOUD-427: we need to ensure jboss.node.name doesn't go beyond 23 chars
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-datagrid-6 @jboss-datagrid-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check that long node names are truncated to 23 characters
     When container is started with env
        | variable  | value                      |
        | NODE_NAME | abcdefghijklmnopqrstuvwxyz |
     Then container log should contain jboss.node.name = defghijklmnopqrstuvwxyz
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-datagrid-6 @jboss-datagrid-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check that node name is used
     When container is started with env
        | variable  | value                      |
@@ -33,7 +33,7 @@ Feature: Openshift common tests
     Then container log should contain jboss.node.name = abcdefghijk
 
   # https://issues.jboss.org/browse/CLOUD-912
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6
   Scenario: Check that java binaries are linked properly
     When container is ready
     Then run sh -c 'test -L /usr/bin/java && echo "yes" || echo "no"' in container and immediately check its output for yes
