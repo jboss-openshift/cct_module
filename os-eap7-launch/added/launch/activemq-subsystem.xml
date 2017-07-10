@@ -15,8 +15,8 @@
             <param name="direct-deliver" value="false"/>
         </http-acceptor>
         <in-vm-acceptor name="in-vm" server-id="0"/>
-        <broadcast-group name="bg-group1" connectors="http-connector" jgroups-stack="tcp" jgroups-channel="activemq-cluster"/>
-        <discovery-group name="dg-group1" jgroups-stack="tcp" jgroups-channel="activemq-cluster"/>
+        <broadcast-group name="bg-group1" connectors="http-connector" jgroups-channel="ee"/>
+        <discovery-group name="dg-group1" jgroups-channel="ee"/>
         <cluster-connection name="my-cluster" address="jms" connector-name="http-connector" discovery-group="dg-group1"/>
         <jms-queue name="ExpiryQueue" entries="java:/jms/queue/ExpiryQueue"/>
         <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>

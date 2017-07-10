@@ -7,7 +7,7 @@ Feature: Check correct variable expansion used
       | EAP_ADMIN_USERNAME |                                  |
     Then container log should contain Added user 'eapadmin' to file '/opt/eap/standalone/configuration/mgmt-users.properties'
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Set ADMIN_USERNAME to null
     When container is started with env
       | variable           | value                            |
@@ -15,7 +15,7 @@ Feature: Check correct variable expansion used
       | ADMIN_USERNAME     |                                  |
     Then container log should contain Added user 'eapadmin' to file '/opt/eap/standalone/configuration/mgmt-users.properties'
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Set ADMIN_PASSWORD to null
     When container is started with env
       | variable           | value                            |
@@ -23,7 +23,7 @@ Feature: Check correct variable expansion used
       | ADMIN_PASSWORD     |                                  |
     Then container log should contain Added user 'eapadmin' to file '/opt/eap/standalone/configuration/mgmt-users.properties'
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Set NODE_NAME to null
     When container is started with env
       | variable           | value                            |
@@ -31,7 +31,7 @@ Feature: Check correct variable expansion used
       | NODE_NAME          |                                  |
     Then container log should contain jboss.node.name = eap-test-node-name
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Test setting DATA_DIR to null
     Given s2i build https://github.com/jboss-openshift/openshift-examples from helloworld
        | variable    | value         |
@@ -41,7 +41,7 @@ Feature: Check correct variable expansion used
     And run ls /opt/eap/standalone/data/standalone-openshift.xml in container and check its output for /opt/eap/standalone/data/standalone-openshift.xml
 
   # https://issues.jboss.org/browse/CLOUD-1168
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Test DATA_DIR with DATA_DIR and APP_DATADIR set, DATA_DIR is not existing
     Given s2i build https://github.com/jboss-openshift/openshift-examples from helloworld
        | variable    | value                         |
@@ -51,7 +51,7 @@ Feature: Check correct variable expansion used
      And run ls /tmp/test/module.xml in container and check its output for /tmp/test/module.xml
 
   # https://issues.jboss.org/browse/CLOUD-1168
-  @jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Test DATA_DIR with DATA_DIR and APP_DATADIR set, DATA_DIR is existing and not owned by the user
     Given s2i build https://github.com/jboss-openshift/openshift-examples from helloworld
        | variable    | value                         |

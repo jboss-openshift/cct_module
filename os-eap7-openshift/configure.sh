@@ -9,6 +9,3 @@ ADDED_DIR=${SCRIPT_DIR}/added
 # function correctly; therefore this script package must be applied
 # after any other that modify this file.
 cat ${ADDED_DIR}/standalone.conf >> $JBOSS_HOME/bin/standalone.conf
-
-# Add custom configuration file
-cp -p ${ADDED_DIR}/standalone-openshift.xml $JBOSS_HOME/standalone/configuration/

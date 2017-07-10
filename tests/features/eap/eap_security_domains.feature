@@ -1,4 +1,4 @@
-@jboss-eap-6/eap64-openshift @jboss-eap-7/eap70-openshift
+@jboss-eap-6/eap64-openshift @jboss-eap-7
 Feature: EAP Openshift security domains
 
   Scenario: check security-domain configured
