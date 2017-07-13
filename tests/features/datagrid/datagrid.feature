@@ -38,3 +38,4 @@ Feature: Openshift DataGrid tests
     When container is ready
     Then container log should match regex .*Data Grid.*started.*
      And container log should not contain started (with errors)
+     And file /opt/datagrid/standalone/configuration/standalone-openshift.xml should not exist
