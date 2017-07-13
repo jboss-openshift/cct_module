@@ -12,6 +12,7 @@ CONFIGURE_SCRIPTS=(
   $JWS_HOME/bin/launch/valve.sh
   $JWS_HOME/bin/launch/resource.sh
   $JWS_HOME/bin/launch/secure-mgmt-console.sh
+  $JWS_HOME/bin/launch/http.sh
   $JWS_HOME/bin/launch/https.sh
   $JWS_HOME/bin/launch/realm.sh
   $JWS_HOME/bin/launch/catalina.sh
