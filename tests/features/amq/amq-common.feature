@@ -12,6 +12,7 @@ Feature: Openshift AMQ tests
        | variable                  | value           |
        | AMQ_QUEUES                | one,two,three   |
     Then XML file /opt/amq/conf/activemq.xml should have 3 elements on XPath //amq:destinations/amq:queue
+    And XML file /opt/amq/conf/activemq.xml should contain value 1mb on XPath //*[local-name()='policyEntry']/@memoryLimit
 
   Scenario: check topic configuration
     Given XML namespace amq:http://activemq.apache.org/schema/core
@@ -181,4 +182,13 @@ Feature: Openshift AMQ tests
        | variable                  | value           |
        | NO_PROXY                  | patriots.com    |
     Then file /opt/amq/bin/env should contain -Dhttp.nonProxyHosts=\"patriots.com\"
+  
+  Scenario: check queue memory limit
+    Given XML namespace amq:http://activemq.apache.org/schema/core
+    When container is started with env
+       | variable                  | value           |
+       | AMQ_QUEUES                | one,two,three   |
+       | AMQ_QUEUE_MEMORY_LIMIT    | 2mb             |
+    Then XML file /opt/amq/conf/activemq.xml should have 3 elements on XPath //amq:destinations/amq:queue
+    And XML file /opt/amq/conf/activemq.xml should contain value 2mb on XPath //*[local-name()='policyEntry']/@memoryLimit
 
