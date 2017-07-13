@@ -80,6 +80,8 @@ function prepareEnv() {
   unset ENCRYPTION_REQUIRE_SSL_CLIENT_AUTH
   unset MEMCACHED_CACHE
   unset REST_SECURITY_DOMAIN
+  unset REST_AUTHENTICATION_METHOD
+  unset REST_ENCRYPTION
 }
 
 function configure() {
@@ -567,20 +569,22 @@ function configure_infinispan_endpoint() {
             rest_security_domain="security-realm=\"$REST_SECURITY_DOMAIN\""
           fi
 
-          # XXX: should probably rename this REST_AUTHENTICATION_METHOD
-          if [ -n "$REST_AUTHENTICATION_BASIC" ]; then
-            rest_authentication="<authentication $rest_security_domain auth-method=\"BASIC\"/>"
+          if [ -n "$REST_AUTHENTICATION_METHOD" ]; then
+            rest_authentication="<authentication $rest_security_domain auth-method=\"$REST_AUTHENTICATION_METHOD\"/>"
           fi
 
-          # XXX: i wonder if this should be configuring a keystore or something
-          if [ -n "$REST_ENCRYPTION" ]; then
+          if [ "$REST_ENCRYPTION" == "true" ]; then
             encryption="<encryption $rest_security_domain />"
+            rest="\
+                <rest-connector name=\"rest-ssl\" socket-binding=\"rest-ssl\" cache-container=\"clustered\"> \
+                   $rest_authentication \
+                   $encryption \
+                </rest-connector>"
           fi
 
-          rest="\
-            <rest-connector socket-binding=\"rest\" cache-container=\"clustered\"> \
+          rest="$rest \
+            <rest-connector name=\"rest\" socket-binding=\"rest\" cache-container=\"clustered\"> \
                $rest_authentication \
-               $encryption \
             </rest-connector>"
         ;;
       esac

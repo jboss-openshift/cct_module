@@ -18,25 +18,22 @@ Feature: Openshift JDG REST tests
       | INFINISPAN_CONNECTORS                        | rest                                   |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPath //*[local-name()='rest-connector']
 
-  @jboss-datagrid-7/datagrid71-openshift
   Scenario: Should create endpoint with authentication
     When container is started with env
       | variable                                     | value                                  |
       | INFINISPAN_CONNECTORS                        | rest                                   |
-      | REST_AUTHENTICATION_BASIC                    | true                                   |
+      | REST_AUTHENTICATION_METHOD                   | BASIC                                  |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='authentication']/@security-realm
     And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value BASIC on XPath //*[local-name()='rest-connector']/*[local-name()='authentication']/@auth-method
 
-  @jboss-datagrid-7/datagrid71-openshift
   Scenario: Should create endpoint with authentication and specified security domain
     When container is started with env
       | variable                                     | value                                  |
       | INFINISPAN_CONNECTORS                        | rest                                   |
-      | REST_AUTHENTICATION_BASIC                    | true                                   |
+      | REST_AUTHENTICATION_METHOD                   | BASIC                                  |
       | REST_SECURITY_DOMAIN                         | ManagmentRealm                         |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ManagmentRealm on XPath //*[local-name()='rest-connector']/*[local-name()='authentication']/@security-realm
 
-  @jboss-datagrid-7/datagrid71-openshift
   Scenario: Should create endpoint with encryption
     When container is started with env
       | variable                                     | value                                  |
@@ -44,7 +41,6 @@ Feature: Openshift JDG REST tests
       | REST_ENCRYPTION                              | true                                   |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
 
-  @jboss-datagrid-7/datagrid71-openshift
   Scenario: Should create endpoint with encryption and specified security domain
     When container is started with env
       | variable                                     | value                                  |
