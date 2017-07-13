@@ -92,6 +92,11 @@ while : ; do
     if [ $COUNT -eq 0 ] ; then
         # failed KIE capability check
         echo "KIE capability check ${CAPABILITY_CHECK}"
+        
+        if [ "$DEBUG_SCRIPT" == "true" ]; then
+          ps -ef | grep java | grep standalone | awk '{ print $2 }' | xargs kill -3
+        fi
+
         exit 1;
     fi
     sleep ${SLEEP}
@@ -137,6 +142,11 @@ while : ; do
     if [ $COUNT -eq 0 ] ; then
         # failed KIE container check
         echo "KIE container status ${CONTAINER_STATUS}"
+        
+        if [ "$DEBUG_SCRIPT" == "true" ]; then
+          ps -ef | grep java | grep standalone | awk '{ print $2 }' | xargs kill -3
+        fi
+
         exit 1;
     fi
     sleep ${SLEEP}

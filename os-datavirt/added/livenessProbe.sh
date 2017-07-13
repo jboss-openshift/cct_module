@@ -40,4 +40,9 @@ fi
 if python $JBOSS_HOME/bin/probes/runner.py -c READY -c NOT_READY --maxruns $COUNT --sleep $SLEEP $DEBUG_OPTIONS $PROBE_IMPL; then
     exit 0
 fi
+
+if [ "$DEBUG_SCRIPT" == "true" ]; then
+  ps -ef | grep java | grep standalone | awk '{ print $2 }' | xargs kill -3
+fi
+
 exit 1
