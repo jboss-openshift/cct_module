@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source ${AMQ_HOME}/bin/colorize.sh
+
 OPENSHIFT_CONFIG_FILE=$AMQ_HOME/conf/openshift-activemq.xml
 CONFIG_FILE=$AMQ_HOME/conf/activemq.xml
 OPENSHIFT_LOGIN_FILE=$AMQ_HOME/conf/openshift-login.config
@@ -33,12 +35,12 @@ function checkViewEndpointsPermission() {
             if [ "${endpointsCode}" = "200" ]; then
                 echo "Service account has sufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be available."
             elif [ "${endpointsCode}" = "403" ]; then
-                >&2 echo "WARNING: Service account has insufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
+                echo_warning "WARNING: Service account has insufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
             else
-                >&2 echo "WARNING: Service account unable to test permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
+                echo_warning "WARNING: Service account unable to test permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
             fi
         else
-            >&2 echo "WARNING: Environment variables AMQ_MESH_SERVICE_NAMESPACE and AMQ_MESH_SERVICE_NAME both need to be defined when using AMQ_MESH_DISCOVERY_TYPE=\"kube\". Mesh will be unavailable. Please refer to the documentation for configuration."
+            echo_warning "WARNING: Environment variables AMQ_MESH_SERVICE_NAMESPACE and AMQ_MESH_SERVICE_NAME both need to be defined when using AMQ_MESH_DISCOVERY_TYPE=\"kube\". Mesh will be unavailable. Please refer to the documentation for configuration."
         fi
     fi
 }
@@ -123,7 +125,7 @@ function configureSSL() {
 
     sed -i "s|<!-- ##### SSL_CONTEXT ##### -->|${sslElement}|" "$CONFIG_FILE"
   elif sslPartial ; then
-    echo "WARNING! Partial ssl configuration, the ssl context WILL NOT be configured."
+    echo_warning "WARNING! Partial ssl configuration, the ssl context WILL NOT be configured."
   fi
 }
 

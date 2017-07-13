@@ -1,5 +1,6 @@
 source $JBOSS_HOME/bin/launch/launch-common.sh
 source $JBOSS_HOME/bin/launch/tx-datasource.sh
+source ${JBOSS_HOME}/bin/launch/colorize.sh
 
 function clearDatasourceEnv() {
   local prefix=$1
@@ -90,12 +91,12 @@ function inject_internal_datasources() {
       local prefix=${db_backend#*=}
 
       if [[ "$service" != *"_"* ]]; then
-        echo "There is a problem with the DB_SERVICE_PREFIX_MAPPING environment variable!"
-        echo "You provided the following database mapping (via DB_SERVICE_PREFIX_MAPPING): $db_backend. The mapping does not contain the database type."
-        echo
-        echo "Please make sure the mapping is of the form <name>-<database_type>=PREFIX, where <database_type> is either MYSQL or POSTGRESQL."
-        echo
-        echo "WARNING! The datasource for $prefix service WILL NOT be configured."
+        echo_warning "There is a problem with the DB_SERVICE_PREFIX_MAPPING environment variable!"
+        echo_warning "You provided the following database mapping (via DB_SERVICE_PREFIX_MAPPING): $db_backend. The mapping does not contain the database type."
+        echo_warning ""
+        echo_warning "Please make sure the mapping is of the form <name>-<database_type>=PREFIX, where <database_type> is either MYSQL or POSTGRESQL."
+        echo_warning ""
+        echo_warning "WARNING! The datasource for $prefix service WILL NOT be configured."
         continue
       fi
 
@@ -372,9 +373,9 @@ function map_properties() {
     if [ -z "$(eval echo \$${prefix}_XA_CONNECTION_PROPERTY_URL)" ]; then
       if [ -z "${!serverNameVar}" ] || [ -z "${!portVar}" ] || [ -z "${!databaseNameVar}" ]; then
         if [ "$prefix" != "$service" ]; then
-          echo >&2 "WARNING: Missing configuration for datasource $prefix. ${service}_SERVICE_HOST, ${service}_SERVICE_PORT, and/or ${prefix}_DATABASE is missing. Datasource will not be configured."
+          echo_warning "WARNING: Missing configuration for datasource $prefix. ${service}_SERVICE_HOST, ${service}_SERVICE_PORT, and/or ${prefix}_DATABASE is missing. Datasource will not be configured."
         else
-          echo >&2 "WARNING: Missing configuration for XA datasource $prefix. Either ${prefix}_XA_CONNECTION_PROPERTY_URL or $serverNameVar, and $portVar, and $databaseNameVar is required. Datasource will not be configured."
+          echo_warning "WARNING: Missing configuration for XA datasource $prefix. Either ${prefix}_XA_CONNECTION_PROPERTY_URL or $serverNameVar, and $portVar, and $databaseNameVar is required. Datasource will not be configured."
         fi
         continue
       else
@@ -384,7 +385,7 @@ function map_properties() {
       fi
     fi
   else
-    echo >&2 "WARNING: Missing configuration for datasource $prefix. ${service}_SERVICE_HOST, ${service}_SERVICE_PORT, and/or ${prefix}_DATABASE is missing. Datasource will not be configured."
+    echo_warning "WARNING: Missing configuration for datasource $prefix. ${service}_SERVICE_HOST, ${service}_SERVICE_PORT, and/or ${prefix}_DATABASE is missing. Datasource will not be configured."
     continue
   fi
 }
@@ -429,16 +430,16 @@ function inject_datasource() {
   database=$(find_env "${prefix}_DATABASE")
 
   if [ -z "$jndi" ] || [ -z "$username" ] || [ -z "$password" ]; then
-    echo "Ooops, there is a problem with the ${db,,} datasource!"
-    echo "In order to configure ${db,,} datasource for $prefix service you need to provide following environment variables: ${prefix}_USERNAME and ${prefix}_PASSWORD."
-    echo
-    echo "Current values:"
-    echo
-    echo "${prefix}_USERNAME: $username"
-    echo "${prefix}_PASSWORD: $password"
-    echo "${prefix}_JNDI: $jndi"
-    echo
-    echo "WARNING! The ${db,,} datasource for $prefix service WILL NOT be configured."
+    echo_warning "Ooops, there is a problem with the ${db,,} datasource!"
+    echo_warning "In order to configure ${db,,} datasource for $prefix service you need to provide following environment variables: ${prefix}_USERNAME and ${prefix}_PASSWORD."
+    echo_warning ""
+    echo_warning "Current values:"
+    echo_warning ""
+    echo_warning "${prefix}_USERNAME: $username"
+    echo_warning "${prefix}_PASSWORD: $password"
+    echo_warning "${prefix}_JNDI: $jndi"
+    echo_warning ""
+    echo_warning "WARNING! The ${db,,} datasource for $prefix service WILL NOT be configured."
     continue
   fi
 

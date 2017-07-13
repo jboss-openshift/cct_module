@@ -1,3 +1,4 @@
+source ${JBOSS_HOME}/bin/launch/colorize.sh
 
 function prepareEnv() {
   unset OPENSHIFT_KUBE_PING_NAMESPACE
@@ -33,12 +34,12 @@ function check_view_pods_permission() {
         if [ "${pods_code}" = "200" ]; then
             echo "Service account has sufficient permissions to view pods in kubernetes (HTTP ${pods_code}). Clustering will be available."
         elif [ "${pods_code}" = "403" ]; then
-            >&2 echo "WARNING: Service account has insufficient permissions to view pods in kubernetes (HTTP ${pods_code}). Clustering might be unavailable. Please refer to the documentation for configuration."
+            echo_warning "WARNING: Service account has insufficient permissions to view pods in kubernetes (HTTP ${pods_code}). Clustering might be unavailable. Please refer to the documentation for configuration."
         else
-            >&2 echo "WARNING: Service account unable to test permissions to view pods in kubernetes (HTTP ${pods_code}). Clustering might be unavailable. Please refer to the documentation for configuration."
+            echo_warning "WARNING: Service account unable to test permissions to view pods in kubernetes (HTTP ${pods_code}). Clustering might be unavailable. Please refer to the documentation for configuration."
         fi
     else
-        >&2 echo "WARNING: Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined. Clustering will be unavailable. Please refer to the documentation for configuration."
+        echo_warning "WARNING: Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined. Clustering will be unavailable. Please refer to the documentation for configuration."
     fi
 }
 
@@ -63,7 +64,7 @@ function configure_ha() {
   fi
 
   if [ -z "${JGROUPS_CLUSTER_PASSWORD}" ]; then
-      >&2 echo "WARNING: No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD."
+      echo_warning "WARNING: No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD."
       JGROUPS_AUTH="<!--WARNING: No password defined for JGroups cluster. AUTH protocol has been disabled. Please define JGROUPS_CLUSTER_PASSWORD. -->"
   else
     JGROUPS_AUTH="\n\
