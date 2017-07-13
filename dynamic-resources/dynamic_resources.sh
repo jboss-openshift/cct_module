@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+    set -x
+    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+fi
+
 # For backward compatibility: CONTAINER_HEAP_PERCENT is old variable name
 JAVA_MAX_MEM_RATIO=${JAVA_MAX_MEM_RATIO:-$(echo "${CONTAINER_HEAP_PERCENT:-0.5}" "100" | awk '{ printf "%d", $1 * $2 }')}
 JAVA_INITIAL_MEM_RATIO=${JAVA_INITIAL_MEM_RATIO:-$(echo "${INITIAL_HEAP_PERCENT:-1.0}" "100" | awk '{ printf "%d", $1 * $2 }')}
