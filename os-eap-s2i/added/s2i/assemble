@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 . $(dirname $0)/common.sh
 . /opt/rh/rh-maven33/enable
 
@@ -21,9 +23,48 @@ if [ -f $LOCAL_SOURCE_DIR/configuration/settings.xml ]; then
   mv $LOCAL_SOURCE_DIR/configuration/settings.xml $HOME/.m2
 fi
 
+function addMavenServers() {
+  IFS=',' read -a repo_ids <<< $MAVEN_REPO_IDS
+  IFS=',' read -a repo_usernames <<< $MAVEN_REPO_USERNAMES
+  IFS=',' read -a repo_passwords <<< $MAVEN_REPO_PASSWORDS
+
+  if [ "${#repo_ids[@]}" -ne "0" ]; then
+    local count=0
+    for repo_id in ${repo_ids[@]}; do
+      if [ -n "${repo_usernames[$count]}" ] && [ -n "${repo_passwords[$count]}" ]; then
+        local xml="\n\
+          <server>\n\
+            <id>${repo_id}</id>\n\
+            <username>${repo_usernames[$count]}</username>\n\
+            <password>${repo_passwords[$count]}</password>\n\
+          </server>\n\
+          <!-- ### configured servers ### -->"
+
+        sed -i "s|<!-- ### configured servers ### -->|${xml}|" "${HOME}/.m2/settings.xml"
+
+      fi
+      count=$((count+1))
+    done
+  fi
+
+}
+
+function source_env_files() {
+  if [ -n "$ENV_FILES" ]; then
+    for prop_file_arg in $(echo $ENV_FILES | sed "s/,/ /g"); do
+      for prop_file in $(find $prop_file_arg -maxdepth 0 2>/dev/null); do
+        if [ -f $prop_file ]; then
+          source $prop_file
+        fi
+      done
+    done
+  fi
+}
 
 configure_proxy
 configure_mirrors
+
+source_env_files
 
 manage_incremental_build
 
@@ -45,6 +86,8 @@ if [ -f "$LOCAL_SOURCE_DIR/pom.xml" ]; then
   echo "Using MAVEN_OPTS '${MAVEN_OPTS}'"
 
   echo "Using $(mvn --version)"
+
+  addMavenServers
 
   # Execute the actual build
   mvn $MAVEN_ARGS
