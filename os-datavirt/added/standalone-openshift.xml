@@ -533,6 +533,7 @@
             <!-- ##TEIID_SECURE_TRANSPORT## -->
             <transport name="odbc" socket-binding="teiid-odbc" protocol="pg">
                 <authentication security-domain="teiid-security"/>
+                <ssl mode="disabled"/>
             </transport>
             <translator name="jdbc-simple" module="org.jboss.teiid.translator.jdbc"/>
             <translator name="jdbc-ansi" module="org.jboss.teiid.translator.jdbc"/>
@@ -629,6 +630,7 @@
         <socket-binding name="teiid-jdbc" port="31000" interface="any"/>
         <socket-binding name="secure-teiid-jdbc" port="31443" interface="any"/>
         <socket-binding name="teiid-odbc" port="35432"/>
+        <socket-binding name="secure-teiid-odbc" port="35443"/>
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
         <outbound-socket-binding name="mail-smtp">

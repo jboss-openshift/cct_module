@@ -77,7 +77,7 @@ Feature: OpenShift Datavirt tests
       And file /opt/eap/standalone/configuration/application-roles.properties should contain user2=group2
       And file /opt/eap/standalone/configuration/application-roles.properties should not contain teiidUser
 
-  Scenario: check for secure jdbc config
+  Scenario: check for secure jdbc/odbc config
     When container is started with env  
       | variable                                 | value                                       |
       | DATAVIRT_TRANSPORT_KEYSTORE              | keystore.jks                                |
@@ -90,13 +90,21 @@ Feature: OpenShift Datavirt tests
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value SunX509 on XPath //*[local-name()='transport'][@name="secure-jdbc"]/*[local-name()='ssl']/@keymanagement-algorithm
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /etc/jdv-secret-volume/keystore.jks on XPath //*[local-name()='transport'][@name="secure-jdbc"]/*[local-name()='ssl']/*[local-name()='keystore']/@name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /etc/jdv-secret-volume/keystore.jks on XPath //*[local-name()='transport'][@name="secure-jdbc"]/*[local-name()='ssl']/*[local-name()='truststore']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value secure-odbc on XPath //*[local-name()='transport']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 1-way on XPath //*[local-name()='transport'][@name="secure-odbc"]/*[local-name()='ssl']/@authentication-mode
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value TLSv1.2 on XPath //*[local-name()='transport'][@name="secure-odbc"]/*[local-name()='ssl']/@ssl-protocol
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value SunX509 on XPath //*[local-name()='transport'][@name="secure-odbc"]/*[local-name()='ssl']/@keymanagement-algorithm
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /etc/jdv-secret-volume/keystore.jks on XPath //*[local-name()='transport'][@name="secure-odbc"]/*[local-name()='ssl']/*[local-name()='keystore']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /etc/jdv-secret-volume/keystore.jks on XPath //*[local-name()='transport'][@name="secure-odbc"]/*[local-name()='ssl']/*[local-name()='truststore']/@name
 
-   Scenario: check for secure jdbc config with anonymous auth mode
+   Scenario: check for secure jdbc/odbc config with anonymous auth mode
     When container is started with env
       | variable                                 | value                                       |
       | DATAVIRT_TRANSPORT_AUTHENTICATION_MODE   | anonymous                                   |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value secure-jdbc on XPath //*[local-name()='transport']/@name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value anonymous on XPath //*[local-name()='transport'][@name="secure-jdbc"]/*[local-name()='ssl']/@authentication-mode
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value secure-odbc on XPath //*[local-name()='transport']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value anonymous on XPath //*[local-name()='transport'][@name="secure-odbc"]/*[local-name()='ssl']/@authentication-mode
 
     Scenario: check for secure jdbc config with missing config
     When container is started with env
