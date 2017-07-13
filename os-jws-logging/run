@@ -8,6 +8,7 @@ SOURCES_DIR="/tmp/artifacts"
 
 # Logging
 cp -p "$ADDED_DIR/log4j.properties" "$JWS_HOME/lib/"
+cp -p "$ADDED_DIR/colorize.sh" "$JWS_HOME/bin/"
 cp -p "$SOURCES_DIR/jsonevent-layout-1.7-redhat-1.jar" "$JWS_HOME/lib/"
 cp -p "$SOURCES_DIR/commons-lang-2.6.0.redhat-4.jar" "$JWS_HOME/lib/"
 cp -p "$SOURCES_DIR/json-smart-1.1.1.jar" "$JWS_HOME/lib/"

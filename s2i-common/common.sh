@@ -1,5 +1,9 @@
 # common shell routines for s2i scripts
 
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+
 # insert settings for HTTP proxy into settings.xml if supplied as
 # separate variables HTTP_PROXY_HOST, _PORT, _SCHEME, _USERNAME,
 # _PASSWORD, _NONPROXYHOSTS
@@ -89,7 +93,7 @@ function configure_mirrors() {
     local mirror_of=$(find_env "${maven_mirror_prefix}_MAVEN_MIRROR_OF" "external:*")
 
     if [ -z "${mirror_url}" ]; then
-      echo "WARNING: Variable \"${maven_mirror_prefix}_MAVEN_MIRROR_URL\" not set. Skipping maven mirror setup for the prefix \"${maven_mirror_prefix}\"."
+      echo "${YELLOW}WARNING: Variable \"${maven_mirror_prefix}_MAVEN_MIRROR_URL\" not set. Skipping maven mirror setup for the prefix \"${maven_mirror_prefix}\".${BLACK}"
     else
       configure_mirror "${settings}" "${mirror_id}" "${mirror_url}" "${mirror_of}"
     fi

@@ -8,6 +8,7 @@ SOURCES_DIR="/tmp/artifacts"
 . $JBOSS_HOME/bin/launch/files.sh
 
 cp -p ${ADDED_DIR}/logging.properties ${JBOSS_HOME}/standalone/configuration/
+cp -p ${ADDED_DIR}/colorize.sh ${JBOSS_HOME}/bin/launch
 
 JBOSS_LOGGING_JAR="$(getfiles org/jboss/logging/main/jboss-logging)"
 JBOSS_LOGGING_DIR="$(dirname $JBOSS_LOGGING_JAR)"

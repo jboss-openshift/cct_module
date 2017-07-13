@@ -1,5 +1,7 @@
 # Openshift Datagrid launch script routines for configuring infinispan
 
+source ${JBOSS_HOME}/bin/launch/colorize.sh
+
 function clear_prefix() {
   local prefix="$1"
   unset ${prefix}_CACHE_MODE
@@ -123,7 +125,7 @@ function configure_server_identities() {
     if [ -z "$keystore_path$keystore_password" ]; then
       echo "INFO: HotRod SSL will not be configured due to the absense of variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD."
     else
-      echo "WARNING! HotRod SSL will not be configured due to misconfiguration of the variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD. Both must be set."
+      echo_warning "WARNING! HotRod SSL will not be configured due to misconfiguration of the variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD. Both must be set."
     fi
   fi
 
@@ -563,7 +565,7 @@ function configure_infinispan_endpoint() {
             memcached="\
             <memcached-connector cache-container=\"clustered\" cache=\"${MEMCACHED_CACHE}\" socket-binding=\"memcached\"/>"
           else
-            echo "WARNING! The cache for memcached-connector is not set so the connector will not be configured."
+            echo_warning "WARNING! The cache for memcached-connector is not set so the connector will not be configured."
           fi
         ;;
         "rest")

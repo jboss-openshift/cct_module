@@ -2,6 +2,7 @@
 
 source $JBOSS_HOME/bin/launch/launch-common.sh
 source $JBOSS_HOME/bin/launch/files.sh
+source ${JBOSS_HOME}/bin/launch/colorize.sh
 
 function prepareEnv() {
   unset TEIID_PASSWORD
@@ -41,7 +42,7 @@ function update_users(){
     fi
     $JBOSS_HOME/bin/add-user.sh -u "$teiiduser" -p "$TEIID_PASSWORD" -a -g user
   else
-    echo "WARNING! No password specified for TEIID_PASSWORD. Using insecure default"
+    echo_warning "WARNING! No password specified for TEIID_PASSWORD. Using insecure default"
   fi
 
   modeshapeuser="modeshapeUser"
@@ -86,7 +87,7 @@ function add_secure_transport(){
   if [ -n "$auth_mode" ]; then
     if [ "$auth_mode" != "anonymous" ]; then
       if [ -z "$key_alias" ] || [ -z "$keystore_pwd" ] || [ -z "$keystore" ] || [ -z "$keystore_dir" ]; then
-        echo "WARNING - Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '$auth_mode'. Will not be enabled"
+        echo_warning "WARNING - Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '$auth_mode'. Will not be enabled"
         return
       fi
     fi

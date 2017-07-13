@@ -4,6 +4,7 @@
 ACTIVEMQ_SUBSYSTEM_FILE=$JBOSS_HOME/bin/launch/activemq-subsystem.xml
 
 source $JBOSS_HOME/bin/launch/launch-common.sh
+source ${JBOSS_HOME}/bin/launch/colorize.sh
 
 # Messaging doesn't currently support configuration using env files, but this is
 # a start at what it would need to do to clear the env.  The reason for this is
@@ -261,17 +262,17 @@ function inject_brokers() {
       port=$(find_env "${service}_${protocol_env}_SERVICE_PORT")
 
       if [ -z $host ] || [ -z $port ]; then
-        echo "There is a problem with your service configuration!"
-        echo "You provided following MQ mapping (via MQ_SERVICE_PREFIX_MAPPING environment variable): $brokers. To configure resource adapters we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
-        echo
-        echo "Current values:"
-        echo
-        echo "${service}_${protocol_env}_SERVICE_HOST: $host"
-        echo "${service}_${protocol_env}_SERVICE_PORT: $port"
-        echo
-        echo "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
-        echo
-        echo "WARNING! The ${type,,} broker for $prefix service WILL NOT be configured."
+        echo_warning "There is a problem with your service configuration!"
+        echo_warning "You provided following MQ mapping (via MQ_SERVICE_PREFIX_MAPPING environment variable): $brokers. To configure resource adapters we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
+        echo_warning ""
+        echo_warning "Current values:"
+        echo_warning ""
+        echo_warning "${service}_${protocol_env}_SERVICE_HOST: $host"
+        echo_warning "${service}_${protocol_env}_SERVICE_PORT: $port"
+        echo_warning ""
+        echo_warning "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
+        echo_warning ""
+        echo_warning "WARNING! The ${type,,} broker for $prefix service WILL NOT be configured."
         continue
       fi
 

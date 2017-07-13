@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source ${JBOSS_HOME}/bin/launch/colorize.sh
+
 function prepareEnv() {
   unset SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
   unset SECURE_DEPLOYMENTS
@@ -94,7 +96,7 @@ function configure_keycloak() {
     if [ -n "$SSO_REALM" ]; then
       sed -i "s|##KEYCLOAK_REALM##|${SSO_REALM}|g" "${CONFIG_FILE}"
     else
-      echo "Missing SSO_REALM. Defaulting to master realm"
+      echo_warning "Missing SSO_REALM. Defaulting to master realm"
       sed -i "s|##KEYCLOAK_REALM##|master|g" "${CONFIG_FILE}"
     fi
 
@@ -123,7 +125,7 @@ function configure_keycloak() {
       sed -i "s|##SSO_SAML_KEYSTORE##|${SSO_SAML_KEYSTORE_DIR}/${SSO_SAML_KEYSTORE}|g" "${CONFIG_FILE}"
     fi
   else
-    echo "Missing SSO_URL. Unable to properly configure SSO-enabled applications"
+    echo_warning "Missing SSO_URL. Unable to properly configure SSO-enabled applications"
   fi
  
 }
@@ -165,7 +167,7 @@ function get_token() {
   if [ -n "$SSO_USERNAME" ] && [ -n "$SSO_PASSWORD" ]; then
     token=`$CURL --data "username=${SSO_USERNAME}&password=${SSO_PASSWORD}&grant_type=password&client_id=admin-cli" ${sso_service}/realms/${SSO_REALM}/protocol/openid-connect/token`
     if [ $? -ne 0 ] || [[ $token != *"access_token"* ]]; then
-      echo "ERROR: Unable to connect to SSO/Keycloak at $sso_service for user $SSO_USERNAME and realm $SSO_REALM. SSO Clients *not* created"
+      echo_error "ERROR: Unable to connect to SSO/Keycloak at $sso_service for user $SSO_USERNAME and realm $SSO_REALM. SSO Clients *not* created"
       if [ -z "$token" ]; then
         echo "Reason: Check the URL, no response from the URL above, check if it is valid or if the DNS is resolvable."
       else
@@ -177,7 +179,7 @@ function get_token() {
       echo "Obtained auth token from $sso_service for realm $SSO_REALM"
     fi
   else
-    echo "Missing SSO_USERNAME and/or SSO_PASSWORD. Unable to generate SSO Clients"
+    echo_warning "Missing SSO_USERNAME and/or SSO_PASSWORD. Unable to generate SSO Clients"
   fi
 
 }
@@ -415,7 +417,7 @@ function configure_client() {
   result=`$CURL -H "Content-Type: application/json" -H "Authorization: Bearer ${token}" -X POST -d "${client_config}" ${sso_service}/admin/realms/${SSO_REALM}/clients`
   
   if [ -n "$result" ]; then
-    echo "ERROR: Unable to register $protocol client for module $module_name in realm $SSO_REALM on $redirects: $result"
+    echo_error "ERROR: Unable to register $protocol client for module $module_name in realm $SSO_REALM on $redirects: $result"
   else
     echo "Registered $protocol client for module $module_name in realm $SSO_REALM on $redirects"
   fi
