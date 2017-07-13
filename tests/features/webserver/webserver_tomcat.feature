@@ -91,11 +91,23 @@ Feature: Openshift tomcat basic tests
       | NO_PROXY   | 10.*,127.*,*.xpaas    |
     Then container log should contain Command line argument: -Dhttp.nonProxyHosts=10.*|127.*|*.xpaas
 
-    Scenario: CLOUD-1728: Application will not start with NO_PROXY settings
+  Scenario: CLOUD-1728: Application will not start with NO_PROXY settings
     When container is started with env
       | variable   | value                 |
       | no_proxy   | 10.*,127.*,*.xpaas    |
     Then container log should contain Command line argument: -Dhttp.nonProxyHosts=10.*|127.*|*.xpaas
+
+  Scenario: Test Connector server name (CLOUD-794)
+    When container is started with env
+      | variable                        | value                   |
+      | JWS_SERVER_NAME                 | tombrady                |
+      | JWS_HTTPS_SECRET                | jws-app-secret          |
+      | JWS_HTTPS_CERTIFICATE_DIR       | /etc/jws-secret-volume  |
+      | JWS_HTTPS_CERTIFICATE           | server.crt              |
+      | JWS_HTTPS_CERTIFICATE_KEY       | server.key              |
+      | JWS_HTTPS_CERTIFICATE_PASSWORD  | myketstorepass          |
+    Then XML file /opt/webserver/conf/server.xml should contain value tombrady on XPath //*[local-name()='Connector'][@port="8080"]/@server
+    Then XML file /opt/webserver/conf/server.xml should contain value tombrady on XPath //*[local-name()='Connector'][@port="8443"]/@server
 
   Scenario: check hardened Host
     When container is ready
