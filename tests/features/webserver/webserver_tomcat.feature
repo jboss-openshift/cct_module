@@ -101,3 +101,17 @@ Feature: Openshift tomcat basic tests
     When container is ready
     Then XML file /opt/webserver/conf/server.xml should contain value false on XPath //Server/Service/Engine/Host/@autoDeploy
     Then XML file /opt/webserver/conf/server.xml should contain value true on XPath //Server/Service/Engine/Host/@deployOnStartup
+
+  Scenario: check default listings and readonly (CLOUD-787)
+    When container is ready
+    Then file /opt/webserver/conf/web.xml should contain <param-name>listings</param-name><param-value>false</param-value>
+    And file /opt/webserver/conf/web.xml should contain <param-name>readonly</param-name><param-value>true</param-value>
+
+  Scenario: check hardened listings and readonly (CLOUD-787)
+    When container is started with env
+      | variable               | value                 |
+      | JWS_SERVLET_LISTINGS   | true                  |
+      | JWS_SERVLET_READONLY   | false                 |
+    Then file /opt/webserver/conf/web.xml should contain <param-name>listings</param-name><param-value>true</param-value>
+    And file /opt/webserver/conf/web.xml should contain <param-name>readonly</param-name><param-value>false</param-value>
+
