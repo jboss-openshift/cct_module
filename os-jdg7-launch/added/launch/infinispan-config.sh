@@ -181,8 +181,17 @@ function configure_infinispan_core() {
                 <transport channel=\"cluster\" $locktimeout/>"
 
   if [ -z "$CACHE_NAMES" ]; then
-    CACHE_NAMES="default,memcached"
-    MEMCACHED_CACHE="memcached"
+    CACHE_NAMES="default"
+    if [ -z "$MEMCACHED_CACHE" ]; then
+      MEMCACHED_CACHE="memcached"
+    fi
+  fi
+
+  if [ -n "$MEMCACHED_CACHE" ]; then
+    echo ${CACHE_NAMES} | grep --quiet "${MEMCACHED_CACHE}"
+    if [ $? == 1 ]; then
+      CACHE_NAMES="${CACHE_NAMES},${MEMCACHED_CACHE}"
+    fi
   fi
 
   # this will configure variables for each of the specified datavirt caches
