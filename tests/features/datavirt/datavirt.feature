@@ -114,3 +114,31 @@ Feature: OpenShift Datavirt tests
       | DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD     | mykeystorepass                              |
       | DATAVIRT_TRANSPORT_KEYSTORE_DIR          | /etc/jdv-secret-volume                      |
     Then container log should contain WARNING - Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '1-way'. Will not be enabled
+  
+  # [CLOUD-1862] Add custom configuration to define 
+  @wip
+  Scenario: Check if teiid-security is defined if no default login module is specified
+    When container is ready
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value teiid-security on XPath //*[local-name()='transport'][@name='odata']/*[local-name()='authentication']/@security-domain
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value teiid-security on XPath //*[local-name()='transport'][@name='jdbc']/*[local-name()='authentication']/@security-domain
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value teiid-security on XPath //*[local-name()='transport'][@name='odbc']/*[local-name()='authentication']/@security-domain
+
+  @wip
+  Scenario: Check if teiid-security is defined if no default login module is specified
+    When container is started with env
+      | variable                | value   |
+      | DEFAULT_SECURITY_DOMAIN | testing |
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testing on XPath //*[local-name()='transport'][@name='odata']/*[local-name()='authentication']/@security-domain
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testing on XPath //*[local-name()='transport'][@name='jdbc']/*[local-name()='authentication']/@security-domain
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testing on XPath //*[local-name()='transport'][@name='odbc']/*[local-name()='authentication']/@security-domain
+
+  @wip
+  Scenario: Check if teiid-security is defined if no default login module is specified
+    When container is started with env
+      | variable                | value    |
+      | JDBC_SECURITY_DOMAIN    | testing1 |
+      | ODBC_SECURITY_DOMAIN    | testing2 |
+      | ODATA_SECURITY_DOMAIN   | testing3 |
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testing3 on XPath //*[local-name()='transport'][@name='odata']/*[local-name()='authentication']/@security-domain
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testing1 on XPath //*[local-name()='transport'][@name='jdbc']/*[local-name()='authentication']/@security-domain
+  Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testing2 on XPath //*[local-name()='transport'][@name='odbc']/*[local-name()='authentication']/@security-domain
