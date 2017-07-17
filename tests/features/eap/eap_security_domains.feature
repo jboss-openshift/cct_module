@@ -92,3 +92,32 @@ Feature: EAP Openshift security domains
        | EAP_SECDOMAIN_ROLES_PROPERTIES  | otherroles.properties |
      Then container log should contain Running jboss-eap-
       And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 1 elements on XPath //*[local-name()='security-domain'][@name='HiThere'][@cache-type='default']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option'][@name='rolesProperties'][@value='${jboss.server.config.dir}/otherroles.properties']
+
+  Scenario: check custom SECURITY_DOMAINS
+    When container is started with env
+       | variable                                       | value                                                     |
+       | SECURITY_DOMAINS                               | sso,ldap                                                  |
+       | sso_LOGIN_MODULE_CODE                          | org.keycloak.adapters.jaas.DirectAccessGrantsLoginModule  |
+       | sso_LOGIN_MODULE_MODULE                        | org.keycloak.keycloak-adapter-core                        |
+       | sso_MODULE_OPTION_keycloak_config_file         | /opt/eap/keycloak/keycloak.json                           |
+       | sso_MODULE_OPTION_password_stacking            | useFirstPass                                              |
+       | ldap_LOGIN_MODULE_CODE                         | LdapExtended                                              |
+       | ldap_MODULE_OPTION_java_naming_factory_initial | com.sun.jndi.ldap.LdapCtxFactory                          |
+       | ldap_MODULE_OPTION_java_naming_provider_url    | ldap://localhost:389                                      |
+       | ldap_MODULE_OPTION_bindDN                      | myuser                                                    |
+     Then container log should contain Running jboss-eap-
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 1 elements on XPath //*[local-name()='security-domain'][@name='sso']
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value org.keycloak.adapters.jaas.DirectAccessGrantsLoginModule on XPath //*[local-name()='security-domain'][@name='sso']/*[local-name()='authentication']/*[local-name()='login-module']/@code
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value org.keycloak.keycloak-adapter-core on XPath //*[local-name()='security-domain'][@name='sso']/*[local-name()='authentication']/*[local-name()='login-module']/@module
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value keycloak-config-file on XPath //*[local-name()='security-domain'][@name='sso']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /opt/eap/keycloak/keycloak.json on XPath //*[local-name()='security-domain'][@name='sso']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@value
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password-stacking on XPath //*[local-name()='security-domain'][@name='sso']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value useFirstPass on XPath //*[local-name()='security-domain'][@name='sso']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@value
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 1 elements on XPath //*[local-name()='security-domain'][@name='ldap']
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value LdapExtended on XPath //*[local-name()='security-domain'][@name='ldap']/*[local-name()='authentication']/*[local-name()='login-module']/@code
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java.naming.factory.initial on XPath //*[local-name()='security-domain'][@name='ldap']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value com.sun.jndi.ldap.LdapCtxFactory on XPath //*[local-name()='security-domain'][@name='ldap']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@value
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java.naming.provider.url on XPath //*[local-name()='security-domain'][@name='ldap']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value ldap://localhost:389 on XPath //*[local-name()='security-domain'][@name='ldap']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@value
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value bindDN on XPath //*[local-name()='security-domain'][@name='ldap']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value myuser on XPath //*[local-name()='security-domain'][@name='ldap']/*[local-name()='authentication']/*[local-name()='login-module']/*[local-name()='module-option']/@value

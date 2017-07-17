@@ -16,6 +16,9 @@ function prepareEnv() {
   unset DATAVIRT_USERS
   unset DATAVIRT_USER_PASSWORDS
   unset DATAVIRT_USER_GROUPS
+  unset JDBC_SECURITY_DOMAIN
+  unset ODBC_SECURITY_DOMAIN
+  unset ODATA_SECURITY_DOMAIN
 }
 
 function configure() {
@@ -91,7 +94,7 @@ function add_secure_transport(){
       fi
     fi
 
-    transport="<transport name=\"secure-jdbc\" socket-binding=\"secure-teiid-jdbc\" protocol=\"teiid\"><authentication security-domain=\"teiid-security\"/><ssl mode=\"enabled\" authentication-mode=\"$auth_mode\" ssl-protocol=\"TLSv1.2\" keymanagement-algorithm=\"SunX509\">"
+    transport="<transport name=\"secure-jdbc\" socket-binding=\"secure-teiid-jdbc\" protocol=\"teiid\"><authentication security-domain=\"##JDBC_SECURITY_DOMAIN##\"/><ssl mode=\"enabled\" authentication-mode=\"$auth_mode\" ssl-protocol=\"TLSv1.2\" keymanagement-algorithm=\"SunX509\">"
 
     if [ "$auth_mode" != "anonymous" ]; then 
       transport="$transport <keystore name=\"${keystore_dir}/${keystore}\" password=\"$DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD\" type=\"$keystore_type\" key-alias=\"$key_alias\"/><truststore name=\"${keystore_dir}/${keystore}\" password=\"$keystore_pwd\"/>"
@@ -139,6 +142,27 @@ function add_users(){
   done
 }
 
+function set_security_domains(){
+  if [ -n "$JDBC_SECURITY_DOMAIN" ]; then
+    sed -i "s|##JDBC_SECURITY_DOMAIN##|${JDBC_SECURITY_DOMAIN}|g" ${CONFIG_FILE}
+  else
+    sed -i "s|##JDBC_SECURITY_DOMAIN##|teiid-security|g" ${CONFIG_FILE}
+  fi
+
+  if [ -n "$ODBC_SECURITY_DOMAIN" ]; then
+    sed -i "s|##ODBC_SECURITY_DOMAIN##|${ODBC_SECURITY_DOMAIN}|g" ${CONFIG_FILE}
+  else
+    sed -i "s|##ODBC_SECURITY_DOMAIN##|teiid-security|g" ${CONFIG_FILE}
+  fi
+
+  if [ -n "$ODATA_SECURITY_DOMAIN" ]; then
+    sed -i "s|##ODATA_SECURITY_DOMAIN##|${ODATA_SECURITY_DOMAIN}|g" ${CONFIG_FILE}
+  else
+    sed -i "s|##ODATA_SECURITY_DOMAIN##|teiid-security|g" ${CONFIG_FILE}
+  fi
+
+}
+
 function configure_teiid(){
 
   hostname=`hostname`
@@ -152,6 +176,7 @@ function configure_teiid(){
 
   add_secure_transport
 
+  set_security_domains
 }
 
 

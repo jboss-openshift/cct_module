@@ -525,14 +525,14 @@
             <preparedplan-cache infinispan-container="teiid-cache"/>
             <transport name="embedded"/>
             <transport name="odata">
-                <authentication security-domain="teiid-security"/>
+                <authentication security-domain="##ODATA_SECURITY_DOMAIN##"/>
             </transport>
             <transport name="jdbc" socket-binding="teiid-jdbc" protocol="teiid">
-                <authentication security-domain="teiid-security"/>
+                <authentication security-domain="##JDBC_SECURITY_DOMAIN##"/>
             </transport>
             <!-- ##TEIID_SECURE_TRANSPORT## -->
             <transport name="odbc" socket-binding="teiid-odbc" protocol="pg">
-                <authentication security-domain="teiid-security"/>
+                <authentication security-domain="##ODBC_SECURITY_DOMAIN##"/>
             </transport>
             <translator name="jdbc-simple" module="org.jboss.teiid.translator.jdbc"/>
             <translator name="jdbc-ansi" module="org.jboss.teiid.translator.jdbc"/>
