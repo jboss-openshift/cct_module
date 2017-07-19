@@ -80,3 +80,10 @@ Feature: Openshift EAP s2i tests
       | APP_DATADIR | deployments |
     Then file /opt/eap/standalone/data/node-info.war should exist
      And run stat -c "%a %n" /opt/eap/standalone/data in container and immediately check its output contains 775 /opt/eap/standalone/data
+
+  Scenario: Make sure SCRIPT_DEBUG triggers set -x in build
+    Given s2i build https://github.com/jboss-openshift/openshift-examples.git from binary
+      | variable     | value       |
+      | APP_DATADIR  | deployments |
+      | SCRIPT_DEBUG | true        |
+    Then s2i build log should contain + echo 'Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed'

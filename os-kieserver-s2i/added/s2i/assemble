@@ -1,6 +1,11 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
+if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+    set -x
+    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+fi
+
 # run the parent EAP assemble script, but do not allow it to clear the local maven repository
 # after the build, as it is used by KIE to load kjars and their dependencies
 mcr=$(echo "${MAVEN_CLEAR_REPO}" | tr [:upper:] [:lower:])
