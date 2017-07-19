@@ -1,7 +1,5 @@
 #!/bin/bash
 
-LOCAL_SOURCE_DIR=/tmp/src
-
 # Resulting WAR files will be deployed to /opt/eap/standalone/deployments
 DEPLOY_DIR=$JBOSS_HOME/standalone/deployments
 
