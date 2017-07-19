@@ -291,7 +291,7 @@
             <cached-connection-manager/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jdr:1.0"/>
-        <subsystem xmlns="urn:jboss:domain:jgroups:5.0">
+        <subsystem xmlns="urn:jboss:domain:jgroups:4.1">
             <channels default="ee">
                 <channel name="ee" stack="tcp"/>
             </channels>
@@ -379,7 +379,7 @@
                 </maximum-set>
             </deployment-permissions>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:security:2.0">
+        <subsystem xmlns="urn:jboss:domain:security:3.0">
             <security-domains>
                 <security-domain name="other" cache-type="default">
                     <authentication>
@@ -413,7 +413,7 @@
                 </singleton-policy>
             </singleton-policies>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:transactions:4.0">
+        <subsystem xmlns="urn:jboss:domain:transactions:3.1">
             <core-environment node-identifier="${jboss.node.name}">
                 <process-id>
                     <uuid/>
