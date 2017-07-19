@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+    set -x
+    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+fi
+
 . $(dirname $0)/common.sh
 . /opt/rh/rh-maven33/enable
 
