@@ -9,5 +9,3 @@ VERSION="1.0.3.Final-redhat-1"
 cp -p ${ADDED_DIR}/context-openshift.xml $JWS_HOME/conf/context.xml
 cp -p ${ADDED_DIR}/server-openshift.xml $JWS_HOME/conf/server.xml
 
-# Copy custom valves
-cp -p "${SOURCES_DIR}/tomcat-8-valves-$VERSION.jar" "$JWS_HOME/lib/tomcat-8-valves.jar"
