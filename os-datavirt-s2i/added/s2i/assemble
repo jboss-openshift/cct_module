@@ -4,6 +4,11 @@ MAVEN_CLEAR_REPO="false"
 export MAVEN_CLEAR_REPO
 
 /usr/local/s2i/assemble_eap
+ERR=$?
+if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from parent eap assembly phase"
+    exit $ERR
+fi
 
 LOCAL_SOURCE_DIR=/tmp/src
 
