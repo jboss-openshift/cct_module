@@ -29,3 +29,25 @@ Feature: Openshift JDG REST tests
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='authentication']/@security-realm
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value BASIC on XPath //*[local-name()='rest-connector']/*[local-name()='authentication']/@auth-method
 
+  @jboss-datagrid-7/datagrid71-openshift
+  Scenario: Should create endpoint with encryption
+    When container is started with env
+      | variable                                     | value                                  |
+      | INFINISPAN_CONNECTORS                        | rest                                   |
+      | HTTPS_NAME                                   | jboss                                  |
+      | HTTPS_PASSWORD                               | mykeystorepass                         |
+      | HTTPS_KEYSTORE_DIR                           | /etc/datagrid-secret-volume            |
+      | HTTPS_KEYSTORE                               | keystore.jks                           |
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
+
+  @jboss-datagrid-7/datagrid71-openshift
+  Scenario: Should create endpoint with encryption and specified security domain
+    When container is started with env
+      | variable                                     | value                                  |
+      | INFINISPAN_CONNECTORS                        | rest                                   |
+      | HTTPS_NAME                                   | jboss                                  |
+      | HTTPS_PASSWORD                               | mykeystorepass                         |
+      | HTTPS_KEYSTORE_DIR                           | /etc/datagrid-secret-volume            | 
+      | HTTPS_KEYSTORE                               | keystore.jks                           |
+      | REST_SECURITY_DOMAIN                         | ManagementRealm                        |
+Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ManagementRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
