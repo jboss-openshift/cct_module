@@ -59,7 +59,6 @@ function configure_authentication() {
     SECDOMAIN_LOGIN_MODULE=RealmUsersRoles
     SECDOMAIN_REALM=$realm
 
-    REST_SECURITY_DOMAIN=$SECDOMAIN_NAME
   else
     echo "Not using simple authentication"
   fi

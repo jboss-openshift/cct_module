@@ -582,13 +582,26 @@ function configure_infinispan_endpoint() {
           fi
         ;;
         "rest")
-          rest="<rest-connector name=\"rest\" socket-binding=\"rest\" cache-container=\"clustered\">"
- 
+          rest_security_domain="security-realm=\"ApplicationRealm\""
+
           if [ -n "$REST_SECURITY_DOMAIN" ]; then
-            rest="$rest <authentication security-realm=\"$REST_SECURITY_DOMAIN\" auth-method=\"BASIC\"/>"
+            rest_security_domain="security-realm=\"$REST_SECURITY_DOMAIN\""
+            rest_authentication="<authentication $rest_security_domain auth-method=\"BASIC\"/>"
           fi
 
-          rest="$rest  </rest-connector>"
+          if [ -n "${HTTPS_NAME}" -a -n "${HTTPS_PASSWORD}" -a -n "${HTTPS_KEYSTORE_DIR}" -a -n "${HTTPS_KEYSTORE}" ] ; then
+            encryption="<encryption $rest_security_domain />"
+            rest="\
+                <rest-connector name=\"rest-ssl\" socket-binding=\"rest-ssl\" cache-container=\"clustered\"> \
+                   $rest_authentication \
+                   $encryption \
+                </rest-connector>"
+          else
+            rest="$rest \
+              <rest-connector name=\"rest\" socket-binding=\"rest\" cache-container=\"clustered\"> \
+                 $rest_authentication \
+              </rest-connector>"
+          fi
         ;;
       esac
     done
