@@ -18,6 +18,8 @@ function prepareEnv() {
   unset HORNETQ_CLUSTER_PASSWORD
   unset MQ_CLUSTER_PASSWORD
   unset DEFAULT_JMS_CONNECTION_FACTORY
+  unset MQ_QUEUE_JNDI_BINDINGS
+  unset MQ_TOPIC_JNDI_BINDINGS
 
   # A-MQ configuration
   IFS=',' read -a brokers <<< $MQ_SERVICE_PREFIX_MAPPING
@@ -67,17 +69,34 @@ function configure() {
 function configure_mq_destinations() {
   IFS=',' read -a queues <<< ${MQ_QUEUES:-$HORNETQ_QUEUES}
   IFS=',' read -a topics <<< ${MQ_TOPICS:-$HORNETQ_TOPICS}
+  IFS=',' read -a queue_jndi_bindings <<< ${MQ_QUEUE_JNDI_BINDINGS}
+  IFS=',' read -a topic_jndi_bindings <<< ${MQ_TOPIC_JNDI_BINDINGS}
 
   destinations=""
   if [ "${#queues[@]}" -ne "0" -o "${#topics[@]}" -ne "0" ]; then
     if [ "${#queues[@]}" -ne "0" ]; then
+      local queue_count=0
       for queue in ${queues[@]}; do
-        destinations="${destinations}<jms-queue name=\"${queue}\" entries=\"/queue/${queue}\"/>"
+        local entry="/queue/${queue}"
+        if [ -n "${queue_jndi_bindings[$queue_count]}" ]; then
+          entry="${queue_jndi_bindings[$queue_count]}"
+        fi
+
+        destinations="${destinations}<jms-queue name=\"${queue}\" entries=\"${entry}\"/>"
+        queue_count=$((queue_count+1))
       done
     fi
+
     if [ "${#topics[@]}" -ne "0" ]; then
+      local topic_count=0
       for topic in ${topics[@]}; do
-        destinations="${destinations}<jms-topic name=\"${topic}\" entries=\"/topic/${topic}\"/>"
+        local entry="/topic/${topic}"
+        if [ -n "${topic_jndi_bindings[$topic_count]}" ]; then
+          entry="${topic_jndi_bindings[$topic_count]}"
+        fi
+
+        destinations="${destinations}<jms-topic name=\"${topic}\" entries=\"${entry}\"/>"
+        topic_count=$((topic_count+1))
       done
     fi
   fi

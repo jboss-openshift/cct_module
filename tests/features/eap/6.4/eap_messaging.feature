@@ -100,3 +100,38 @@ Feature: Openshift EAP Messaging Tests
        | MQ_TOPICS                   | alpha,beta                     |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value org.apache.activemq.command.ActiveMQTopic on XPath //ra:resource-adapter[@id="activemq-rar.rar"]//ra:admin-object[@jndi-name="java:/topic/alpha"]/@class-name
     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value org.apache.activemq.command.ActiveMQTopic on XPath //ra:resource-adapter[@id="activemq-rar.rar"]//ra:admin-object[@jndi-name="java:/topic/beta"]/@class-name
+
+  Scenario: Check default destinations
+    When container is started with env
+       | variable                     | value                    |
+       | HORNETQ_QUEUES               | testqueue1,testqueue2    |
+       | HORNETQ_TOPICS               | testtopic1,testtopic2    |
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 4 elements on XPath //*[local-name()='jms-queue']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testqueue1 on XPath //*[local-name()='jms-queue']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /queue/testqueue1 on XPath //*[local-name()='jms-queue'][@name='testqueue1']/*[local-name()='entry']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testqueue1 on XPath //*[local-name()='jms-queue']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /queue/testqueue2 on XPath //*[local-name()='jms-queue'][@name='testqueue2']/*[local-name()='entry']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='jms-topic']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testtopic1 on XPath //*[local-name()='jms-topic']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testtopic2 on XPath //*[local-name()='jms-topic']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /topic/testtopic1 on XPath //*[local-name()='jms-topic'][@name='testtopic1']/*[local-name()='entry']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /topic/testtopic2 on XPath //*[local-name()='jms-topic'][@name='testtopic2']/*[local-name()='entry']/@name
+
+  Scenario: Check custom jndi destinations
+    When container is started with env
+       | variable                          | value                                                                                |
+       | HORNETQ_QUEUES                    | testqueue1,testqueue2                                                                |
+       | HORNETQ_TOPICS                    | testtopic1,testtopic2                                                                |
+       | HORNETQ_QUEUE_JNDI_BINDINGS       | java:jboss/exported/jms/queue/testqueue1,java:jboss/exported/jms/queue/testqueue2    |
+       | HORNETQ_TOPIC_JNDI_BINDINGS       | java:jboss/exported/jms/topic/testtopic1,java:jboss/exported/jms/topic/testtopic2    |
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 4 elements on XPath //*[local-name()='jms-queue']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testqueue1 on XPath //*[local-name()='jms-queue']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/exported/jms/queue/testqueue1 on XPath //*[local-name()='jms-queue'][@name='testqueue1']/*[local-name()='entry']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testqueue1 on XPath //*[local-name()='jms-queue']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/exported/jms/queue/testqueue2 on XPath //*[local-name()='jms-queue'][@name='testqueue2']/*[local-name()='entry']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='jms-topic']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testtopic1 on XPath //*[local-name()='jms-topic']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value testtopic2 on XPath //*[local-name()='jms-topic']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/exported/jms/topic/testtopic1 on XPath //*[local-name()='jms-topic'][@name='testtopic1']/*[local-name()='entry']/@name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/exported/jms/topic/testtopic2 on XPath //*[local-name()='jms-topic'][@name='testtopic2']/*[local-name()='entry']/@name
+
