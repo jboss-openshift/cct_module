@@ -522,7 +522,7 @@ function configure_infinispan_endpoint() {
   local authentication
   local require_ssl_client_auth
   local encryption
-  local rest_security_domain
+  local rest_security_realm
 
   IFS=',' read -a connectors <<< "$(find_env "INFINISPAN_CONNECTORS" "hotrod,memcached,rest")"
   if [ "${#connectors[@]}" -ne "0" ]; then
@@ -582,15 +582,15 @@ function configure_infinispan_endpoint() {
           fi
         ;;
         "rest")
-          rest_security_domain="security-realm=\"ApplicationRealm\""
+          rest_security_realm="security-realm=\"ApplicationRealm\""
 
           if [ -n "$REST_SECURITY_DOMAIN" ]; then
-            rest_security_domain="security-realm=\"$REST_SECURITY_DOMAIN\""
-            rest_authentication="<authentication $rest_security_domain auth-method=\"BASIC\"/>"
+            rest_security_realm="security-realm=\"$REST_SECURITY_DOMAIN\""
+            rest_authentication="<authentication $rest_security_realm auth-method=\"BASIC\"/>"
           fi
 
           if [ -n "${HTTPS_NAME}" -a -n "${HTTPS_PASSWORD}" -a -n "${HTTPS_KEYSTORE_DIR}" -a -n "${HTTPS_KEYSTORE}" ] ; then
-            encryption="<encryption $rest_security_domain />"
+            encryption="<encryption $rest_security_realm />"
             rest="\
                 <rest-connector name=\"rest-ssl\" socket-binding=\"rest-ssl\" cache-container=\"clustered\"> \
                    $rest_authentication \
