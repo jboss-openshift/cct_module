@@ -63,7 +63,16 @@ function configure_authentication() {
     SECDOMAIN_LOGIN_MODULE=RealmUsersRoles
     SECDOMAIN_REALM=$realm
 
+    REST_SECURITY_DOMAIN=$SECDOMAIN_NAME
+
+    add_realm_domain_mapping
   else
     echo "Not using simple authentication"
   fi
+}
+
+function add_realm_domain_mapping() {
+  local realm="<security-realm name=\"$SECDOMAIN_NAME\"><authentication><jaas name=\"$SECDOMAIN_NAME\"/></authentication></security-realm>"  
+
+  sed -i "s|<!-- ##DATAGRID_REALM## -->|${realm}|" "${CONFIG_FILE}" 
 }

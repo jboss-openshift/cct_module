@@ -50,4 +50,15 @@ Feature: Openshift JDG REST tests
       | HTTPS_KEYSTORE_DIR                           | /etc/datagrid-secret-volume            | 
       | HTTPS_KEYSTORE                               | keystore.jks                           |
       | REST_SECURITY_DOMAIN                         | ManagementRealm                        |
-Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ManagementRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
+Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
+
+  @jboss-datagrid-7/datagrid71-openshift
+  Scenario: Should create security realm that maps to security domain
+    When container is started with env
+      | variable                                     | value                                  |
+      | INFINISPAN_CONNECTORS                        | rest                                   |
+      | USERNAME                                     | tombrady                               |
+      | PASSWORD                                     | sixrings                               |
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value jdg-openshift on XPath //*[local-name()='security-realms']/*[local-name()='security-realm']/@name
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value jdg-openshift on XPath //*[local-name()='security-realms']/*[local-name()='security-realm'][@name='jdg-openshift']/*[local-name()='authentication']/*[local-name()='jaas']/@name
+

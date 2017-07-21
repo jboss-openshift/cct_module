@@ -37,6 +37,7 @@
                 </authorization>
                 <!-- ##SERVER_IDENTITIES## -->
             </security-realm>
+            <!-- ##DATAGRID_REALM## -->
         </security-realms>
         <audit-log>
             <formatters>
