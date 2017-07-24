@@ -15,6 +15,20 @@ Feature: Check correct variable expansion used
     Then XML file /opt/webserver/conf/server.xml should contain value true on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.ErrorReportValve']/@showReport
     Then XML file /opt/webserver/conf/server.xml should contain value true on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.ErrorReportValve']/@showServerInfo
 
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  Scenario: RemoteIpValve enabled
+    When container is started with env
+      | variable                | value                            |
+      | DISABLE_REMOTE_IP_VALVE |                                  |
+    Then XML file /opt/webserver/conf/server.xml should have 1 elements on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.RemoteIpValve']
+
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  Scenario: RemoteIpValve disabled
+    When container is started with env
+      | variable                | value                            |
+      | DISABLE_REMOTE_IP_VALVE | true                             |
+    Then XML file /opt/webserver/conf/server.xml should have 0 elements on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.RemoteIpValve']
+
   @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift
   Scenario: Set JWS_ADMIN_USERNAME to null
     When container is started with env
