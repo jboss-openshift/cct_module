@@ -3,6 +3,11 @@
 # Fail on a single failed command
 set -eo pipefail
 
+if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+    set -x
+    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+fi
+
 # ==========================================================
 # Generic run script for running arbitrary Java applications
 #
@@ -41,10 +46,11 @@ auto_detect_jar_file() {
       ls *.jar | grep -v '^original-'
       exit 0
     fi
+
+    echo >&2 "ERROR: Neither \$JAVA_MAIN_CLASS nor \$JAVA_APP_JAR is set and ${nr_jars} JARs found in ${dir} (1 expected)"
     cd ${old_dir}
-    echo "ERROR: Neither \$JAVA_MAIN_CLASS nor \$JAVA_APP_JAR is set and ${nr_jars} found in ${dir} (1 expected)"
   else
-    echo "ERROR: No directory ${dir} found for auto detection"
+    echo >&2 "ERROR: No directory ${dir} found for auto detection"
   fi
 }
 
@@ -57,7 +63,7 @@ get_jar_file() {
     if [ -f "${jar}" ]; then
       echo "${jar}"
     else
-      echo "ERROR: No such file ${jar}"
+      echo >&2 "ERROR: No such file ${jar}"
     fi
   else
     for dir in $*; do
@@ -66,7 +72,7 @@ get_jar_file() {
         return
       fi
     done
-    echo "ERROR: No ${jar} found in $*"
+    echo >&2 "ERROR: No ${jar} found in $*"
   fi
 }
 
