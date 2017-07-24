@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source "${JBOSS_HOME}/bin/launch/launch-common.sh"
+source "/opt/rh/rh-maven33/enable"
 
 function prepareEnv() {
     unset KIE_ADMIN_PWD
