@@ -14,6 +14,12 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
      And run /opt/eap/bin/jboss-cli.sh -c --no-local-auth deployment-info || true in container and immediately check its output does not contain activemq-rar
      And container log should contain -Dfoo=bar
 
+  @jboss-eap-6/eap64-openshift @jboss-decisionserver-6 @jboss-processserver-6 @jboss-eap-7 @redhat-sso-7
+  Scenario: CLOUD-1879 make sure json jar picked up from JBOSS_LOGMANAGER_EXT_JAR
+    When container is started with env
+       | variable                    | value             |
+    Then container log should contain /javax.json
+
   # Disabling @redhat-sso-7 for now - mgmt console is not secured yet (CLOUD-625)
   @jboss-eap-7
   Scenario: Management interface is secured and JAVA_OPTS is modified
