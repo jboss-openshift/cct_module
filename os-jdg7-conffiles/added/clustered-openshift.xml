@@ -52,7 +52,7 @@
             </logger>
         </audit-log>
         <management-interfaces>
-            <http-interface http-upgrade-enabled="true" console-enabled="false">
+            <http-interface http-upgrade-enabled="true" console-enabled="false"><!-- ##MGMT_IFACE_REALM## -->
                 <socket-binding http="management-http"/>
             </http-interface>
         </management-interfaces>

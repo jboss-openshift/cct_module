@@ -24,6 +24,13 @@ Feature: Check correct variable expansion used
     Then container log should contain Added user 'eapadmin' to file '/opt/eap/standalone/configuration/mgmt-users.properties'
 
   @jboss-eap-6/eap64-openshift @jboss-eap-7
+  Scenario: Set ADMIN_PASSWORD but not ADMIN_USERNAME
+    When container is started with env
+      | variable           | value                            |
+      | ADMIN_PASSWORD     | GoP@ts6!                         |
+    Then container log should contain Added user 'eapadmin' to file '/opt/eap/standalone/configuration/mgmt-users.properties'
+
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Set NODE_NAME to null
     When container is started with env
       | variable           | value                            |

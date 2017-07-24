@@ -9,23 +9,23 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
        | ADMIN_PASSWORD          | lollerskates11$   |
        | JAVA_OPTS_APPEND            | -Dfoo=bar         |
     Then container log should contain JBAS015874
-     And run /opt/eap/bin/jboss-cli.sh -c --no-local-auth --user=admin2 --password=lollerskates11$ deployment-info in container once
+     And run /opt/eap/bin/jboss-cli.sh -c --no-local-auth --user=admin2 --password=lollerskates11$ deployment-info in container and immediately check its output contains activemq-rar
      # We expect this command to fail, so make sure the return code is zero, we're interested only in output here
-     And run /opt/eap/bin/jboss-cli.sh -c --no-local-auth deployment-info || true in container and immediately check its output does not contain activemq-rar
+     And run sh -c '/opt/eap/bin/jboss-cli.sh -c --no-local-auth --user=wronguser --password=wrongpass deployment-info || true' in container and immediately check its output contains Authentication failed
      And container log should contain -Dfoo=bar
 
   # Disabling @redhat-sso-7 for now - mgmt console is not secured yet (CLOUD-625)
   @jboss-eap-7
   Scenario: Management interface is secured and JAVA_OPTS is modified
     When container is started with env
-       | variable                    | value             |
+       | variable                | value             |
        | ADMIN_USERNAME          | admin2            |
        | ADMIN_PASSWORD          | lollerskates11$   |
-       | JAVA_OPTS_APPEND            | -Dfoo=bar         |
+       | JAVA_OPTS_APPEND        | -Dfoo=bar         |
     Then container log should contain WFLYSRV0025
-     And run /opt/eap/bin/jboss-cli.sh -c --error-on-interact --no-local-auth --user=admin2 --password=lollerskates11$ deployment-info in container once
+     And run /opt/eap/bin/jboss-cli.sh -c --error-on-interact --no-local-auth --user=admin2 --password=lollerskates11$ deployment-info in container and immediately check its output contains activemq-rar
      # We expect this command to fail, so make sure the return code is zero, we're interested only in output here
-     And run /opt/eap/bin/jboss-cli.sh -c --error-on-interact --no-local-auth deployment-info || true in container and immediately check its output does not contain activemq-rar
+     And run sh -c '/opt/eap/bin/jboss-cli.sh -c --error-on-interact --no-local-auth deployment-info || true' in container and immediately check its output contains Unable to authenticate
      And container log should contain -Dfoo=bar
 
   # https://issues.jboss.org/browse/CLOUD-587 (security realm for management API)

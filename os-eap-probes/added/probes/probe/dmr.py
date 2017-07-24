@@ -49,6 +49,9 @@ class DmrProbe(BatchingProbe):
         self.port = 9990 + int(os.getenv('PORT_OFFSET', 0))
         self.user = os.getenv('ADMIN_USERNAME')
         self.password = os.getenv('ADMIN_PASSWORD')
+        if self.password != "":
+          if self.user is None or self.user == "":
+            self.user = os.getenv('DEFAULT_ADMIN_USERNAME')
         self.logger.debug("Configuration set as follows: host=%s, port=%s, user=%s, password=***", self.host, self.port, self.user)
 
     def getTestInput(self, results, testIndex):
