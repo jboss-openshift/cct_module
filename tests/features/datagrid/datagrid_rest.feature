@@ -38,7 +38,8 @@ Feature: Openshift JDG REST tests
       | HTTPS_PASSWORD                               | mykeystorepass                         |
       | HTTPS_KEYSTORE_DIR                           | /etc/datagrid-secret-volume            |
       | HTTPS_KEYSTORE                               | keystore.jks                           |
-    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector'][@name='rest-ssl']/*[local-name()='encryption']/@security-realm
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value rest on XPath //*[local-name()='rest-connector'][@name='rest']/@socket-binding    
 
   @jboss-datagrid-7/datagrid71-openshift
   Scenario: Should create endpoint with encryption and specified security domain
@@ -50,7 +51,7 @@ Feature: Openshift JDG REST tests
       | HTTPS_KEYSTORE_DIR                           | /etc/datagrid-secret-volume            | 
       | HTTPS_KEYSTORE                               | keystore.jks                           |
       | REST_SECURITY_DOMAIN                         | ManagementRealm                        |
-Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
+Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ManagementRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
 
   @jboss-datagrid-7/datagrid71-openshift
   Scenario: Should create security realm that maps to security domain
@@ -59,6 +60,12 @@ Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml sho
       | INFINISPAN_CONNECTORS                        | rest                                   |
       | USERNAME                                     | tombrady                               |
       | PASSWORD                                     | sixrings                               |
+      | HTTPS_NAME                                   | jboss                                  |
+      | HTTPS_PASSWORD                               | mykeystorepass                         |
+      | HTTPS_KEYSTORE_DIR                           | /etc/datagrid-secret-volume            |
+      | HTTPS_KEYSTORE                               | keystore.jks                           |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value jdg-openshift on XPath //*[local-name()='security-realms']/*[local-name()='security-realm']/@name
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value jdg-openshift on XPath //*[local-name()='security-realms']/*[local-name()='security-realm'][@name='jdg-openshift']/*[local-name()='authentication']/*[local-name()='jaas']/@name
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value mykeystorepass on XPath //*[local-name()='security-realms']/*[local-name()='security-realm'][@name='jdg-openshift']/*[local-name()='server-identities']/*[local-name()='ssl']/*[local-name()='keystore']/@keystore-password
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value jdg-openshift on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
 

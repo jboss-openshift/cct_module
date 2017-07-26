@@ -72,7 +72,20 @@ function configure_authentication() {
 }
 
 function add_realm_domain_mapping() {
-  local realm="<security-realm name=\"$SECDOMAIN_NAME\"><authentication><jaas name=\"$SECDOMAIN_NAME\"/></authentication></security-realm>"  
+  local realm="<security-realm name=\"$SECDOMAIN_NAME\"><authentication><jaas name=\"$SECDOMAIN_NAME\"/></authentication>"
+
+  if [ -n "${HTTPS_PASSWORD}" -a -n "${HTTPS_KEYSTORE_DIR}" -a -n "${HTTPS_KEYSTORE}" ]; then
+
+    if [ -n "$HTTPS_KEYSTORE_TYPE" ]; then
+      keystore_provider="provider=\"${HTTPS_KEYSTORE_TYPE}\""
+    fi
+    ssl="<server-identities>\n\
+                    <ssl>\n\
+                        <keystore ${keystore_provider} path=\"${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}\" keystore-password=\"${HTTPS_PASSWORD}\"/>\n\
+                    </ssl>\n\
+                </server-identities>"
+  fi
+  realm="$realm $ssl</security-realm>"  
 
   sed -i "s|<!-- ##DATAGRID_REALM## -->|${realm}|" "${CONFIG_FILE}" 
 }
