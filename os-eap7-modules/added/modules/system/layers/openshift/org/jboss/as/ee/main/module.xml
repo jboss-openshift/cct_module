@@ -21,7 +21,7 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.3" name="org.jboss.as.ee">
+<module xmlns="urn:jboss:module:1.5" name="org.jboss.as.ee">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
@@ -39,6 +39,7 @@
         <module name="javax.annotation.api"/>
         <module name="javax.api"/>
         <module name="javax.enterprise.concurrent.api"/>
+        <module name="javax.el.api"/>
         <module name="javax.interceptor.api"/>
         <module name="javax.transaction.api"/>
         <module name="javax.xml.ws.api" optional="true"/>
@@ -46,7 +47,7 @@
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.as.controller"/>
         <module name="org.jboss.as.naming" optional="true"/>
-        <module name="org.wildfly.security.elytron"/>
+        <module name="org.wildfly.security.elytron-private"/>
         <module name="org.wildfly.extension.request-controller" />
         <module name="org.wildfly.extension.undertow" />
         <module name="org.jboss.as.server" />
