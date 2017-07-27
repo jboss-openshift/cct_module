@@ -15,20 +15,6 @@ Feature: Check correct variable expansion used
     Then XML file /opt/webserver/conf/server.xml should contain value true on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.ErrorReportValve']/@showReport
     Then XML file /opt/webserver/conf/server.xml should contain value true on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.ErrorReportValve']/@showServerInfo
 
-  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
-  Scenario: RemoteIpValve enabled
-    When container is started with env
-      | variable                | value                            |
-      | DISABLE_REMOTE_IP_VALVE |                                  |
-    Then XML file /opt/webserver/conf/server.xml should have 1 elements on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.RemoteIpValve']
-
-  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
-  Scenario: RemoteIpValve disabled
-    When container is started with env
-      | variable                | value                            |
-      | DISABLE_REMOTE_IP_VALVE | true                             |
-    Then XML file /opt/webserver/conf/server.xml should have 0 elements on XPath //Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.RemoteIpValve']
-
   @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift
   Scenario: Set JWS_ADMIN_USERNAME to null
     When container is started with env
@@ -67,3 +53,13 @@ Feature: Check correct variable expansion used
        | ARTIFACT_DIR |             |
     Then container log should contain org.apache.catalina.startup.Catalina- Server startup in
     And available container log should contain Deployment of web application archive /deployments/websocket-chat.war has finished
+
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  Scenario: CLOUD-1784, make the Access Log Valve configurable
+    When container is started with env
+      | variable          | value                 |
+      | ENABLE_ACCESS_LOG | true                  |
+    Then file /opt/webserver/conf/server.xml should contain <Valve className="org.apache.catalina.valves.AccessLogValve" directory="/proc/self/fd"
+    And file /opt/webserver/conf/server.xml should contain prefix="1" suffix="" rotatable="false" requestAttributesEnabled="true"
+    And file /opt/webserver/conf/server.xml should contain pattern="%h %l %u %t %{X-Forwarded-Host}i &quot;%r&quot; %s %b" />
+    And file /opt/webserver/conf/server.xml should contain <Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"/>

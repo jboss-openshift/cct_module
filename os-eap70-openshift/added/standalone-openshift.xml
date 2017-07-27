@@ -424,6 +424,7 @@
                 <!-- ##HTTPS_CONNECTOR## -->
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
+                    <!-- ##ACCESS_LOG_VALVE## -->
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
                 </host>

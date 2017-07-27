@@ -367,9 +367,7 @@
             <connector name="http" protocol="HTTP/1.1" scheme="http" socket-binding="http"/>
             <!-- ##HTTPS## -->
             <virtual-server name="default-host" enable-welcome-root="false"/>
-            <valve name="accessLog" module="org.jboss.openshift" class-name="org.jboss.openshift.valves.StdoutAccessLogValve">
-                <param param-name="pattern" param-value="%h %l %u %t &quot;%r&quot; %s %b" />
-            </valve>
+            <!-- ##ACCESS_LOG_VALVE## -->
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:1.2">
             <modify-wsdl-address>true</modify-wsdl-address>

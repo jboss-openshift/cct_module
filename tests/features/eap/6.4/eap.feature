@@ -27,3 +27,11 @@ Feature: Openshift EAP basic tests
     When container is ready
     Then container log should contain JBAS015874
      And available container log should not contain ignoring option MaxPermSize=256m
+
+  Scenario: CLOUD-1784, make the Access Log Valve configurable
+    When container is started with env
+      | variable          | value                 |
+      | ENABLE_ACCESS_LOG | true                  |
+    Then file /opt/eap/standalone/configuration/standalone-openshift.xml should contain <valve name="accessLog" module="org.jboss.openshift" class-name="org.jboss.openshift.valves.StdoutAccessLogValve">
+     And file /opt/eap/standalone/configuration/standalone-openshift.xml should contain <param param-name="pattern" param-value="%h %l %u %t %{X-Forwarded-Host}i &quot;%r&quot; %s %b" />
+     And file /opt/eap/standalone/configuration/standalone-openshift.xml should contain </valve>

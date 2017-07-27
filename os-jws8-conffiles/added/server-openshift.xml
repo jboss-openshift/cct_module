@@ -130,12 +130,7 @@
         <!--
         <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
         -->
-
-        <!-- ##REMOTE_IP_VALVE## -->
-
-        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="/proc/self/fd"
-           prefix="1" suffix="" rotatable="false" requestAttributesEnabled="true"
-           pattern="%h %l %u %t %{X-Forwarded-Host}i &quot;%r&quot; %s %b" />
+        <!-- ##ACCESS_LOG_VALVE## -->
 
         <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="##TOMCAT_SHOW_REPORT##"
                showServerInfo="##TOMCAT_SHOW_SERVER_INFO##" />
