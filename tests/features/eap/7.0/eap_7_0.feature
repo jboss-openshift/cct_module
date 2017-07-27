@@ -17,3 +17,9 @@ Feature: Openshift EAP 7.0 basic tests
     When container is ready
     Then container log should contain Running jboss-eap-7/eap70-openshift image
      And available container log should not contain AddUserFailedException
+
+  Scenario: Cloud-1784, make the Access Log Valve configurable
+    When container is started with env
+      | variable          | value                 |
+      | ENABLE_ACCESS_LOG | true                  |
+    Then file /opt/eap/standalone/configuration/standalone-openshift.xml should contain <access-log use-server-log="true" pattern="%h %l %u %t %{i,X-Forwarded-Host} &quot;%r&quot; %s %b"/>
