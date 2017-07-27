@@ -61,7 +61,7 @@ Feature: Openshift AMQ tests
        | AMQ_MESH_SERVICE_NAME     | mymesh          |
        | AMQ_USER                  | openshift       |
        | AMQ_PASSWORD              | p4ssw0rd        |
-    Then XML file /opt/amq/conf/activemq.xml should contain value dns://mymesh:61616/?transportType=tcp on XPath //amq:networkConnectors/amq:networkConnector/@uri
+    Then XML file /opt/amq/conf/activemq.xml should contain value dns://mymesh:61616/?transportType=tcp&queryInterval=30 on XPath //amq:networkConnectors/amq:networkConnector/@uri
     And XML file /opt/amq/conf/activemq.xml should contain value openshift on XPath //amq:networkConnectors/amq:networkConnector/@userName
     And XML file /opt/amq/conf/activemq.xml should contain value p4ssw0rd on XPath //amq:networkConnectors/amq:networkConnector/@password
 
@@ -71,7 +71,7 @@ Feature: Openshift AMQ tests
        | variable                | value  |
        | AMQ_MESH_SERVICE_NAME   | mymesh |
        | AMQ_MESH_DISCOVERY_TYPE | dummy  |
-    Then XML file /opt/amq/conf/activemq.xml should contain value dummy://mymesh:61616/?transportType=tcp on XPath //amq:networkConnectors/amq:networkConnector/@uri
+    Then XML file /opt/amq/conf/activemq.xml should contain value dummy://mymesh:61616/?transportType=tcp&queryInterval=30 on XPath //amq:networkConnectors/amq:networkConnector/@uri
 
   Scenario: check SSL configuration
     Given XML namespace amq:http://activemq.apache.org/schema/core
@@ -166,3 +166,12 @@ Feature: Openshift AMQ tests
       | variable         | value     |
       | JAVA_OPTS_APPEND | -Dfoo=bar |
     Then container log should contain -Dfoo=bar
+
+  Scenario: check mesh query interval is passed through to network connector URI
+    Given XML namespace amq:http://activemq.apache.org/schema/core
+    When container is started with env
+       | variable                | value  |
+       | AMQ_MESH_SERVICE_NAME   | mymesh |
+       | AMQ_MESH_DISCOVERY_TYPE | dummy  |
+       | AMQ_MESH_QUERY_INTERVAL | 60     |
+    Then XML file /opt/amq/conf/activemq.xml should contain value dummy://mymesh:61616/?transportType=tcp&queryInterval=60 on XPath //amq:networkConnectors/amq:networkConnector/@uri
