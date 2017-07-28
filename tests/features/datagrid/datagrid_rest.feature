@@ -38,7 +38,8 @@ Feature: Openshift JDG REST tests
       | HTTPS_PASSWORD                               | mykeystorepass                         |
       | HTTPS_KEYSTORE_DIR                           | /etc/datagrid-secret-volume            |
       | HTTPS_KEYSTORE                               | keystore.jks                           |
-    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector']/*[local-name()='encryption']/@security-realm
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ApplicationRealm on XPath //*[local-name()='rest-connector'][@name='rest-ssl']/*[local-name()='encryption']/@security-realm
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value rest on XPath //*[local-name()='rest-connector'][@name='rest']/@socket-binding
 
   @jboss-datagrid-7/datagrid71-openshift
   Scenario: Should create endpoint with encryption and specified security domain

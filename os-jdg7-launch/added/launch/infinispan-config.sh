@@ -596,12 +596,11 @@ function configure_infinispan_endpoint() {
                    $rest_authentication \
                    $encryption \
                 </rest-connector>"
-          else
-            rest="$rest \
-              <rest-connector name=\"rest\" socket-binding=\"rest\" cache-container=\"clustered\"> \
-                 $rest_authentication \
-              </rest-connector>"
           fi
+
+          rest="$rest <rest-connector name=\"rest\" socket-binding=\"rest\" cache-container=\"clustered\"> \
+               $rest_authentication \
+            </rest-connector>"
         ;;
       esac
     done
