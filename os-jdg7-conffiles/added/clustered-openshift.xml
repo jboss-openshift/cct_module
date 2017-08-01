@@ -122,6 +122,9 @@
             <logger category="org.infinispan.rest.embedded.netty4.i18n">
                 <level name="WARN"/>
             </logger>
+            <logger category="org.infinispan.rest.logging.RestAccessLoggingHandler">
+                <level name="TRACE"/>
+            </logger>
             <root-logger>
                 <level name="INFO"/>
                 <handlers>
