@@ -3,7 +3,7 @@ Feature: Openshift AMQ tests
 
   Scenario: check that container is started correctly
     When container is ready
-    Then container log should contain INFO | Apache ActiveMQ 5.11.0.redhat-630187
+    Then container log should contain INFO | Apache ActiveMQ 5.11.0.redhat-630283
     And check that port 61616 is open
 
   Scenario: Check that the labels are correctly set
@@ -25,7 +25,7 @@ Feature: Openshift AMQ tests
        | AMQ_KEYSTORE_PASSWORD       | password                 |
        | AMQ_TRUSTSTORE              | broker.ts                |
        | AMQ_TRUSTSTORE_PASSWORD     | password                 |
-    Then container log should contain INFO | Apache ActiveMQ 5.11.0.redhat-630187
+    Then container log should contain INFO | Apache ActiveMQ 5.11.0.redhat-
      And check that port 61616 is open
     Then run sh -c '/opt/amq/bin/readinessProbe.sh 1 1 true && echo all good' in container and check its output for all good
     Then file /tmp/readiness-log should contain openwire port 61616
