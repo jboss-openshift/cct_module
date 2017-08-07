@@ -175,3 +175,10 @@ Feature: Openshift AMQ tests
        | AMQ_MESH_DISCOVERY_TYPE | dummy  |
        | AMQ_MESH_QUERY_INTERVAL | 60     |
     Then XML file /opt/amq/conf/activemq.xml should contain value dummy://mymesh:61616/?transportType=tcp&queryInterval=60 on XPath //amq:networkConnectors/amq:networkConnector/@uri
+
+  Scenario: check nonHttpProxy escaping
+    When container is started with env
+       | variable                  | value           |
+       | NO_PROXY                  | patriots.com    |
+    Then file /opt/amq/bin/env should contain -Dhttp.nonProxyHosts=\"patriots.com\"
+
