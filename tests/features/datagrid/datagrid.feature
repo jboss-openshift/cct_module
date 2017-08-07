@@ -38,3 +38,17 @@ Feature: Openshift DataGrid tests
     When container is ready
     Then container log should match regex .*Data Grid.*started.*
      And container log should not contain started (with errors)
+
+  Scenario: Check for default debug port
+    When container is started with env
+       | variable            | value                   |
+       | DEBUG               | true                    |
+    Then container log should contain -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n
+
+  Scenario: Check for custom debug port
+    When container is started with env
+       | variable            | value                   |
+       | DEBUG               | true                    |
+       | DEBUG_PORT          | 8788                    |
+    Then container log should contain -agentlib:jdwp=transport=dt_socket,address=8788,server=y,suspend=n
+
