@@ -12,4 +12,7 @@ if [ -d ${SRCCONF} ]; then
   cp -v ${SRCCONF}/* $AMQ_HOME/conf/
 fi
 
+# Remove java tmp perf data dir owned by 185
+rm -rf /tmp/hsperfdata_jboss
+
 exit 0

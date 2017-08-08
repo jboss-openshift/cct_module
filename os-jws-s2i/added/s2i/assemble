@@ -88,3 +88,6 @@ if [ -d $LOCAL_SOURCE_DIR/configuration ]; then
     cp -v $LOCAL_SOURCE_DIR/configuration/* $JWS_HOME/conf/
   fi
 fi
+
+# Remove java tmp perf data dir owned by 185
+rm -rf /tmp/hsperfdata_jboss
