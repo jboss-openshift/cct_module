@@ -181,4 +181,7 @@ else
   check_error "copying ${binary_dir} to ${DEPLOYMENTS_DIR}" $?
 fi
 
+# Remove java tmp perf data dir owned by 185
+rm -rf /tmp/hsperfdata_jboss
+
 echo "... done"

@@ -127,4 +127,7 @@ fi
 
 chmod -R g+rwX $HOME
 
+# Remove java tmp perf data dir owned by 185
+rm -rf /tmp/hsperfdata_jboss
+
 exit 0
