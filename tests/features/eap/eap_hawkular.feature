@@ -73,3 +73,35 @@ Feature: OpenShift EAP Hawkular agent tests
        And file /opt/hawkular/etc/hawkular-javaagent-config.yaml should not contain security-realm: HawkularRealm
        And file /opt/hawkular/etc/hawkular-javaagent-config.yaml should not contain name: HawkularRealm
 
+  Scenario: CLOUD-1680 - CTF tests does not test all Hawkular related parameters
+    When container is started with env
+      | variable                                 | value                               |
+      | AB_HAWKULAR_REST_URL                     | https://hawkular:5280/hawkular      |
+      | AB_HAWKULAR_REST_USER                    | hawkW1nd                            |
+      | AB_HAWKULAR_REST_PASSWORD                | QSandC77!                           |
+      | AB_HAWKULAR_REST_KEYSTORE                | keystore.jks                        |
+      | AB_HAWKULAR_REST_KEYSTORE_DIR            | /etc/hawkular-agent-volume          |
+      | AB_HAWKULAR_REST_KEYSTORE_PASSWORD       | 53same!                             |
+      | AB_HAWKULAR_REST_KEYSTORE_TYPE           | pkcs12                              |
+      | AB_HAWKULAR_REST_KEY_MANAGER_ALGORITHM   | SunX509                             |
+      | AB_HAWKULAR_REST_TRUST_MANAGER_ALGORITHM | RSA                                 |
+      | AB_HAWKULAR_REST_SSL_PROTOCOL            | TLSv3                               |
+      | AB_HAWKULAR_AGENT_OPTS                   | delay=100                           |
+    Then container log should contain -javaagent:/opt/hawkular/hawkular-javaagent.jar=config=/opt/hawkular/etc/hawkular-javaagent-config.yaml,delay=100
+    And container log should contain hawkular.agent.in-container = true
+    And container log should contain hawkular.rest.user = hawkW1nd
+    And container log should contain -Dhawkular.rest.password=QSandC77!
+    And container log should contain hawkular.rest.host = https://hawkular:5280/hawkular
+    And file /opt/hawkular/etc/hawkular-javaagent-config.yaml should contain keystore-type: pkcs12
+    And file /opt/hawkular/etc/hawkular-javaagent-config.yaml should contain key-manager-algorithm: SunX509
+    And file /opt/hawkular/etc/hawkular-javaagent-config.yaml should contain trust-manager-algorithm: RSA
+    And file /opt/hawkular/etc/hawkular-javaagent-config.yaml should contain ssl-protocol: TLSv3
+
+  Scenario: CLOUD-1680 - test only custom location of agent conf file
+    When container is started with env
+      | variable                                 | value                               |
+      | AB_HAWKULAR_REST_URL                     | https://hawkular:5280/hawkular      |
+      | AB_HAWKULAR_REST_USER                    | hawkW1nd                            |
+      | AB_HAWKULAR_REST_PASSWORD                | QSandC77!                           |
+      | AB_HAWKULAR_AGENT_CONFIG                 | /opt/hawkular-javaagent-config.yaml |
+    Then container log should contain -javaagent:/opt/hawkular/hawkular-javaagent.jar=config=/opt/hawkular-javaagent-config.yaml,delay=10
