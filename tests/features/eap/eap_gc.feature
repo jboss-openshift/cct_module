@@ -85,8 +85,45 @@ Feature: Openshift OpenJDK GC tests
   # CLOUD-459 (override default heap size)
   Scenario: CLOUD-459 Check for adjusted default heap size
     When container is started with args
-      | arg       | value                        |
-      | mem_limit | 1073741824                   |
+      | arg       | value                         |
+      | mem_limit | 1073741824                    |
       | env_json  | {"INITIAL_HEAP_PERCENT": 0.5} |
     Then container log should match regex ^ *JAVA_OPTS: *.* -Xms256m\s
       And container log should match regex ^ *JAVA_OPTS: *.* -Xmx512m\s
+
+  Scenario: CLOUD-1524, test JAVA_CORE_LIMIT
+    When container is started with env
+      | variable              | value    |
+      | JAVA_CORE_LIMIT       | 3        |
+    Then container log should match regex ^ *JAVA_OPTS: *.* -XX:ParallelGCThreads=3\s
+     And container log should match regex ^ *JAVA_OPTS: *.* -Djava.util.concurrent.ForkJoinPool.common.parallelism=3\s
+     And container log should match regex ^ *JAVA_OPTS: *.* -XX:CICompilerCount=2\s
+
+  Scenario: CLOUD-1524, test JAVA_CORE_LIMIT < CONTAINER_CORE_LIMIT
+    When container is started with args and env
+      | arg_env              | value    |
+      | arg_cpu_quota        | 20000    |
+      | arg_cpu_period       | 5000     |
+      | env_JAVA_CORE_LIMIT  | 2        |
+    Then container log should match regex ^ *JAVA_OPTS: *.* -XX:ParallelGCThreads=2\s
+     And container log should match regex ^ *JAVA_OPTS: *.* -Djava.util.concurrent.ForkJoinPool.common.parallelism=2\s
+     And container log should match regex ^ *JAVA_OPTS: *.* -XX:CICompilerCount=2\s
+
+  Scenario: CLOUD-1524, test JAVA_CORE_LIMIT > CONTAINER_CORE_LIMIT
+    When container is started with args and env
+      | arg_env              | value    |
+      | arg_cpu_quota        | 20000    |
+      | arg_cpu_period       | 5000     |
+      | env_JAVA_CORE_LIMIT  | 6        |
+   Then container log should match regex ^ *JAVA_OPTS: *.* -XX:ParallelGCThreads=4\s
+    And container log should match regex ^ *JAVA_OPTS: *.* -Djava.util.concurrent.ForkJoinPool.common.parallelism=4\s
+    And container log should match regex ^ *JAVA_OPTS: *.* -XX:CICompilerCount=2\s
+
+  Scenario: CLOUD-1524, test CONTAINER_CORE_LIMIT
+    When container is started with args
+      | arg                  | value    |
+      | cpu_quota            | 20000    |
+      | cpu_period           | 5000     |
+   Then container log should match regex ^ *JAVA_OPTS: *.* -XX:ParallelGCThreads=4\s
+    And container log should match regex ^ *JAVA_OPTS: *.* -Djava.util.concurrent.ForkJoinPool.common.parallelism=4\s
+    And container log should match regex ^ *JAVA_OPTS: *.* -XX:CICompilerCount=2\s
