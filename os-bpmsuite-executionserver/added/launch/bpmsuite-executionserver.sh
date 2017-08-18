@@ -17,10 +17,19 @@ function prepareEnv() {
     unset KIE_SERVER_PERSISTENCE_DIALECT
     unset KIE_SERVER_PERSISTENCE_DS
     unset KIE_SERVER_PERSISTENCE_TM
+    unset KIE_SERVER_PERSISTENCE_SCHEMA
     unset KIE_SERVER_PORT
     unset KIE_SERVER_PROTOCOL
     unset KIE_SERVER_PWD
     unset KIE_SERVER_USER
+    unset KIE_SERVER_ROUTER_PROTOCOL
+    unset KIE_SERVER_ROUTER_SERVICE
+    unset KIE_SERVER_ROUTER_HOST
+    unset KIE_SERVER_ROUTER_PORT
+    unset KIE_EXECUTOR_RETRIES
+    unset JBPM_HT_CALLBACK_METHOD
+    unset JBPM_HT_CALLBACK_CLASS
+    unset JBPM_LOOP_LEVEL_DISABLED
 }
 
 function configureEnv() {
@@ -29,12 +38,15 @@ function configureEnv() {
 
 function configure() {
     configure_controller_access
+    configure_router_access
     configure_drools_filter
     configure_server_id
     configure_server_location
     configure_server_persistence
     configure_server_repo
     configure_server_security
+    configure_executor
+    configure_jbpm
 }
 
 function configure_controller_access {
@@ -63,6 +75,29 @@ function configure_controller_access {
         local kieServerControllerPwd=$(find_env "KIE_SERVER_CONTROLLER_PWD" "controller1!")
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.user=${kieServerControllerUser}"
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.pwd=${kieServerControllerPwd}"
+    fi
+}
+
+function configure_router_access {
+    local routerService="${KIE_SERVER_ROUTER_SERVICE}"
+    routerService=${routerService^^}
+    routerService=${routerService//-/_}
+    # host
+    local kieServerRouterHost="${KIE_SERVER_ROUTER_HOST}"
+    if [ "${kieServerRouterHost}" = "" ]; then
+        kieServerRouterHost=$(find_env "${routerService}_SERVICE_HOST")
+    fi
+    if [ "${kieServerRouterHost}" != "" ]; then
+        # protocol
+        local kieServerRouterProtocol=$(find_env "KIE_SERVER_ROUTER_PROTOCOL" "http")
+        # port
+        local kieServerRouterPort="${KIE_SERVER_ROUTER_PORT}"
+        if [ "${kieServerRouterPort}" = "" ]; then
+            kieServerRouterPort=$(find_env "${routerService}_SERVICE_PORT" "9000")
+        fi
+        # url
+        local kieServerRouterUrl="${kieServerRouterProtocol}://${kieServerRouterHost}:${kieServerRouterPort}"
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.router=${kieServerRouterUrl}"
     fi
 }
 
@@ -146,6 +181,10 @@ function configure_server_persistence() {
         KIE_SERVER_PERSISTENCE_TM="org.hibernate.engine.transaction.jta.platform.internal.JBossAppServerJtaPlatform"
     fi
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.persistence.tm=${KIE_SERVER_PERSISTENCE_TM}"
+    # default schema
+    if [ "${KIE_SERVER_PERSISTENCE_SCHEMA}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.persistence.schema=${KIE_SERVER_PERSISTENCE_SCHEMA}"
+    fi
 }
 
 function configure_server_repo() {
@@ -187,3 +226,22 @@ function configure_server_security() {
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.bypass.auth.user=${KIE_SERVER_BYPASS_AUTH_USER}"
 }
 
+function configure_executor(){
+    # kie executor number of retries
+    if [ "${KIE_EXECUTOR_RETRIES}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.executor.retry.count=${KIE_EXECUTOR_RETRIES}"
+    fi
+}
+
+function configure_jbpm(){
+    # jbpm capabilities configuration
+    if [ "${JBPM_HT_CALLBACK_METHOD}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.jbpm.ht.callback=${JBPM_HT_CALLBACK_METHOD}"
+    fi
+    if [ "${JBPM_HT_CALLBACK_CLASS}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.jbpm.ht.custom.callback=${JBPM_HT_CALLBACK_CLASS}"
+    fi
+    if [ "${JBPM_LOOP_LEVEL_DISABLED}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Djbpm.loop.level.disabled=${JBPM_LOOP_LEVEL_DISABLED}"
+    fi
+}
