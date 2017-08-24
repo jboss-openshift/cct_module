@@ -16,6 +16,9 @@ DEPLOY_DIR=$JBOSS_HOME/standalone/deployments
 # JBoss AS data dir. Can be overridden.
 DATA_DIR=${DATA_DIR:-$JBOSS_HOME/standalone/data}
 
+# App data dir. Can be overridden.
+APP_DATADIR=${APP_DATADIR:-data}
+
 # the subdirectory within LOCAL_SOURCE_DIR from where we should copy build
 # artifacts (*.war, *.jar)
 ARTIFACT_DIR=${ARTIFACT_DIR:-target}
