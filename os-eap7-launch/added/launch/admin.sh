@@ -25,7 +25,5 @@ function configure_administration() {
 
     local mgmt_iface_replace_str="security-realm=\"ManagementRealm\""
     sed -i "s|><!-- ##MGMT_IFACE_REALM## -->| ${mgmt_iface_replace_str}>|" "$CONFIG_FILE"
-  else
-    sed -i "s|##MGMT_IFACE_REALM##||" "$CONFIG_FILE"
   fi
 }
