@@ -5,6 +5,7 @@ source "${JBOSS_HOME}/bin/launch/launch-common.sh"
 function prepareEnv() {
     unset DROOLS_SERVER_FILTER_CLASSES
     unset KIE_SERVER_BYPASS_AUTH_USER
+    unset KIE_SERVER_SYNC_STARTUP
     unset KIE_SERVER_CONTROLLER_HOST
     unset KIE_SERVER_CONTROLLER_PORT
     unset KIE_SERVER_CONTROLLER_PROTOCOL
@@ -45,6 +46,7 @@ function configure() {
     configure_server_persistence
     configure_server_repo
     configure_server_security
+    configure_server_sync_startup
     configure_executor
     configure_jbpm
 }
@@ -224,6 +226,13 @@ function configure_server_security() {
         KIE_SERVER_BYPASS_AUTH_USER="false"
     fi
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.bypass.auth.user=${KIE_SERVER_BYPASS_AUTH_USER}"
+}
+
+function configure_server_sync_startup(){
+    # server sync startup
+    if [ "${KIE_SERVER_SYNC_STARTUP}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.sync.deploy=${KIE_SERVER_SYNC_STARTUP}"
+    fi    
 }
 
 function configure_executor(){
