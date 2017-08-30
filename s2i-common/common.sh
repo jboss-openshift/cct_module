@@ -44,7 +44,10 @@ function configure_proxy_url() {
 
     local noProxy="${no_proxy:-${NO_PROXY}}"
     if [ -n "$noProxy" ]; then
-        HTTP_PROXY_NONPROXYHOSTS="${noProxy//,/|}"
+        noProxy="${noProxy//,/|}"
+        noProxy="${noProxy//|./|*.}"
+        noProxy="${noProxy/#./*.}"
+        HTTP_PROXY_NONPROXYHOSTS="${noProxy}"
     fi
   fi
 }
