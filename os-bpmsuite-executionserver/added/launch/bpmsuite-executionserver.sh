@@ -16,6 +16,7 @@ function prepareEnv() {
     unset KIE_SERVER_CONTROLLER_PROTOCOL
     unset KIE_SERVER_CONTROLLER_PWD
     unset KIE_SERVER_CONTROLLER_SERVICE
+    unset KIE_SERVER_CONTROLLER_TOKEN
     unset KIE_SERVER_CONTROLLER_USER
     unset KIE_SERVER_DOMAIN
     unset KIE_SERVER_HOST
@@ -32,6 +33,7 @@ function prepareEnv() {
     unset KIE_SERVER_ROUTER_PROTOCOL
     unset KIE_SERVER_ROUTER_SERVICE
     unset KIE_SERVER_SYNC_DEPLOY
+    unset KIE_SERVER_TOKEN
     unset KIE_SERVER_USER
 }
 
@@ -84,14 +86,23 @@ function configure_controller_access {
         if [ "${kieServerControllerPort}" = "" ]; then
             kieServerControllerPort=$(find_env "${controllerService}_SERVICE_PORT" "8080")
         fi
+        # path
+        local kieServerControllerPath="rest/controller"
+        if [ "${kieServerControllerProtocol}" = "ws" ]; then
+            kieServerControllerPath="websocket/controller"
+        fi
         # url
-        local kieServerControllerUrl="${kieServerControllerProtocol}://${kieServerControllerHost}:${kieServerControllerPort}/rest/controller"
+        local kieServerControllerUrl="${kieServerControllerProtocol}://${kieServerControllerHost}:${kieServerControllerPort}/${kieServerControllerPath}"
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller=${kieServerControllerUrl}"
         # user/pwd
         local kieServerControllerUser=$(find_env "KIE_SERVER_CONTROLLER_USER" "controllerUser")
         local kieServerControllerPwd=$(find_env "KIE_SERVER_CONTROLLER_PWD" "controller1!")
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.user=${kieServerControllerUser}"
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.pwd=${kieServerControllerPwd}"
+        # token
+        if [ "${KIE_SERVER_CONTROLLER_TOKEN}" != "" ]; then
+            JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.token=${KIE_SERVER_CONTROLLER_TOKEN}"
+        fi
     fi
 }
 
@@ -188,7 +199,7 @@ function configure_server_persistence() {
 }
 
 function configure_server_security() {
-    # execution user/pwd
+    # user/pwd
     local kieServerUser=$(find_env "KIE_SERVER_USER" "executionUser")
     local kieServerPwd=$(find_env "KIE_SERVER_PWD" "execution1!")
     ${JBOSS_HOME}/bin/add-user.sh -a --user "${kieServerUser}" --password "${kieServerPwd}" --role "kie-server,rest-all,guest"
@@ -199,6 +210,10 @@ function configure_server_security() {
     fi
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.user=${kieServerUser}"
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.pwd=${kieServerPwd}"
+    # token
+    if [ "${KIE_SERVER_TOKEN}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.token=${KIE_SERVER_TOKEN}"
+    fi
     # domain
     if [ "${KIE_SERVER_DOMAIN}" = "" ]; then
         KIE_SERVER_DOMAIN="other"
@@ -247,15 +262,8 @@ function configure_jbpm(){
 }
 
 function configure_server_state() {
-    # see scripts/os-bpmsuite-executionserver/configure.sh
-    local kieServerRepo="${HOME}/.kie/repository"
-    #local kieServerRepo
-    #if [ "${JBOSS_HOME}" = "" ]; then
-    #    kieServerRepo="."
-    #else
-    #    kieServerRepo="${JBOSS_HOME}"
-    #fi
-    local kieServerId="${KIE_SERVER_ID}"
+    # Need to replace whitespaces with something different from space or escaped space (\ ) characters
+    local kieServerId="${KIE_SERVER_ID// /_}"
     if [ "${kieServerId}" = "" ]; then
         if [ "x${HOSTNAME}" != "x" ]; then
             # chop off trailing unique "dash number" so all servers use the same template
@@ -264,7 +272,11 @@ function configure_server_state() {
             kieServerId="$(generate_random_id)"
         fi
     fi
-    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.repo=${kieServerRepo} -Dorg.kie.server.id=${kieServerId}"
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.id=${kieServerId}"
+
+    # see scripts/os-bpmsuite-executionserver/configure.sh
+    local kieServerRepo="${HOME}/.kie/repository"
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.repo=${kieServerRepo}"
 
     # see above: configure_server_env / kieserver-env.sh / setKieEnv
     if [ "${KIE_SERVER_CONTAINER_DEPLOYMENT}" != "" ]; then
