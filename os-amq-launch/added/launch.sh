@@ -6,7 +6,7 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
 fi
 
 source $AMQ_HOME/bin/configure.sh
-source $AMQ_HOME/bin/partitionPV.sh
+source /opt/partition/partitionPV.sh
 source /usr/local/dynamic-resources/dynamic_resources.sh
 
 ACTIVEMQ_OPTS="$(adjust_java_options ${ACTIVEMQ_OPTS})"
@@ -42,6 +42,11 @@ function runServer() {
 
   export ACTIVEMQ_DATA="$instanceDir"
   exec "$AMQ_HOME/bin/activemq" console
+}
+
+function init_data_dir() {
+  # No init needed for AMQ
+  return
 }
 
 if [ "$AMQ_SPLIT" = "true" ]; then
