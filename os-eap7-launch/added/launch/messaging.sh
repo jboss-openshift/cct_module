@@ -62,6 +62,7 @@ function prepareEnv() {
 function configure() {
   inject_brokers
   configure_mq
+  configure_thread_pool
 }
 
 function configure_mq_destinations() {
@@ -99,6 +100,20 @@ function configure_mq() {
 
     sed -i "s|<!-- ##MESSAGING_SUBSYSTEM_CONFIG## -->|${activemq_subsystem%$'\n'}|" "${CONFIG_FILE}"
     sed -i 's|<!-- ##MESSAGING_PORTS## -->|<socket-binding name="messaging" port="5445"/><socket-binding name="messaging-throughput" port="5455"/>|' "${CONFIG_FILE}"
+  fi
+}
+
+# Currently, the JVM is not cgroup aware and cannot be trusted to generate default values for
+# threads pool args. Therefore, if there are resource limits specifed by the container, this function
+# will configure the thread pool args using cgroups and the formulae provied by https://github.com/apache/activemq-artemis/blob/master/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/client/ActiveMQClient.java
+function configure_thread_pool() {
+  source /opt/run-java/container-limits
+  if [ -n "$CONTAINER_CORE_LIMIT" ]; then
+    local mtp=$(expr 8 \* $CONTAINER_CORE_LIMIT) # max thread pool size
+    local ctp=5                                  # core thread pool size
+    JBOSS_MESSAGING_ARGS="${JBOSS_MESSAGING_ARGS}
+    -Dactivemq.artemis.client.global.thread.pool.max.size=$mtp
+    -Dactivemq.artemis.client.global.scheduled.thread.pool.core.size=$ctp"
   fi
 }
 
