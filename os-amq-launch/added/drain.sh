@@ -6,7 +6,7 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
 fi
 
 source $AMQ_HOME/bin/configure.sh
-source $AMQ_HOME/bin/partitionPV.sh
+source /opt/partition/partitionPV.sh
 source $AMQ_HOME/bin/drainClasspath.sh
 source /usr/local/dynamic-resources/dynamic_resources.sh
 

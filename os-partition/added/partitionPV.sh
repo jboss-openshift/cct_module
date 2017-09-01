@@ -48,6 +48,11 @@ function partitionPV() {
           SERVER_DATA_DIR="${INSTANCE_DIR}/serverData"
           mkdir -p "${SERVER_DATA_DIR}"
 
+          if [ ! -f "${SERVER_DATA_DIR}/../data_initialized" ]; then
+            init_data_dir ${SERVER_DATA_DIR}
+            touch "${SERVER_DATA_DIR}/../data_initialized"
+          fi
+
           runServer "${SERVER_DATA_DIR}" &
 
           PID=$!

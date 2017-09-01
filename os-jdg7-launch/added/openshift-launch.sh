@@ -26,8 +26,31 @@ CONFIGURE_SCRIPTS=(
   /opt/run-java/proxy-options
 )
 
+function runServer() {
+  local instanceDir=$1
+
+  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+
+  exec $JBOSS_HOME/bin/standalone.sh -c clustered-openshift.xml -bmanagement 127.0.0.1 -Djboss.server.data.dir="$instanceDir" ${JBOSS_HA_ARGS} ${JAVA_PROXY_OPTIONS}
+}
+
+function init_data_dir() {
+  DATA_DIR="$1"
+  if [ -d "${JBOSS_HOME}/standalone/data" ]; then
+    cp -rf ${JBOSS_HOME}/standalone/data/* $DATA_DIR
+  fi
+}
+
 source $JBOSS_HOME/bin/launch/configure.sh
 
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+if [ "${DATAGRID_SPLIT^^}" = "TRUE" ]; then
+  source /opt/partition/partitionPV.sh
 
-exec $JBOSS_HOME/bin/standalone.sh -c clustered-openshift.xml -bmanagement 127.0.0.1 ${JBOSS_HA_ARGS} ${JAVA_PROXY_OPTIONS}
+  DATA_DIR="${JBOSS_HOME}/standalone/partitioned_data"
+
+  partitionPV "${DATA_DIR}" "${DATAGRID_LOCK_TIMEOUT:-30}"
+else
+  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+
+  exec $JBOSS_HOME/bin/standalone.sh -c clustered-openshift.xml -bmanagement 127.0.0.1 ${JBOSS_HA_ARGS} ${JAVA_PROXY_OPTIONS}
+fi
