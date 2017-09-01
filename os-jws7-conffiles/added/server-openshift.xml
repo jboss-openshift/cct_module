@@ -133,6 +133,8 @@
         <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
         -->
 
+        <Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"/>
+
         <!-- ##ACCESS_LOG_VALVE## -->
  
         <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="##TOMCAT_SHOW_REPORT##"

@@ -40,8 +40,6 @@ configure_error_valve() {
 #   %b: Bytes sent, excluding HTTP headers, or '-' if no bytes were sent
 #
 # Example for jws
-#   <Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"/>
-#
 #   <Valve className="org.apache.catalina.valves.AccessLogValve" directory="/proc/self/fd"
 #     prefix="1" suffix="" rotatable="false" requestAttributesEnabled="true"
 #     pattern="%h %l %u %t %{X-Forwarded-Host}i &quot;%r&quot; %s %b" />"
@@ -49,8 +47,7 @@ configure_error_valve() {
 # This script will be executed during container startup
 function configure_access_log_valve() {
 
-    JWS7_8_VALVE="<Valve className=\"org.apache.catalina.valves.RemoteIpValve\" remoteIpHeader=\"X-Forwarded-For\" protocolHeader=\"X-Forwarded-Proto\"/>\n\
-    \n        \<Valve className=\"org.apache.catalina.valves.AccessLogValve\" directory=\"/proc/self/fd\"\n       \
+    JWS7_8_VALVE="<Valve className=\"org.apache.catalina.valves.AccessLogValve\" directory=\"/proc/self/fd\"\n       \
     prefix=\"1\" suffix=\"\" rotatable=\"false\" requestAttributesEnabled=\"true\"\n       \
     pattern=\"%h %l %u %t %{X-Forwarded-Host}i \&quot;%r\&quot; %s %b\" />"
 

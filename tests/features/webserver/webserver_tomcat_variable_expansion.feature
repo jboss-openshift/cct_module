@@ -55,6 +55,13 @@ Feature: Check correct variable expansion used
     And available container log should contain Deployment of web application archive /deployments/websocket-chat.war has finished
 
   @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  Scenario: CLOUD-1814, always include RemoteIpValve
+    When container is started with env
+      | variable          | value                 |
+      | ENABLE_ACCESS_LOG | false                 |
+    Then file /opt/webserver/conf/server.xml should contain <Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"/>
+
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
   Scenario: CLOUD-1784, make the Access Log Valve configurable
     When container is started with env
       | variable          | value                 |
