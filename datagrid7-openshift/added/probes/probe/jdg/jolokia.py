@@ -33,7 +33,8 @@ class JdgProbe(JolokiaProbe):
             [
                 CacheStatusTest(),
                 JoinStatusTest(),
-                StateTransferStateTest()
+                StateTransferStateTest(),
+                CacheManagerTest()
             ]
         )
 
@@ -85,6 +86,58 @@ class CacheStatusTest(Test):
                 status.add(Status.NOT_READY)
             else:
                 status.add(Status.FAILURE)
+        return (min(status), messages)
+
+class CacheManagerTest(Test):
+    """
+    Checks that all defined caches are running.
+    """
+
+    def __init__(self):
+        super(CacheManagerTest, self).__init__(
+            {
+                "type": "read",
+                "attribute": [ "definedCacheCount", "createdCacheCount", "runningCacheCount" ],
+                "mbean": "jboss.datagrid-infinispan:type=CacheManager,name=\"clustered\",component=CacheManager"
+            }
+        )
+
+    def evaluate(self, results):
+        """
+        Evaluates the test:
+            READY for definedCacheCount = createdCacheCount = runningCacheCount
+            NOT_READY for definedCacheCount > createdCacheCount 
+            FAILURE for definedCacheCount = createdCacheCount > runningCacheCount
+            FAILURE if the query itself failed, or all other states (STOPPING or TERMINATED)
+        """
+
+        if results["status"] != 200:
+            return (Status.FAILURE, "Jolokia query failed")
+
+	if not results["value"]:
+            return (Status.FAILURE, "No CacheManager attributes")
+
+        status = set()
+        messages = {}
+        messages["results"] = results["value"]
+        for key, value in results["value"].items():
+            if key == "createdCacheCount":
+		createdCacheCount = value
+		messages["createdCacheCount"] = createdCacheCount
+	    elif key == "definedCacheCount":
+		definedCacheCount = value
+		messages["definedCacheCount"] = definedCacheCount
+	    elif key == "runningCacheCount":
+		runningCacheCount = value
+		messages["runningCacheCount"] = runningCacheCount
+  
+        if runningCacheCount == 0:
+	    status.add(Status.NOT_READY)
+        elif createdCacheCount == runningCacheCount:
+            status.add(Status.READY)
+        else:
+            status.add(Status.FAILURE)
+ 
         return (min(status), messages)
 
 class JoinStatusTest(Test):
