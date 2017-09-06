@@ -231,6 +231,10 @@
             <connector name="http" protocol="HTTP/1.1" scheme="http" socket-binding="http"/>
             <!-- ##HTTPS## -->
             <virtual-server name="default-host" enable-welcome-root="false"/>
+            <valve name="remoteIp" module="org.jboss.as.web" class-name="org.apache.catalina.valves.RemoteIpValve">
+                <param param-name="remoteIpHeader" param-value="X-Forwarded-For" />
+                <param param-name="protocolHeader" param-value="X-Forwarded-Proto" />
+            </valve>
             <valve name="accessLog" module="org.jboss.openshift" class-name="org.jboss.openshift.valves.StdoutAccessLogValve">
                 <param param-name="pattern" param-value="%h %l %u %t &quot;%r&quot; %s %b" />
             </valve>
