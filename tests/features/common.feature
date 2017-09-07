@@ -73,3 +73,10 @@ Feature: Openshift common tests
     When container is ready
     Then container log should not contain Configuring Access Log Valve.
     And container log should contain Access log is disabled, ignoring configuration.
+
+   @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
+  Scenario: Check 32bit JVM use
+    When container is started with env
+       | variable       | value |
+       | USE_32_BIT_JVM | true  |
+    Then container log should contain i386/jre

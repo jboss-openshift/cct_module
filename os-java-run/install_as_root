@@ -14,6 +14,7 @@ cp "$ADDED_DIR"/run-java.sh \
    "$ADDED_DIR"/container-limits \
    "$ADDED_DIR"/java-default-options \
    "$ADDED_DIR"/proxy-options \
+   "$ADDED_DIR"/java-alternatives.sh \
    /opt/run-java/
 
 chmod 755 /opt/run-java/run-java.sh \
@@ -22,4 +23,5 @@ chmod 755 /opt/run-java/run-java.sh \
     /opt/run-java/container-limits \
     /opt/run-java/java-default-options \
     /opt/run-java/proxy-options \
-    /home/jboss
+    /home/jboss \
+    /opt/run-java/java-alternatives.sh
