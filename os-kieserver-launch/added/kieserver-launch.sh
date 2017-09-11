@@ -25,6 +25,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/jboss_modules_system_pkgs.sh
   $JBOSS_HOME/bin/launch/keycloak.sh
   $JBOSS_HOME/bin/launch/deploymentScanner.sh
+  $JBOSS_HOME/bin/launch/access_log_valve.sh
   /opt/run-java/proxy-options
 )
 
