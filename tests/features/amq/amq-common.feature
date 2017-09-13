@@ -33,6 +33,23 @@ Feature: Openshift AMQ tests
        | AMQ_TRUSTSTORE_PASSWORD     | password      |
     Then XML file /opt/amq/conf/activemq.xml should have 4 elements on XPath //amq:transportConnectors/amq:transportConnector
 
+  Scenario: check transport configuration fir enabledProtocols
+    Given XML namespace amq:http://activemq.apache.org/schema/core
+    When container is started with env
+       | variable                        | value                                |
+       | AMQ_TRANSPORTS                  | openwire,amqp,stomp,mqtt             |
+       | AMQ_KEYSTORE_TRUSTSTORE_DIR     | /opt/amq/conf                        |
+       | AMQ_KEYSTORE                    | broker.ks                            |
+       | AMQ_KEYSTORE_PASSWORD           | password                             |
+       | AMQ_TRUSTSTORE                  | broker.ts                            |
+       | AMQ_TRUSTSTORE_PASSWORD         | password                             |
+       | AMQ_TRANSPORT_ENABLED_PROTOCOLS | TLSv1,TLSv1.1,TLSv1.2                |
+    Then XML file /opt/amq/conf/activemq.xml should have 8 elements on XPath //amq:transportConnectors/amq:transportConnector
+     And file /opt/amq/conf/activemq.xml should contain <transportConnector name="ssl" uri="ssl://0.0.0.0:61617?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;transport.enabledProtocols=TLSv1,TLSv1.1,TLSv1.2"/>
+     And file /opt/amq/conf/activemq.xml should contain <transportConnector name="amqp+ssl" uri="amqp+ssl://0.0.0.0:5671?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;transport.enabledProtocols=TLSv1,TLSv1.1,TLSv1.2"/>
+     And file /opt/amq/conf/activemq.xml should contain <transportConnector name="stomp+ssl" uri="stomp+ssl://0.0.0.0:61612?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;transport.enabledProtocols=TLSv1,TLSv1.1,TLSv1.2"/>
+     And file /opt/amq/conf/activemq.xml should contain <transportConnector name="mqtt+ssl" uri="mqtt+ssl://0.0.0.0:8883?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;transport.enabledProtocols=TLSv1,TLSv1.1,TLSv1.2"/>
+
   Scenario: check storage usage configuration
     Given XML namespace amq:http://activemq.apache.org/schema/core
     When container is started with env
