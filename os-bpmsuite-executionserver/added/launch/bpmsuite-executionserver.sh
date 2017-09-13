@@ -230,8 +230,8 @@ function configure_server_security() {
 }
 
 function configure_server_sync_deploy(){
-    # server sync deploy (false by default)
-    local kieServerSyncDeploy="false";
+    # server sync deploy (true by default)
+    local kieServerSyncDeploy="true";
     if [ "${KIE_SERVER_SYNC_DEPLOY// /}" != "" ]; then
         kieServerSyncDeploy=$(echo "${KIE_SERVER_SYNC_DEPLOY}" | tr "[:upper:]" "[:lower:]")
         if [ "${kieServerSyncDeploy}" != "true" ]; then
