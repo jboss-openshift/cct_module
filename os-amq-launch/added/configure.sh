@@ -158,7 +158,10 @@ function configureTransportOptions() {
         "openwire")
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"openwire\" uri=\"tcp://0.0.0.0:61616?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
-            transportConnectors="${transportConnectors}\n            <transportConnector name=\"ssl\" uri=\"ssl://0.0.0.0:61617?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\&amp;transport.needClientAuth=true" 
+            transportConnectors="${transportConnectors}\n            <transportConnector name=\"ssl\" uri=\"ssl://0.0.0.0:61617?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}" 
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
             if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
               transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
             fi
@@ -169,6 +172,9 @@ function configureTransportOptions() {
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"mqtt\" uri=\"mqtt://0.0.0.0:1883?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
             transportConnectors="${transportConnectors}\n            <transportConnector name=\"mqtt+ssl\" uri=\"mqtt+ssl://0.0.0.0:8883?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}"
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
             if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
               transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
             fi
@@ -179,6 +185,9 @@ function configureTransportOptions() {
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"amqp\" uri=\"amqp://0.0.0.0:5672?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
             transportConnectors="${transportConnectors}\n            <transportConnector name=\"amqp+ssl\" uri=\"amqp+ssl://0.0.0.0:5671?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}"
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
             if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
               transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
             fi
@@ -189,6 +198,9 @@ function configureTransportOptions() {
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"stomp\" uri=\"stomp://0.0.0.0:61613?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
             transportConnectors="${transportConnectors}\n            <transportConnector name=\"stomp+ssl\" uri=\"stomp+ssl://0.0.0.0:61612?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}"
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
             if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
               transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
             fi
