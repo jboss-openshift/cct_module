@@ -143,7 +143,17 @@ function generate_resource_adapter() {
                     <transaction-support>XATransaction</transaction-support>
                     <config-property name=\"UserName\">$3</config-property>
                     <config-property name=\"Password\">$4</config-property>
-                    <config-property name=\"ServerUrl\">tcp://$6:$7?jms.rmIdFromConnectionId=true</config-property>
+                    <config-property name=\"ServerUrl\">tcp://$6:$7?jms.rmIdFromConnectionId=true</config-property>"
+
+      if [ -n "${HTTPS_NAME}" -a -n "${HTTPS_PASSWORD}" -a -n "${HTTPS_KEYSTORE_DIR}" -a -n "${HTTPS_KEYSTORE}" ] ; then
+        ra="$ra
+                    <config-property name=\"TrustStore\">${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}</config-property>
+                    <config-property name=\"TrustStorePassword\">${HTTPS_PASSWORD}</config-property>
+                    <config-property name=\"KeyStore\">${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}</config-property>
+                    <config-property name=\"KeyStorePassword\">${HTTPS_PASSWORD}</config-property>"
+      fi
+
+      ra="$ra
                     <connection-definitions>
                         <connection-definition
                               class-name=\"org.apache.activemq.ra.ActiveMQManagedConnectionFactory\"
