@@ -101,3 +101,16 @@ Feature: Openshift JDG distributed-cache tests
        | ANOTHERCACHE_INDEXING_PROPERTIES                  | default.directory_provider=ram   |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value LOCAL on XPATH //*[local-name()='indexing']/@index
     And file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain "default.directory_provider">ram<
+
+  Scenario: CLOUD-2043 distributed-cache with transaction
+    When container is started with env
+       | variable                                          | value                            |
+       | CACHE_NAMES                                       | DEFAULT                          |
+       | DEFAULT_LOCKING_ISOLATION                         | READ_COMMITTED                   |
+       | DEFAULT_TRANSACTION_MODE                          | NONE                             |
+       | DEFAULT_STATE_TRANSFER_TIMEOUT                    | 120000                           |
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPATH //*[local-name()='locking']
+    And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value READ_COMMITTED on XPATH //*[local-name()='locking']/@isolation
+    And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value NONE on XPATH //*[local-name()='transaction']/@mode
+    And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value 120000 on XPATH //*[local-name()='state-transfer']/@timeout
+
