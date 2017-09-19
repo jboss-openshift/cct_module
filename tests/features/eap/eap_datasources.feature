@@ -198,6 +198,7 @@ Feature: EAP Openshift datasources
     Then container log should contain The mapping does not contain the database type.
     Then container log should contain WARNING! The datasource for TEST service WILL NOT be configured.
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test warning on missing driver
     When container is started with env
        | variable                       | value                                  |
@@ -212,6 +213,7 @@ Feature: EAP Openshift datasources
        | TEST_JTA                       | true                                   |
     Then container log should contain Warning - DRIVER not set for datasource TEST. Datasource will not be configured.
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test postgresql xa datasource extension
     When container is started with env
        | variable                       | value                                  |
@@ -235,6 +237,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 3 elements on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:/jboss/datasources/testds on XPath //*[local-name()='jdbc-store']/@datasource-jndi-name
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test postgresql non-xa datasource extension
     When container is started with env
        | variable                       | value                                  |
@@ -253,6 +256,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='password']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value jdbc:postgresql://10.1.1.1:5432/pgdb on XPath //*[local-name()='datasource']/*[local-name()='connection-url']
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test postgresql xa datasource extension w/URL
     When container is started with env
        | variable                        | value                                  |
@@ -270,6 +274,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value jdbc:postgresql://10.1.1.1:5432/pgdb on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="URL"]
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 1 elements on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property']
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test mysql xa datasource extension
     When container is started with env
        | variable                       | value                                  |
@@ -291,6 +296,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password on XPath //*[local-name()='xa-datasource']/*[local-name()='security']/*[local-name()='password']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 3 elements on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property']
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test mysql non-xa datasource extension
     When container is started with env
        | variable                       | value                                  |
@@ -309,6 +315,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='password']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value jdbc:mysql://10.1.1.1:3306/kitchensink on XPath //*[local-name()='datasource']/*[local-name()='connection-url']
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test mysql xa datasource extension w/URL
     When container is started with env
        | variable                        | value                                  |
@@ -326,7 +333,8 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value jdbc:mysql://10.1.1.1:3306/kitchensink on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="URL"]
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 1 elements on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property']
 
-   Scenario: Test external xa datasource extension
+  @redhat-sso-7/sso71-openshift
+  Scenario: Test external xa datasource extension
     When container is started with env
        | variable                          | value                                      |
        | DATASOURCES                       | TEST                                       |
@@ -343,6 +351,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value tombrady on XPath //*[local-name()='xa-datasource']/*[local-name()='security']/*[local-name()='user-name']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password on XPath //*[local-name()='xa-datasource']/*[local-name()='security']/*[local-name()='password']
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test external non-xa datasource extension
     When container is started with env
        | variable                          | value                                      |
@@ -363,8 +372,8 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value tombrady on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='user-name']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='password']
 
-
-   Scenario: Test warning no xa-connection-properties for external xa db
+  @redhat-sso-7/sso71-openshift
+  Scenario: Test warning no xa-connection-properties for external xa db
     When container is started with env
        | variable                       | value                                  |
        | DATASOURCES                    | TEST                                   |
@@ -410,6 +419,7 @@ Feature: EAP Openshift datasources
    Then container log should contain WARNING: Missing configuration for datasource MAREK. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or MAREK_DATABASE is missing. Datasource will not be configured.
    And container log should contain In order to configure mysql datasource for DB service you need to provide following environment variables: DB_USERNAME and DB_PASSWORD.
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test warning for missing postgresql xa properties
     When container is started with env
        | variable                      | value                      |
@@ -419,6 +429,7 @@ Feature: EAP Openshift datasources
        | TEST_DRIVER                   | postgresql                 |
     Then container log should contain WARNING: Missing configuration for XA datasource TEST. Either TEST_XA_CONNECTION_PROPERTY_URL or TEST_XA_CONNECTION_PROPERTY_ServerName, and TEST_XA_CONNECTION_PROPERTY_PortNumber, and TEST_XA_CONNECTION_PROPERTY_DatabaseName is required. Datasource will not be configured.
 
+  @redhat-sso-7/sso71-openshift
   Scenario: Test warning for missing mysql xa properties
     When container is started with env
        | variable                      | value                      |

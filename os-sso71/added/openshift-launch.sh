@@ -24,48 +24,28 @@ SECDOMAIN_PASSWORD_STACKING=${SECDOMAIN_PASSWORD_STACKING:-$EAP_SECDOMAIN_PASSWO
 
 IMPORT_REALM_FILE=$JBOSS_HOME/standalone/configuration/import-realm.json
 
-. $JBOSS_HOME/bin/launch/passwd.sh
-configure_passwd
+CONFIGURE_SCRIPTS=(
+  $JBOSS_HOME/bin/launch/configure_extensions.sh
+  $JBOSS_HOME/bin/launch/passwd.sh
+  $JBOSS_HOME/bin/launch/datasource.sh
+  $JBOSS_HOME/bin/launch/resource-adapter.sh
+  $JBOSS_HOME/bin/launch/admin.sh
+  $JBOSS_HOME/bin/launch/ha.sh
+  $JBOSS_HOME/bin/launch/jgroups.sh
+  $JBOSS_HOME/bin/launch/https.sh
+  $JBOSS_HOME/bin/launch/json_logging.sh
+  $JBOSS_HOME/bin/launch/security-domains.sh
+  $JBOSS_HOME/bin/launch/jboss_modules_system_pkgs.sh
+  $JBOSS_HOME/bin/launch/deploymentScanner.sh
+  $JBOSS_HOME/bin/launch/ports.sh
+  $JBOSS_HOME/bin/launch/access_log_valve.sh
+  $JBOSS_HOME/bin/launch/add-sso-admin-user.sh
+  $JBOSS_HOME/bin/launch/add-sso-realm.sh
+  $JBOSS_HOME/bin/launch/keycloak-spi.sh
+  /opt/run-java/proxy-options
+)
 
-. $JBOSS_HOME/bin/launch/datasource.sh
-NON_XA_DATASOURCE="true"
-DB_JNDI="java:jboss/datasources/KeycloakDS"
-DB_POOL="KeycloakDS"
-inject_datasources
-
-. $JBOSS_HOME/bin/launch/admin.sh
-configure_administration
-
-. $JBOSS_HOME/bin/launch/ha.sh
-check_view_pods_permission
-configure_ha
-
-. $JBOSS_HOME/bin/launch/jgroups.sh
-configure_jgroups_encryption
-
-. $JBOSS_HOME/bin/launch/https.sh
-configure_https
-
-. $JBOSS_HOME/bin/launch/json_logging.sh
-configure_json_logging
-
-. $JBOSS_HOME/bin/launch/security-domains.sh
-configure_security_domains
-
-. $JBOSS_HOME/bin/launch/jboss_modules_system_pkgs.sh
-configure_jboss_modules_system_pkgs
-
-. $JBOSS_HOME/bin/launch/add-sso-admin-user.sh
-add_admin_user
-
-. $JBOSS_HOME/bin/launch/add-sso-realm.sh
-realm_import
-
-. $JBOSS_HOME/bin/launch/keycloak-spi.sh
-add_truststore
-
-source /opt/run-java/proxy-options
-JAVA_PROXY_ARGS="$(proxy_options)"
+source $JBOSS_HOME/bin/launch/configure.sh
 
 echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
@@ -79,8 +59,8 @@ function clean_shutdown() {
 trap "clean_shutdown" TERM
 
 if [ -n "$SSO_IMPORT_FILE" ] && [ -f $SSO_IMPORT_FILE ]; then
-  $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 $JBOSS_HA_ARGS ${JBOSS_MESSAGING_ARGS} -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=${SSO_IMPORT_FILE} -Dkeycloak.migration.strategy=IGNORE_EXISTING ${JAVA_PROXY_ARGS} &
+  $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 $JBOSS_HA_ARGS ${JBOSS_MESSAGING_ARGS} -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=${SSO_IMPORT_FILE} -Dkeycloak.migration.strategy=IGNORE_EXISTING ${JAVA_PROXY_OPTIONS} &
 else
-  $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 $JBOSS_HA_ARGS ${JBOSS_MESSAGING_ARGS} ${JAVA_PROXY_ARGS} &
+  $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 $JBOSS_HA_ARGS ${JBOSS_MESSAGING_ARGS} ${JAVA_PROXY_OPTIONS} &
 fi
 wait $!
