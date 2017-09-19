@@ -1,5 +1,16 @@
 #!/bin/bash
 
+function prepareEnv() {
+  unset SSO_REALM
+  unset IMPORT_REALM_FILE
+  unset SSO_SERVICE_USERNAME
+  unset SSO_SERVICE_PASSWORD
+}
+
+function configure() {
+  realm_import
+}
+
 function realm_import() {
   if [ -n "$SSO_REALM" ]; then
     sed -i "s|##REALM##|${SSO_REALM}|" "${IMPORT_REALM_FILE}"

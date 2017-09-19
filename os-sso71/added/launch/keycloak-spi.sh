@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function prepareEnv() {
+  unset SSO_TRUSTSTORE
+  unset SSO_TRUSTSTORE_DIR
+  unset SSO_TRUSTSTORE_PASSWORD
+}
+
+function configure() {
+  add_truststore
+}
+
 function add_truststore() {
   
   if [ -n "$SSO_TRUSTSTORE" ] && [ -n "$SSO_TRUSTSTORE_DIR" ] && [ -n "$SSO_TRUSTSTORE_PASSWORD" ]; then
