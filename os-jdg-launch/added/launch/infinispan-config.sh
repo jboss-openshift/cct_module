@@ -281,8 +281,21 @@ function configure_cache() {
                     <expiration $CACHE_EXPIRATION_LIFESPAN $CACHE_EXPIRATION_MAX_IDLE $CACHE_EXPIRATION_INTERVAL/>"
   fi
 
-  if [ -n "$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")$(find_env "${prefix}_LOCKING_CONCURRENCY_LEVEL")$(find_env "${prefix}_LOCKING_STRIPING")" ]; then
+  if [ -n "$(find_env "${prefix}_TRANSACTION_MODE")" ]; then
+    local transaction="<transaction mode=\"$(find_env "${prefix}_TRANSACTION_MODE")\" />"
+  fi
+
+  if [ -n "$(find_env "${prefix}_STATE_TRANSFER_TIMEOUT")" ]; then
+    local state_transfer="<state-transfer timeout=\"$(find_env "${prefix}_STATE_TRANSFER_TIMEOUT")\" />"
+  fi
+
+  if [ -n "$(find_env "${prefix}_LOCKING_ISOLATION")$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")$(find_env "${prefix}_LOCKING_CONCURRENCY_LEVEL")$(find_env "${prefix}_LOCKING_STRIPING")" ]; then
     local locking="<locking"
+
+    if [ -n "$(find_env "${prefix}_LOCKING_ISOLATION")" ]; then
+      locking="$locking isolation=\"$(find_env "${prefix}_LOCKING_ISOLATION")\""
+    fi
+
     if [ -n "$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")" ]; then
       locking="$locking acquire-timeout=\"$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")\""
     fi
@@ -346,7 +359,7 @@ function configure_cache() {
     cache="$cache mode=\"$CACHE_MODE\" $CACHE_QUEUE_SIZE $CACHE_QUEUE_FLUSH_INTERVAL $CACHE_REMOTE_TIMEOUT"
   fi
 
-  cache="$cache $CACHE_START $CACHE_BATCHING $CACHE_STATISTICS $CACHE_OWNERS $CACHE_SEGMENTS $CACHE_L1_LIFESPAN>$eviction $expiration $jdbcstore $indexing $cachesecurity $partitionhandling $locking\
+  cache="$cache $CACHE_START $CACHE_BATCHING $CACHE_STATISTICS $CACHE_OWNERS $CACHE_SEGMENTS $CACHE_L1_LIFESPAN>$eviction $expiration $jdbcstore $indexing $cachesecurity $partitionhandling $locking $transaction $state_transfer \
                 </$CACHE_TYPE-cache><!-- ##INFINISPAN_CACHE## -->"
 
   sed -i "s|<!-- ##INFINISPAN_CACHE## -->|$cache|" "$CONFIG_FILE"
