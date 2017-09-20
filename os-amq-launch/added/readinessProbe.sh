@@ -22,7 +22,10 @@ import socket
 import sys
 
 # calculate the open ports
-tcp_file = open("/proc/net/tcp6")
+try:
+  tcp_file = open("/proc/net/tcp6", "r")
+except IOError:
+  tcp_file = open("/proc/net/tcp", "r")
 tcp_lines = tcp_file.readlines()
 header = tcp_lines.pop(0)
 tcp_file.close()
