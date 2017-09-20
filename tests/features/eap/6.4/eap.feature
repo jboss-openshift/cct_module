@@ -28,6 +28,11 @@ Feature: Openshift EAP basic tests
     Then container log should contain JBAS015874
      And available container log should not contain ignoring option MaxPermSize=256m
 
+  Scenario: CLOUD-237 - DEBUG enabled in standalone.sh
+    When container is ready
+    Then file /opt/eap/bin/standalone.sh should contain DEBUG_MODE="${DEBUG:-false} 
+      And file /opt/eap/bin/standalone.sh should contain DEBUG_PORT="${DEBUG_PORT:-8787}"
+
   Scenario: CLOUD-1784, make the Access Log Valve configurable
     When container is started with env
       | variable          | value                 |

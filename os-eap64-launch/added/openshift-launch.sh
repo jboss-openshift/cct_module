@@ -27,6 +27,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/deploymentScanner.sh
   $JBOSS_HOME/bin/launch/ports.sh
   $JBOSS_HOME/bin/launch/access_log_valve.sh
+  $JBOSS_HOME/bin/launch/standalone.sh
   /opt/run-java/proxy-options
 )
 
