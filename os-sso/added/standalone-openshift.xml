@@ -81,7 +81,7 @@
         <subsystem xmlns="urn:jboss:domain:logging:3.0">
             <console-handler name="CONSOLE">
                 <formatter>
-                    <named-formatter name="COLOR-PATTERN"/>
+                    <named-formatter name="##CONSOLE-FORMATTER##"/>
                 </formatter>
             </console-handler>
             <logger category="com.arjuna">
