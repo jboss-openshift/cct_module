@@ -6,6 +6,7 @@ OPENSHIFT_LOGIN_FILE=$AMQ_HOME/conf/openshift-login.config
 LOGIN_FILE=$AMQ_HOME/conf/login.config
 OPENSHIFT_USERS_FILE=$AMQ_HOME/conf/openshift-users.properties
 USERS_FILE=$AMQ_HOME/conf/users.properties
+USERS_DNAME_FILE=$AMQ_HOME/conf/users-dname.properties
 
 function configure_passwd() {
   sed "/^jboss/s/[^:]*/$(id -u)/3" /etc/passwd > /tmp/passwd
@@ -47,6 +48,7 @@ function configureMesh() {
   serviceName="${AMQ_MESH_SERVICE_NAME}"
   username="${AMQ_USER}"
   password="${AMQ_PASSWORD}"
+  dname="${AMQ_DNAME}"
   discoveryType="${AMQ_MESH_DISCOVERY_TYPE:-dns}"
   queryInterval="${AMQ_MESH_QUERY_INTERVAL:-30}"
 
@@ -64,9 +66,18 @@ function configureMesh() {
 function configureAuthentication() {
   username="${AMQ_USER}"
   password="${AMQ_PASSWORD}"
+  dname="${AMQ_DNAME}"
 
+  if [ -n "${username}" -a -n "${dname}" ] ; then
+    sed -i "s|##### AUTHENTICATION #####|${username}=${dname}|" "${USERS_DNAME_FILE}"
+  fi
   if [ -n "${username}" -a -n "${password}" ] ; then
     sed -i "s|##### AUTHENTICATION #####|${username}=${password}|" "${USERS_FILE}"
+  fi
+
+  if [ -n "${username}" -a -n "${dname}" ] ; then
+    authentication="<jaasDualAuthenticationPlugin configuration=\"activemq\" sslConfiguration=\"activemq\"/>"
+  elif [ -n "${username}" -a -n "${password}" ] ; then
     authentication="<jaasAuthenticationPlugin configuration=\"activemq\" />"
   else
     authentication="<jaasAuthenticationPlugin configuration=\"activemq-guest\" />"
@@ -145,7 +156,7 @@ function configureTransportOptions() {
         "openwire")
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"openwire\" uri=\"tcp://0.0.0.0:61616?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
-            transportConnectors="${transportConnectors}\n            <transportConnector name=\"ssl\" uri=\"ssl://0.0.0.0:61617?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
+            transportConnectors="${transportConnectors}\n            <transportConnector name=\"ssl\" uri=\"ssl://0.0.0.0:61617?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\&amp;transport.needClientAuth=true\" />"
           fi
           ;;
         "mqtt")
@@ -192,6 +203,7 @@ function configurePolicy() {
 cp "${OPENSHIFT_CONFIG_FILE}" "${CONFIG_FILE}"
 cp "${OPENSHIFT_LOGIN_FILE}" "${LOGIN_FILE}"
 cp "${OPENSHIFT_USERS_FILE}" "${USERS_FILE}"
+cp "${OPENSHIFT_USERS_FILE}" "${USERS_DNAME_FILE}"
 
 configure_passwd
 configureAuthentication
