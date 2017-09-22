@@ -32,6 +32,7 @@
 
 function configure() {
   configure_access_log_valve
+  configure_access_log_handler
 }
 
 function configure_access_log_valve() {
@@ -46,10 +47,19 @@ function configure_access_log_valve() {
         if [[ "$JBOSS_EAP_VERSION" == "6.4"* ]]; then
             sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP6_VALVE}|" $CONFIG_FILE
         fi
+        if [[ "$JBOSS_DATAGRID_VERSION" == "6.5"* ]]; then
+            sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP6_VALVE}|" $CONFIG_FILE
+        fi
         if [[ "$JBOSS_EAP_VERSION" == "7."* ]]; then
             sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP7x_VALVE}|" $CONFIG_FILE
         fi
     else
         echo "Access log is disabled, ignoring configuration."
     fi
+}
+
+function configure_access_log_handler() {
+  if [ "${ENABLE_ACCESS_LOG^^}" == "TRUE" ]; then
+    sed -i "s|<!-- ##ACCESS_LOG_HANDLER## -->|<logger category=\"org.infinispan.rest.logging.RestAccessLoggingHandler\"><level name=\"TRACE\"/></logger>|" $CONFIG_FILE
+  fi
 }
