@@ -235,9 +235,7 @@
                 <param param-name="remoteIpHeader" param-value="X-Forwarded-For" />
                 <param param-name="protocolHeader" param-value="X-Forwarded-Proto" />
             </valve>
-            <valve name="accessLog" module="org.jboss.openshift" class-name="org.jboss.openshift.valves.StdoutAccessLogValve">
-                <param param-name="pattern" param-value="%h %l %u %t &quot;%r&quot; %s %b" />
-            </valve>
+            <!-- ##ACCESS_LOG_VALVE## -->
         </subsystem>
     </profile>
     <interfaces>
