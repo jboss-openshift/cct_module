@@ -420,7 +420,7 @@
             <buffer-cache name="default"/>
             <server name="default-server">
                 <ajp-listener name="ajp" socket-binding="ajp"/>
-                <http-listener name="default" socket-binding="http" redirect-socket="https"/>
+                <http-listener name="default" socket-binding="http" redirect-socket="https" proxy-address-forwarding="true"/>
                 <!-- ##HTTPS_CONNECTOR## -->
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
