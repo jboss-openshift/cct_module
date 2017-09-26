@@ -187,7 +187,7 @@ function configure_infinispan_core() {
     fi
   fi
 
-  if [ -n "$MEMCACHED_CACHE" ]; then
+  if [ -n "$MEMCACHED_CACHE" ] && [ "$MEMCACHED_CACHE" != "default" ]; then
     echo ${CACHE_NAMES} | grep --quiet "${MEMCACHED_CACHE}"
     if [ $? == 1 ]; then
       CACHE_NAMES="${CACHE_NAMES},${MEMCACHED_CACHE}"
