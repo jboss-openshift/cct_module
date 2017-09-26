@@ -28,10 +28,11 @@ Feature: Openshift EAP basic tests
     Then container log should contain JBAS015874
      And available container log should not contain ignoring option MaxPermSize=256m
 
-  Scenario: CLOUD-1784, make the Access Log Valve configurable
+  Scenario: CLOUD-1784, make the Access Log Valve configurable (modified for CLOUD-2049)
     When container is started with env
       | variable          | value                 |
       | ENABLE_ACCESS_LOG | true                  |
-    Then file /opt/eap/standalone/configuration/standalone-openshift.xml should contain <valve name="accessLog" module="org.jboss.openshift" class-name="org.jboss.openshift.valves.StdoutAccessLogValve">
-     And file /opt/eap/standalone/configuration/standalone-openshift.xml should contain <param param-name="pattern" param-value="%h %l %u %t %{X-Forwarded-Host}i &quot;%r&quot; %s %b" />
-     And file /opt/eap/standalone/configuration/standalone-openshift.xml should contain </valve>
+    Then file /opt/eap/standalone/configuration/standalone-openshift.xml should contain <deployment-overlay name="valveoverlay">
+     And file /opt/eap/standalone/configuration/standalone-openshift.xml should contain <content path="/WEB-INF/jboss-web.xml" content="38b8ef5d9c683c14b786ba47845934625a1c15d8"/>
+     And file /opt/eap/standalone/data/content/38/b8ef5d9c683c14b786ba47845934625a1c15d8/content should contain <class-name>org.apache.catalina.valves.RemoteIpValve</class-name>
+     And file /opt/eap/standalone/data/content/38/b8ef5d9c683c14b786ba47845934625a1c15d8/content should contain <valve><class-name>org.jboss.openshift.valves.StdoutAccessLogValve</class-name><module>org.jboss.openshift</module><param><param-name>pattern</param-name><param-value>%h %l %u %t %{X-Forwarded-Host}i &quot;%r&quot; %s %b</param-value></param></valve>
