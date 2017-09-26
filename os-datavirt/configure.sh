@@ -15,12 +15,14 @@ cp ${ADDED_DIR}/readinessProbe.sh $JBOSS_HOME/bin/
 cp ${ADDED_DIR}/livenessProbe.sh $JBOSS_HOME/bin/
 cp -r ${ADDED_DIR}/probes $JBOSS_HOME/bin/
 
-cp ${JBOSS_HOME}/dataVirtualization/vdb/ModeShape.vdb ${JBOSS_HOME}/standalone/deployments
-touch ${JBOSS_HOME}/standalone/deployments/ModeShape.vdb.dodeploy
+if [ -f "${JBOSS_HOME}/dataVirtualization/vdb/ModeShape.vdb" ]; then
+  cp ${JBOSS_HOME}/dataVirtualization/vdb/ModeShape.vdb ${JBOSS_HOME}/standalone/deployments
+  touch ${JBOSS_HOME}/standalone/deployments/ModeShape.vdb.dodeploy
+fi
+
 cp ${JBOSS_HOME}/dataVirtualization/vdb/teiid-odata.war ${JBOSS_HOME}/standalone/deployments
 cp ${JBOSS_HOME}/dataVirtualization/vdb/teiid-olingo-odata4.war ${JBOSS_HOME}/standalone/deployments
 
-rm -rf ${JBOSS_HOME}/dataVirtualization
 rm -rf ${JBOSS_HOME}/standalone/deployments/integration-platform-console.war*
 rm -rf ${JBOSS_HOME}/vault*
 
@@ -28,7 +30,6 @@ find $JBOSS_HOME/modules/system/layers/base -name javax.script.ScriptEngineFacto
 
 chown -R jboss:root $JBOSS_HOME
 chmod -R g+rwX $JBOSS_HOME
-chmod -R g+rwX $JBOSS_HOME/standalone/deployments
 
 chown -R jboss:root $HOME
 chmod -R g+rwX $HOME
