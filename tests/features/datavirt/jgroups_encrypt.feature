@@ -1,4 +1,4 @@
-@jboss-datavirt-6/datavirt63-openshift
+@jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
 Feature: Openshift DataVirt JGroups tests
   Scenario: jgroups-encrypt
     Given XML namespaces

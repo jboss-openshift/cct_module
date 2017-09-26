@@ -23,7 +23,7 @@ function configure() {
 }
 
 function add_roles(){
-  sed -i "s|=user|=user,odata|" "${JBOSS_HOME}/standalone/configuration/application-roles.properties"
+  sed -i "s|=user|=user,odata,rest|" "${JBOSS_HOME}/standalone/configuration/application-roles.properties"
 }
 
 function update_users(){
