@@ -276,4 +276,10 @@ Feature: Openshift OpenJDK S2I tests
   Scenario: Test that maven is executed in batch mode
     Given s2i build https://github.com/jboss-openshift/openshift-examples from spring-boot-sample-simple
     Then s2i build log should contain --batch-mode
-    And s2i build log should not contain \r             
+    And s2i build log should not contain \r          
+
+  Scenario: Check java perf dir owned by jboss (CLOUD-2070)
+    Given s2i build https://github.com/jboss-openshift/openshift-examples from spring-boot-sample-simple
+    Then run sh -c 'pgrep -x java | xargs -I{} jstat -gc {} 1000 1' in container and check its output for S0C
+    And run sh -c 'stat --printf="%U %G" /tmp/hsperfdata_jboss/' in container and check its output for jboss root
+   
