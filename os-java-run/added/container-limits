@@ -53,9 +53,18 @@ container_memory() {
   fi
 }
 
+min() {
+  printf "%s\n" "$@" | sort -g | head -n1
+}
+
 local limit="$(core_limit)"
 if [ x$limit != x ]; then
    export CONTAINER_CORE_LIMIT="$limit"
+fi
+
+local env_core_limit="$(min $CONTAINER_CORE_LIMIT $JAVA_CORE_LIMIT)"
+if [ -n "$env_core_limit" ]; then
+  export CORE_LIMIT="$env_core_limit"
 fi
 
 local max_mem="$(container_memory)"

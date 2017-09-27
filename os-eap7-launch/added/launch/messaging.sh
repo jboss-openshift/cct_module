@@ -109,8 +109,8 @@ function configure_mq() {
 # will configure the thread pool args using cgroups and the formulae provied by https://github.com/apache/activemq-artemis/blob/master/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/client/ActiveMQClient.java
 function configure_thread_pool() {
   source /opt/run-java/container-limits
-  if [ -n "$CONTAINER_CORE_LIMIT" ]; then
-    local mtp=$(expr 8 \* $CONTAINER_CORE_LIMIT) # max thread pool size
+  if [ -n "$CORE_LIMIT" ]; then
+    local mtp=$(expr 8 \* $CORE_LIMIT) # max thread pool size
     local ctp=5                                  # core thread pool size
     JBOSS_MESSAGING_ARGS="${JBOSS_MESSAGING_ARGS}
     -Dactivemq.artemis.client.global.thread.pool.max.size=$mtp
