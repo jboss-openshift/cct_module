@@ -53,3 +53,6 @@ if [ -d $LOCAL_SOURCE_DIR/kie-server-resources ]; then
     echo "Copying resource files from KIE server resources ..."
     cp -v $LOCAL_SOURCE_DIR/kie-server-resources/* $KIE_SERVER_WEBINF_CLASSES_DIR
 fi
+
+# Remove java tmp perf data dir owned by 185
+rm -rf /tmp/hsperfdata_jboss
