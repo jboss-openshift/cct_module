@@ -1,0 +1,6 @@
+schema_version: 1
+name: datagrid-openshift
+version: '1.0'
+description: Legacy datagrid-openshift script package.
+execute:
+- script: configure.sh

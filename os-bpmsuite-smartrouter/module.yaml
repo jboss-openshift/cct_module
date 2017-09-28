@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-bpmsuite-smartrouter
+version: '1.0'
+description: Legacy os-bpmsuite-smartrouter script package.
+execute:
+- script: configure.sh

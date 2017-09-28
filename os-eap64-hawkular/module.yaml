@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-eap64-hawkular
+version: '1.0'
+description: Legacy os-eap64-hawkular script package.
+execute:
+- script: install_as_root

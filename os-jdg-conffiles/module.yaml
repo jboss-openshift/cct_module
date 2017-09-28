@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-jdg-conffiles
+version: '1.0'
+description: Legacy os-jdg-conffiles script package.
+execute:
+- script: configure.sh

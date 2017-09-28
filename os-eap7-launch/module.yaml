@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-eap7-launch
+version: '1.0'
+description: Legacy os-eap7-launch script package.
+execute:
+- script: configure.sh

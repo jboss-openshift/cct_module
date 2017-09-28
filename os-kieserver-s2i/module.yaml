@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-kieserver-s2i
+version: '1.0'
+description: Legacy os-kieserver-s2i script package.
+execute:
+- script: prepare.sh

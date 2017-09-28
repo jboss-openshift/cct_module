@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-jws-chmod
+version: '1.0'
+description: Legacy os-jws-chmod script package.
+execute:
+- script: run

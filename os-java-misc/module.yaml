@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-java-misc
+version: '1.0'
+description: Legacy os-java-misc script package.
+execute:
+- script: install_as_root
