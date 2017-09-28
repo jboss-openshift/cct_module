@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-eap7-ping
+version: '1.0'
+description: Legacy os-eap7-ping script package.
+execute:
+- script: configure.sh

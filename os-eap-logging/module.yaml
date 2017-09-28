@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-eap-logging
+version: '1.0'
+description: Legacy os-eap-logging script package.
+execute:
+- script: configure.sh

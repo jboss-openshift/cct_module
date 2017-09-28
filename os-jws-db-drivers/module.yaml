@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-jws-db-drivers
+version: '1.0'
+description: Legacy os-jws-db-drivers script package.
+execute:
+- script: run

@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-jws-s2i
+version: '1.0'
+description: Legacy os-jws-s2i script package.
+execute:
+- script: install_as_root

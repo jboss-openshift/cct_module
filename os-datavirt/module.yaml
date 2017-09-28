@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-datavirt
+version: '1.0'
+description: Legacy os-datavirt script package.
+execute:
+- script: configure.sh

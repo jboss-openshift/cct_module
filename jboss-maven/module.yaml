@@ -1,0 +1,6 @@
+schema_version: 1
+name: jboss-maven
+version: '1.0'
+description: Legacy jboss-maven script package.
+execute:
+- script: configure.sh

@@ -1,0 +1,6 @@
+schema_version: 1
+name: keycloak-layer
+version: '1.0'
+description: Legacy keycloak-layer script package.
+execute:
+- script: configure_layer.sh

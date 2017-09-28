@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-eap-db-drivers
+version: '1.0'
+description: Legacy os-eap-db-drivers script package.
+execute:
+- script: configure.sh
