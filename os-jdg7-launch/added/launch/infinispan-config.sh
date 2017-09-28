@@ -36,6 +36,8 @@ function clear_prefix() {
   unset ${prefix}_ID_TYPE
   unset ${prefix}_DATA_TYPE
   unset ${prefix}_TIMESTAMP_TYPE
+  unset ${prefix}_CACHE_PROTOCOL_COMPATIBILITY
+  unset ${prefix}_CACHE_COMPATIBILITY_MARSHALLER
 }
 
 function prepareEnv() {
@@ -347,8 +349,13 @@ function configure_cache() {
     cache="$cache mode=\"$CACHE_MODE\" $CACHE_QUEUE_SIZE $CACHE_QUEUE_FLUSH_INTERVAL $CACHE_REMOTE_TIMEOUT"
   fi
 
-  if [ "$CACHE_PROTOCOL_COMPATIBILITY" == "true" ]; then
-    compatibility="<compatibility enabled=\"true\"/>"
+  if [ "$(find_env "${prefix}_CACHE_PROTOCOL_COMPATIBILITY")" == "true" ]; then
+    local cache_compatibility_marshaller="$(find_env "${prefix}_CACHE_COMPATIBILITY_MARSHALLER")"
+    if [ -n "$cache_compatibility_marshaller" ]; then
+      compatibility="<compatibility enabled=\"true\" marshaller=\"$cache_compatibility_marshaller\"/>"
+    else
+      compatibility="<compatibility enabled=\"true\"/>"
+    fi
   fi
 
   cache="$cache $CACHE_START $CACHE_BATCHING $CACHE_STATISTICS  $CACHE_OWNERS $CACHE_SEGMENTS $CACHE_L1_LIFESPAN>$eviction $expiration $jdbcstore $indexing $cachesecurity $partitionhandling $locking $compatibility\
