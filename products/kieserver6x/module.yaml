@@ -1,0 +1,14 @@
+schema_version: 1
+
+name: product.kieserver6x
+version: '1.0'
+description: Aggregates modules used by KIESERVER 6.x image.
+
+modules:
+  install:
+  - name: os-kieserver-launch
+  - name: os-kieserver-probes
+  - name: os-kieserver-s2i
+  - name: os-kieserver-webapp
+  - name: os-kieserver-chmod
+

@@ -1,0 +1,13 @@
+schema_version: 1
+
+name: product.datavirt6x
+version: '1.0'
+description: Aggregates modules used by JDV 6.x images.
+
+modules:
+  install:
+  - name: product.common.eap6x
+  - name: os-eap-sso
+  - name: os-eap64-sso
+  - name: os-datavirt-s2i
+  - name: os-datavirt

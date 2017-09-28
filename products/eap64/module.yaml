@@ -1,0 +1,15 @@
+schema_version: 1
+
+name: product.eap64
+version: '1.0'
+description: Aggregates modules used by EAP 6.4 image.
+
+modules:
+  install:
+  - name: product.common.eap6x
+  - name: os-eap-activemq-rar
+  - name: os-eap-sso
+  - name: os-eap64-sso
+  - name: os-java-hawkular
+  - name: os-eap64-hawkular
+  - name: os-eap-hawkular

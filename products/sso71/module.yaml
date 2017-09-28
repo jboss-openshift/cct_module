@@ -1,0 +1,11 @@
+schema_version: 1
+
+name: product.sso71
+version: '1.0'
+description: Aggregates modules used by SSO 7.1 image.
+
+modules:
+  install:
+  - name: product.common.eap7x
+  - name: os-sso71
+  - name: keycloak-layer
