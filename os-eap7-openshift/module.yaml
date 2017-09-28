@@ -3,5 +3,6 @@ name: os-eap7-openshift
 version: '1.0'
 description: Legacy os-eap7-openshift script package.
 execute:
-- script: configure.sh
 - script: prepare.sh
+- script: configure.sh
+  user: '185'
