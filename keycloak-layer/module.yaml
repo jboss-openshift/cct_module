@@ -4,3 +4,4 @@ version: '1.0'
 description: Legacy keycloak-layer script package.
 execute:
 - script: configure_layer.sh
+  user: '185'

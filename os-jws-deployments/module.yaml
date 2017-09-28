@@ -3,5 +3,6 @@ name: os-jws-deployments
 version: '1.0'
 description: Legacy os-jws-deployments script package.
 execute:
-- script: run_as_jboss
 - script: run
+- script: run_as_jboss
+  user: '185'

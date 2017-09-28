@@ -3,5 +3,6 @@ name: os-kieserver-launch
 version: '1.0'
 description: Legacy os-kieserver-launch script package.
 execute:
-- script: configure.sh
 - script: prepare.sh
+- script: configure.sh
+  user: '185'

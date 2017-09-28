@@ -4,4 +4,3 @@ version: '1.0'
 description: Legacy dynamic-resources script package.
 execute:
 - script: install.sh
-- script: dynamic_resources.sh

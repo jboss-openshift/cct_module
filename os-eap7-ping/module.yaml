@@ -4,3 +4,4 @@ version: '1.0'
 description: Legacy os-eap7-ping script package.
 execute:
 - script: configure.sh
+  user: '185'

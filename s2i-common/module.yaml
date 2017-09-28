@@ -4,4 +4,3 @@ version: '1.0'
 description: Legacy s2i-common script package.
 execute:
 - script: install.sh
-- script: common.sh
