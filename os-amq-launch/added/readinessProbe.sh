@@ -20,9 +20,13 @@ import xml.etree.ElementTree
 from urlparse import urlsplit
 import socket
 import sys
+import os.path
 
 # calculate the open ports
-tcp_file = open("/proc/net/tcp6")
+if (os.path.isfile("/proc/net/tcp6")):
+    tcp_file = open("/proc/net/tcp6")
+else:
+    tcp_file = open("/proc/net/tcp")
 tcp_lines = tcp_file.readlines()
 header = tcp_lines.pop(0)
 tcp_file.close()
