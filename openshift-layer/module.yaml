@@ -5,4 +5,3 @@ description: Legacy openshift-layer script package.
 execute:
 - script: configure_layers.sh
   user: '185'
-- script: configure_passwd.sh
