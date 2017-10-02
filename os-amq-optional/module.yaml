@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-amq-optional
+version: '1.0'
+description: Legacy os-amq-optional script package.
+execute:
+- script: install.sh

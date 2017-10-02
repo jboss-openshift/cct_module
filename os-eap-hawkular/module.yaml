@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-eap-hawkular
+version: '1.0'
+description: Legacy os-eap-hawkular script package.
+execute:
+- script: configure.sh
+  user: '185'

@@ -72,3 +72,8 @@ Feature: OpenShift SSO tests
          | expected_status_code | 401                       |
          | expected_phrase      | Bearer                    |
 
+  Scenario: check nonHttpProxy escaping
+    When container is started with env
+       | variable                  | value           |
+       | NO_PROXY                  | patriots.com    |
+    Then container log should contain http.nonProxyHosts = "patriots.com"

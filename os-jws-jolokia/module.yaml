@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-jws-jolokia
+version: '1.0'
+description: Legacy os-jws-jolokia script package.
+execute:
+- script: run
+  user: '185'

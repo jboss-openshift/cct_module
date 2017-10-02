@@ -1,0 +1,17 @@
+schema_version: 1
+
+name: product.eap70
+version: '1.0'
+description: Aggregates modules used by EAP 7.0 image.
+
+modules:
+  install:
+  - name: product.common.eap7x
+  - name: os-eap70-openshift
+  - name: os-eap70-modules
+  - name: os-eap-activemq-rar
+  - name: os-eap-sso
+  - name: os-eap70-sso
+  - name: os-java-hawkular
+  - name: os-eap70-hawkular
+  - name: os-eap-hawkular

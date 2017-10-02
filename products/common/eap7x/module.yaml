@@ -1,0 +1,27 @@
+schema_version: 1
+
+name: product.common.eap7x
+version: '1.0'
+description: Aggregates common modules used by images based on EAP 7.x.
+
+modules:
+  install:
+  - name: dynamic-resources
+  - name: s2i-common
+  - name: java-alternatives
+  - name: os-eap7-openshift
+  - name: os-eap-s2i
+  - name: os-java-jolokia
+  - name: jolokia
+  - name: os-eap7-modules
+  - name: os-eap7-ping
+  - name: os-eap-launch
+  - name: os-eap7-launch
+  - name: os-eap-logging
+  - name: os-eap-probes
+  - name: jboss-maven
+  - name: os-eap-db-drivers
+  - name: os-eap-deployment-scanner # not in jdg65, jdg70, sso71, shouldn't hurt
+  - name: os-java-run # after os-eap7-ping in sso7x
+  - name: os-eap-extensions # not in sso71, shouldn't hurt, probably needed
+  - name: openshift-layer

@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-jws-https
+version: '1.0'
+description: Legacy os-jws-https script package.
+execute:
+- script: run
+  user: '185'

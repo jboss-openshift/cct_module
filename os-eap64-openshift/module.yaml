@@ -1,0 +1,8 @@
+schema_version: 1
+name: os-eap64-openshift
+version: '1.0'
+description: Legacy os-eap64-openshift script package.
+execute:
+- script: prepare.sh
+- script: configure.sh
+  user: '185'

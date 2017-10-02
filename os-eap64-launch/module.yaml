@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-eap64-launch
+version: '1.0'
+description: Legacy os-eap64-launch script package.
+execute:
+- script: configure.sh
+  user: '185'

@@ -182,6 +182,13 @@ function configureIoExceptionHandler() {
     fi
 }
 
+function configurePolicy() {
+  if [ -n "$AMQ_QUEUE_MEMORY_LIMIT" ]; then
+    sed -i 's|memoryLimit *= *"[^"]*"|memoryLimit="'"${AMQ_QUEUE_MEMORY_LIMIT}"'"|' "$CONFIG_FILE"
+    sed -i "s|memoryLimit *= *'[^']*'|memoryLimit='${AMQ_QUEUE_MEMORY_LIMIT}'|" "$CONFIG_FILE"
+  fi
+}
+
 cp "${OPENSHIFT_CONFIG_FILE}" "${CONFIG_FILE}"
 cp "${OPENSHIFT_LOGIN_FILE}" "${LOGIN_FILE}"
 cp "${OPENSHIFT_USERS_FILE}" "${USERS_FILE}"
@@ -195,3 +202,4 @@ configureTransportOptions
 checkViewEndpointsPermission
 configureMesh
 configureIoExceptionHandler
+configurePolicy

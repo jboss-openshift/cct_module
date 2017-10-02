@@ -3,34 +3,38 @@
 source "${JBOSS_HOME}/bin/launch/launch-common.sh"
 
 function prepareEnv() {
+    # please keep these in alphabetical order
     unset DROOLS_SERVER_FILTER_CLASSES
+    unset JBPM_HT_CALLBACK_CLASS
+    unset JBPM_HT_CALLBACK_METHOD
+    unset JBPM_LOOP_LEVEL_DISABLED
+    unset KIE_EXECUTOR_RETRIES
     unset KIE_SERVER_BYPASS_AUTH_USER
-    unset KIE_SERVER_SYNC_STARTUP
+    unset KIE_SERVER_CONTAINER_DEPLOYMENT
     unset KIE_SERVER_CONTROLLER_HOST
     unset KIE_SERVER_CONTROLLER_PORT
     unset KIE_SERVER_CONTROLLER_PROTOCOL
     unset KIE_SERVER_CONTROLLER_PWD
     unset KIE_SERVER_CONTROLLER_SERVICE
+    unset KIE_SERVER_CONTROLLER_TOKEN
     unset KIE_SERVER_CONTROLLER_USER
     unset KIE_SERVER_DOMAIN
     unset KIE_SERVER_HOST
     unset KIE_SERVER_ID
     unset KIE_SERVER_PERSISTENCE_DIALECT
     unset KIE_SERVER_PERSISTENCE_DS
-    unset KIE_SERVER_PERSISTENCE_TM
     unset KIE_SERVER_PERSISTENCE_SCHEMA
+    unset KIE_SERVER_PERSISTENCE_TM
     unset KIE_SERVER_PORT
     unset KIE_SERVER_PROTOCOL
     unset KIE_SERVER_PWD
-    unset KIE_SERVER_USER
-    unset KIE_SERVER_ROUTER_PROTOCOL
-    unset KIE_SERVER_ROUTER_SERVICE
     unset KIE_SERVER_ROUTER_HOST
     unset KIE_SERVER_ROUTER_PORT
-    unset KIE_EXECUTOR_RETRIES
-    unset JBPM_HT_CALLBACK_METHOD
-    unset JBPM_HT_CALLBACK_CLASS
-    unset JBPM_LOOP_LEVEL_DISABLED
+    unset KIE_SERVER_ROUTER_PROTOCOL
+    unset KIE_SERVER_ROUTER_SERVICE
+    unset KIE_SERVER_SYNC_DEPLOY
+    unset KIE_SERVER_TOKEN
+    unset KIE_SERVER_USER
 }
 
 function configureEnv() {
@@ -38,17 +42,30 @@ function configureEnv() {
 }
 
 function configure() {
+    # configure_server_env always has to be first
+    configure_server_env
     configure_controller_access
     configure_router_access
-    configure_drools_filter
-    configure_server_id
     configure_server_location
     configure_server_persistence
-    configure_server_repo
     configure_server_security
-    configure_server_sync_startup
+    configure_server_sync_deploy
+    configure_drools
     configure_executor
     configure_jbpm
+    # configure_server_state always has to be last
+    configure_server_state
+}
+
+function configure_server_env {
+    # source the KIE config
+    source $JBOSS_HOME/bin/launch/kieserver-env.sh
+    # set the KIE environment
+    setKieEnv
+    # dump the KIE environment
+    dumpKieEnv | tee ${JBOSS_HOME}/kieEnv
+    # save the environment for use by the probes
+    sed -ri "s/^([^:]+): *(.*)$/\1=\"\2\"/" ${JBOSS_HOME}/kieEnv
 }
 
 function configure_controller_access {
@@ -69,14 +86,23 @@ function configure_controller_access {
         if [ "${kieServerControllerPort}" = "" ]; then
             kieServerControllerPort=$(find_env "${controllerService}_SERVICE_PORT" "8080")
         fi
+        # path
+        local kieServerControllerPath="rest/controller"
+        if [ "${kieServerControllerProtocol}" = "ws" ]; then
+            kieServerControllerPath="websocket/controller"
+        fi
         # url
-        local kieServerControllerUrl="${kieServerControllerProtocol}://${kieServerControllerHost}:${kieServerControllerPort}/rest/controller"
+        local kieServerControllerUrl="${kieServerControllerProtocol}://${kieServerControllerHost}:${kieServerControllerPort}/${kieServerControllerPath}"
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller=${kieServerControllerUrl}"
         # user/pwd
         local kieServerControllerUser=$(find_env "KIE_SERVER_CONTROLLER_USER" "controllerUser")
         local kieServerControllerPwd=$(find_env "KIE_SERVER_CONTROLLER_PWD" "controller1!")
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.user=${kieServerControllerUser}"
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.pwd=${kieServerControllerPwd}"
+        # token
+        if [ "${KIE_SERVER_CONTROLLER_TOKEN}" != "" ]; then
+            JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.controller.token=${KIE_SERVER_CONTROLLER_TOKEN}"
+        fi
     fi
 }
 
@@ -103,7 +129,7 @@ function configure_router_access {
     fi
 }
 
-function configure_drools_filter() {
+function configure_drools() {
     # should the server filter classes?
     if [ "x${DROOLS_SERVER_FILTER_CLASSES}" != "x" ]; then
         # if specified, respect value
@@ -118,23 +144,6 @@ function configure_drools_filter() {
         DROOLS_SERVER_FILTER_CLASSES="true"
     fi
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.drools.server.filter.classes=${DROOLS_SERVER_FILTER_CLASSES}"
-}
-
-function configure_server_id() {
-    local kieServerId="${KIE_SERVER_ID}"
-    if [ "${kieServerId}" = "" ]; then
-        if [ "x${HOSTNAME}" != "x" ]; then
-            # chop off trailing unique "dash number" so all servers use the same template
-            kieServerId=$(echo "${HOSTNAME}" | sed -e 's/\(.*\)-.*/\1/')
-        else
-            kieServerId="$(generate_random_id)"
-        fi
-    fi
-    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.id=${kieServerId}"
-}
-
-function generate_random_id() {
-    cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1
 }
 
 function configure_server_location() {
@@ -189,20 +198,8 @@ function configure_server_persistence() {
     fi
 }
 
-function configure_server_repo() {
-    # see scripts/os-bpmsuite-executionserver/configure.sh
-    local kieServerRepo="${HOME}/.kie/repository"
-    #local kieServerRepo
-    #if [ "${JBOSS_HOME}" = "" ]; then
-    #        kieServerRepo="."
-    #    else
-    #        kieServerRepo="${JBOSS_HOME}"
-    #    fi
-    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.repo=${kieServerRepo}"
-}
-
 function configure_server_security() {
-    # execution user/pwd
+    # user/pwd
     local kieServerUser=$(find_env "KIE_SERVER_USER" "executionUser")
     local kieServerPwd=$(find_env "KIE_SERVER_PWD" "execution1!")
     ${JBOSS_HOME}/bin/add-user.sh -a --user "${kieServerUser}" --password "${kieServerPwd}" --role "kie-server,rest-all,guest"
@@ -213,6 +210,10 @@ function configure_server_security() {
     fi
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.user=${kieServerUser}"
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.pwd=${kieServerPwd}"
+    # token
+    if [ "${KIE_SERVER_TOKEN}" != "" ]; then
+        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.token=${KIE_SERVER_TOKEN}"
+    fi
     # domain
     if [ "${KIE_SERVER_DOMAIN}" = "" ]; then
         KIE_SERVER_DOMAIN="other"
@@ -228,11 +229,16 @@ function configure_server_security() {
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.bypass.auth.user=${KIE_SERVER_BYPASS_AUTH_USER}"
 }
 
-function configure_server_sync_startup(){
-    # server sync startup
-    if [ "${KIE_SERVER_SYNC_STARTUP}" != "" ]; then
-        JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.sync.deploy=${KIE_SERVER_SYNC_STARTUP}"
-    fi    
+function configure_server_sync_deploy(){
+    # server sync deploy (true by default)
+    local kieServerSyncDeploy="true";
+    if [ "${KIE_SERVER_SYNC_DEPLOY// /}" != "" ]; then
+        kieServerSyncDeploy=$(echo "${KIE_SERVER_SYNC_DEPLOY}" | tr "[:upper:]" "[:lower:]")
+        if [ "${kieServerSyncDeploy}" != "true" ]; then
+            kieServerSyncDeploy="false"
+        fi
+    fi
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.sync.deploy=${kieServerSyncDeploy}"
 }
 
 function configure_executor(){
@@ -253,4 +259,55 @@ function configure_jbpm(){
     if [ "${JBPM_LOOP_LEVEL_DISABLED}" != "" ]; then
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Djbpm.loop.level.disabled=${JBPM_LOOP_LEVEL_DISABLED}"
     fi
+}
+
+function configure_server_state() {
+    # Need to replace whitespaces with something different from space or escaped space (\ ) characters
+    local kieServerId="${KIE_SERVER_ID// /_}"
+    if [ "${kieServerId}" = "" ]; then
+        if [ "x${HOSTNAME}" != "x" ]; then
+            # chop off trailing unique "dash number" so all servers use the same template
+            kieServerId=$(echo "${HOSTNAME}" | sed -e 's/\(.*\)-.*/\1/')
+        else
+            kieServerId="$(generate_random_id)"
+        fi
+    fi
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.id=${kieServerId}"
+
+    # see scripts/os-bpmsuite-executionserver/configure.sh
+    local kieServerRepo="${HOME}/.kie/repository"
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.repo=${kieServerRepo}"
+
+    # see above: configure_server_env / kieserver-env.sh / setKieEnv
+    if [ "${KIE_SERVER_CONTAINER_DEPLOYMENT}" != "" ]; then
+        # ensure all KIE dependencies are pulled for offline use (this duplicates s2i process; TODO: short-circuit if possible?)
+        $JBOSS_HOME/bin/launch/kieserver-pull.sh
+        ERR=$?
+        if [ $ERR -ne 0 ]; then
+            echo "Aborting due to error code $ERR from maven kjar dependency pull"
+            exit $ERR
+        fi
+
+        # verify all KIE containers (this duplicates s2i process; TODO: short-circuit if possible?)
+        $JBOSS_HOME/bin/launch/kieserver-verify.sh
+        ERR=$?
+        if [ $ERR -ne 0 ]; then
+            echo "Aborting due to error code $ERR from maven kjar verification"
+            exit $ERR
+        fi
+
+        # create a KIE server state file with all configured containers and properties
+        local stateFileInit="org.kie.server.services.impl.storage.file.KieServerStateFileInit"
+        echo "Attempting to generate kie server state file with 'java ${JBOSS_BPMSUITE_ARGS} ${stateFileInit}'"
+        java ${JBOSS_BPMSUITE_ARGS} $(getKieJavaArgs) ${stateFileInit}
+        ERR=$?
+        if [ $ERR -ne 0 ]; then
+            echo "Aborting due to error code $ERR from kie server state file init"
+            exit $ERR
+        fi
+    fi
+}
+
+function generate_random_id() {
+    cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1
 }

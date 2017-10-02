@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-eap-deployment-scanner
+version: '1.0'
+description: Legacy os-eap-deployment-scanner script package.
+execute:
+- script: configure.sh
+  user: '185'

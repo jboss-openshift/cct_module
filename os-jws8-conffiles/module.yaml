@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-jws8-conffiles
+version: '1.0'
+description: Legacy os-jws8-conffiles script package.
+execute:
+- script: run
+  user: '185'

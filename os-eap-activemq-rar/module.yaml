@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-eap-activemq-rar
+version: '1.0'
+description: Legacy os-eap-activemq-rar script package.
+execute:
+- script: configure.sh
+  user: '185'

@@ -4,6 +4,7 @@ source "${JBOSS_HOME}/bin/launch/launch-common.sh"
 source "/opt/rh/rh-maven33/enable"
 
 function prepareEnv() {
+    # please keep these in alphabetical order
     unset KIE_ADMIN_PWD
     unset KIE_ADMIN_USER
     unset KIE_MBEANS

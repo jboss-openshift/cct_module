@@ -1,0 +1,6 @@
+schema_version: 1
+name: dynamic-resources
+version: '1.0'
+description: Legacy dynamic-resources script package.
+execute:
+- script: install.sh

@@ -1,0 +1,7 @@
+schema_version: 1
+name: openshift-layer
+version: '1.0'
+description: Legacy openshift-layer script package.
+execute:
+- script: configure_layers.sh
+  user: '185'

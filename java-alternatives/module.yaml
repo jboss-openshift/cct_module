@@ -1,0 +1,6 @@
+schema_version: 1
+name: java-alternatives
+version: '1.0'
+description: Legacy java-alternatives script package.
+execute:
+- script: run.sh

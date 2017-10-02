@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-jws-rm-defaults
+version: '1.0'
+description: Legacy os-jws-rm-defaults script package.
+execute:
+- script: run
+  user: '185'

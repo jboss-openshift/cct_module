@@ -41,7 +41,7 @@ max_unbounded() {
 }
 
 container_memory() {
-  # High number which is the max limit unti which memory is supposed to be
+  # High number which is the max limit unit which memory is supposed to be
   # unbounded. 
   local mem_file="/sys/fs/cgroup/memory/memory.limit_in_bytes"
   local max_mem_unbounded="$(max_unbounded)"

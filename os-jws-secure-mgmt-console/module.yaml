@@ -1,0 +1,7 @@
+schema_version: 1
+name: os-jws-secure-mgmt-console
+version: '1.0'
+description: Legacy os-jws-secure-mgmt-console script package.
+execute:
+- script: run
+  user: '185'

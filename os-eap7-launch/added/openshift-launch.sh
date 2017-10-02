@@ -34,9 +34,19 @@ source $JBOSS_HOME/bin/launch/configure.sh
 
 echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
+# TERM signal handler
+function clean_shutdown() {
+  echo "*** JBossAS wrapper process ($$) received TERM signal ***"
+  $JBOSS_HOME/bin/jboss-cli.sh -c ":shutdown(timeout=60)"
+  wait $!
+}
+
+trap "clean_shutdown" TERM
+
 if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
   trap "" TERM
   echo "Using CLI Graceful Shutdown instead of TERM signal"
 fi
 
-exec $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS}
+$JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS} &
+wait $!

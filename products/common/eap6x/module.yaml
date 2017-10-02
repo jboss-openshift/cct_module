@@ -1,0 +1,27 @@
+schema_version: 1
+
+name: product.common.eap6x
+version: '1.0'
+description: Aggregates common modules used by images based on EAP 6.x.
+
+modules:
+  install:
+  - name: dynamic-resources
+  - name: s2i-common
+  - name: java-alternatives
+  - name: os-eap64-openshift
+  - name: os-eap-s2i
+  - name: os-java-jolokia
+  - name: jolokia
+  - name: os-eap64-modules
+  - name: os-eap64-ping
+  - name: os-eap-launch
+  - name: os-eap64-launch
+  - name: os-eap-logging
+  - name: os-eap-probes
+  - name: jboss-maven
+  - name: os-eap-db-drivers
+  - name: os-eap-deployment-scanner # not in jdg65, shouldn't hurt
+  - name: os-eap-extensions
+  - name: openshift-layer
+  - name: os-java-run # after os-eap64-ping in eap64 image
