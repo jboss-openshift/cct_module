@@ -51,6 +51,6 @@ execute:
 - script: install_as_root
 
 artifacts:
-#- name: hawkular-javaagent-shaded.jar
-- url: http://download.devel.redhat.com/brewroot/packages/org.hawkular.agent-hawkular-wildfly-agent-parent/1.0.0.CR4_redhat_1/1/maven/org/hawkular/agent/hawkular-javaagent/1.0.0.CR4-redhat-1/hawkular-javaagent-1.0.0.CR4-redhat-1-shaded.jar
-  md5: e133776c76a474ed46ac88c856eabe34
+- path: hawkular-javaagent-1.0.0.CR5-redhat-1-shaded.jar
+  md5: f5d3e0220e10c706ef86af84771cf74e
+
