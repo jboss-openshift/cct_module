@@ -14,3 +14,16 @@ Feature: Openshift DataGrid tests
     Then container log should contain WFLYSRV0025: Data Grid 7.1.0
     Then run /opt/datagrid/bin/readinessProbe.sh in container once
     Then run /opt/datagrid/bin/livenessProbe.sh in container once
+
+  Scenario: Check for default debug port
+    When container is started with env
+       | variable            | value                   |
+       | DEBUG               | true                    |
+    Then container log should contain -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n
+
+  Scenario: Check for custom debug port
+    When container is started with env
+       | variable            | value                   |
+       | DEBUG               | true                    |
+       | DEBUG_PORT          | 8788                    |
+    Then container log should contain -agentlib:jdwp=transport=dt_socket,address=8788,server=y,suspend=n

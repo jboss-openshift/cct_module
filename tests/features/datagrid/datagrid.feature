@@ -40,16 +40,3 @@ Feature: Openshift DataGrid tests
      And container log should not contain started (with errors)
      And file /opt/datagrid/standalone/configuration/standalone-openshift.xml should not exist
 
-  Scenario: Check for default debug port
-    When container is started with env
-       | variable            | value                   |
-       | DEBUG               | true                    |
-    Then container log should contain -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n
-
-  Scenario: Check for custom debug port
-    When container is started with env
-       | variable            | value                   |
-       | DEBUG               | true                    |
-       | DEBUG_PORT          | 8788                    |
-    Then container log should contain -agentlib:jdwp=transport=dt_socket,address=8788,server=y,suspend=n
-
