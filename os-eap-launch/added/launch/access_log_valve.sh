@@ -35,16 +35,14 @@ function configure() {
 }
 
 function configure_access_log_valve() {
-    EAP6_VALVE="<valve name=\"accessLog\" module=\"org.jboss.openshift\" class-name=\"org.jboss.openshift.valves.StdoutAccessLogValve\">\n              \
-    <param param-name=\"pattern\" param-value=\"%h %l %u %t %{X-Forwarded-Host}i \&quot;%r\&quot; %s %b\" />\n        \
-    </valve>"
+    EAP6_VALVE="<valve><class-name>org.jboss.openshift.valves.StdoutAccessLogValve</class-name><module>org.jboss.openshift</module><param><param-name>pattern</param-name><param-value>%h %l %u %t %{X-Forwarded-Host}i \&quot;%r\&quot; %s %b</param-value></param></valve>"
 
     EAP7x_VALVE="<access-log use-server-log=\"true\" pattern=\"%h %l %u %t %{i,X-Forwarded-Host} \&quot;%r\&quot; %s %b\"/>"
 
     if [ "${ENABLE_ACCESS_LOG^^}" == "TRUE" ]; then
         echo "Configuring Access Log Valve."
         if [[ "$JBOSS_EAP_VERSION" == "6.4"* ]]; then
-            sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP6_VALVE}|" $CONFIG_FILE
+            sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP6_VALVE}|" ${JBOSS_HOME}/standalone/data/content/38/b8ef5d9c683c14b786ba47845934625a1c15d8/content
         fi
         if [[ "$JBOSS_EAP_VERSION" == "7."* ]]; then
             sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP7x_VALVE}|" $CONFIG_FILE

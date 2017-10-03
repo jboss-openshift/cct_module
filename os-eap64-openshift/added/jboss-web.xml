@@ -1,0 +1,19 @@
+<jboss-web version="7.0" 
+        xmlns:jboss="http://www.jboss.com/xml/ns/javaee" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee jboss-web_7_0.xsd">
+
+    <valve>
+        <class-name>org.apache.catalina.valves.RemoteIpValve</class-name>
+        <module>org.jboss.as.web</module>
+        <param>
+          <param-name>remoteIpHeader</param-name>
+          <param-value>X-Forwarded-For</param-value>
+        </param>
+        <param>
+          <param-name>protocolHeader</param-name>
+          <param-value>X-Forwarded-Proto"</param-value>
+        </param>
+    </valve>
+    <!-- ##ACCESS_LOG_VALVE## -->
+</jboss-web>
