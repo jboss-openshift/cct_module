@@ -16,3 +16,5 @@ cp -p ${ADDED_DIR}/launch/authentication-config.sh $JBOSS_HOME/bin/launch
 
 # Add backward compatiblity config script
 cp -p ${ADDED_DIR}/launch/backward-compatibility.sh $JBOSS_HOME/bin/launch
+
+cp -p ${ADDED_DIR}/launch/jvm.sh $JBOSS_HOME/bin/launch
