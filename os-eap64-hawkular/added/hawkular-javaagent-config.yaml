@@ -517,7 +517,7 @@ avail-set-dmr:
     interval:   30
     time-units: seconds
     attribute:  server-state
-    up-regex:   "run.*"
+    up-regex:   "run.*|.*-required"
 - name: Deployment Status
   avail-dmr:
   - name: Deployment Status
@@ -753,6 +753,9 @@ resource-type-set-dmr:
     - name: Base Directory
       attribute: base-dir
       path:      /core-service=server-environment
+    - name: Bound Address
+      attribute: bound-address
+      path:     /socket-binding-group=full-sockets/socket-binding=http
 
   - name: Domain WildFly Server Controller
     resource-name-template: "Domain WildFly Server Controller [%-]"
