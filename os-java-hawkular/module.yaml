@@ -51,6 +51,6 @@ execute:
 - script: install_as_root
 
 artifacts:
-- path: hawkular-javaagent-1.0.0.CR5-redhat-1-shaded.jar
-  md5: f5d3e0220e10c706ef86af84771cf74e
+- path: hawkular-javaagent-1.0.0.CR7-redhat-1-shaded.jar
+  md5: c04f7a6ec13e387e02f7616678d9e164
 
