@@ -230,6 +230,13 @@ function configurePolicy() {
   fi
 }
 
+# CLOUD-2025 - Format the *-openshift.xml configuration files
+function format_xml() {
+    mv ${CONFIG_FILE} ${CONFIG_FILE}.bkp
+    #format and write the new file
+    xmllint --format ${CONFIG_FILE}.bkp > ${CONFIG_FILE}
+}
+
 cp "${OPENSHIFT_CONFIG_FILE}" "${CONFIG_FILE}"
 cp "${OPENSHIFT_LOGIN_FILE}" "${LOGIN_FILE}"
 cp "${OPENSHIFT_USERS_FILE}" "${USERS_FILE}"
@@ -245,3 +252,4 @@ checkViewEndpointsPermission
 configureMesh
 configureIoExceptionHandler
 configurePolicy
+format_xml

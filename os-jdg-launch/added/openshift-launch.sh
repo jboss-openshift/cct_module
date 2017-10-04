@@ -35,4 +35,3 @@ else
 
   exec $JBOSS_HOME/bin/clustered.sh -c clustered-openshift.xml -bmanagement 127.0.0.1 ${JBOSS_HA_ARGS} ${JAVA_PROXY_OPTIONS}
 fi
-

@@ -31,6 +31,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/access_log_valve.sh
   $JBOSS_HOME/bin/launch/bpmsuite-common.sh
   $JBOSS_HOME/bin/launch/bpmsuite-standalonecontroller.sh
+  $JBOSS_HOME/bin/launch/format-config-files.sh
   /opt/run-java/proxy-options
 )
 
