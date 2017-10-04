@@ -489,6 +489,10 @@ function configure_container_security() {
                         <$CONTAINER_SECURITY_ROLE_MAPPER $CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS/>"
     fi
 
+    if [ -z "$rolemapper" ]; then
+      rolemapper="<identity-role-mapper />"
+    fi
+
     if [ -n "$CONTAINER_SECURITY_ROLES" ]; then
       IFS=',' read -a roleslist <<< "$(find_env "CONTAINER_SECURITY_ROLES")"
       if [ "${#roleslist[@]}" -ne "0" ]; then

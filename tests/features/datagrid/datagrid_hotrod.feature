@@ -76,3 +76,31 @@ Feature: Openshift JDG hotrod tests
        | CONTAINER_SECURITY_ROLES                         | admin=ALL           |
     Then container log should contain started in
     And available container log should not contain ParseError
+
+  Scenario: Check container security auth
+    When container is started with env
+       | variable                                         | value                |
+       | CACHE_NAMES                                      | ADDRESSBOOK          |
+       | ADDRESSBOOK_CACHE_SECURITY_AUTHORIZATION_ENABLED | true                 |
+       | ADDRESSBOOK_CACHE_SECURITY_AUTHORIZATION_ROLES   | admin                |
+       | HOTROD_AUTHENTICATION                            | true                 |
+       | CONTAINER_SECURITY_ROLES                         | admin=ALL            |
+       | CONTAINER_SECURITY_ROLE_MAPPER                   | identity-role-mapper |
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPath //*[local-name()='cache-container'][@name='clustered']/*[local-name()='security']/*[local-name()='authorization']/*[local-name()='identity-role-mapper']
+    And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value admin on XPath //*[local-name()='cache-container'][@name='clustered']/*[local-name()='security']/*[local-name()='authorization']/*[local-name()='role']/@name
+    And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ALL on XPath //*[local-name()='cache-container'][@name='clustered']/*[local-name()='security']/*[local-name()='authorization']/*[local-name()='role']/@permissions
+
+  Scenario: CLOUD-2077 default to identity-role-mapper if not specified
+    When container is started with env
+       | variable                                         | value                |
+       | CACHE_NAMES                                      | ADDRESSBOOK          |
+       | ADDRESSBOOK_CACHE_SECURITY_AUTHORIZATION_ENABLED | true                 |
+       | ADDRESSBOOK_CACHE_SECURITY_AUTHORIZATION_ROLES   | admin                |
+       | HOTROD_AUTHENTICATION                            | true                 |
+       | CONTAINER_SECURITY_ROLES                         | admin=ALL            |
+    Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPath //*[local-name()='cache-container'][@name='clustered']/*[local-name()='security']/*[local-name()='authorization']/*[local-name()='identity-role-mapper']
+    And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value admin on XPath //*[local-name()='cache-container'][@name='clustered']/*[local-name()='security']/*[local-name()='authorization']/*[local-name()='role']/@name
+    And XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should contain value ALL on XPath //*[local-name()='cache-container'][@name='clustered']/*[local-name()='security']/*[local-name()='authorization']/*[local-name()='role']/@permissions
+
+    
+
