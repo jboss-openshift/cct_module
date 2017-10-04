@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-partition
+version: '1.0'
+description: Legacy os-partition script package.
+execute:
+- script: install_as_root
