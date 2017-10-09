@@ -186,8 +186,9 @@ function generate_datasource_common() {
   fi
 
   if [ -n "$TIMER_SERVICE_DATA_STORE" -a "$TIMER_SERVICE_DATA_STORE" = "${service_name}" ]; then
+    local refreshInterval=${TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL:--1}
     inject_timer_service ${pool_name}_ds
-    inject_datastore $pool_name $jndi_name $driver
+    inject_datastore $pool_name $jndi_name $driver $refreshInterval
   fi
 
   echo $ds | sed ':a;N;$!ba;s|\n|\\n|g'
@@ -333,12 +334,14 @@ function inject_timer_service() {
 # $1 - service name
 # $2 - datasource jndi name
 # $3 - datasource databasename
+# $4 - refresh interval
 function inject_datastore() {
   local servicename="${1}"
   local jndi_name="${2}"
   local databasename="${3}"
+  local refresh_interval="${4}"
 
-  local datastore="<database-data-store name=\"${servicename}_ds\" datasource-jndi-name=\"${jndi_name}\" database=\"${databasename}\" partition=\"${servicename}_part\"/>\
+  local datastore="<database-data-store name=\"${servicename}_ds\" datasource-jndi-name=\"${jndi_name}\" database=\"${databasename}\" partition=\"${servicename}_part\" refresh-interval=\"${refresh_interval}\"/>\
         <!-- ##DATASTORES## -->"
   sed -i "s|<!-- ##DATASTORES## -->|${datastore}|" $CONFIG_FILE
 }
