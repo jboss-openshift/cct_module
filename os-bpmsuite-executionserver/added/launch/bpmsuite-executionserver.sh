@@ -196,6 +196,7 @@ function configure_server_persistence() {
     if [ "${KIE_SERVER_PERSISTENCE_SCHEMA}" != "" ]; then
         JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.persistence.schema=${KIE_SERVER_PERSISTENCE_SCHEMA}"
     fi
+    JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.jbpm.ejb.timer.tx=true"
 }
 
 function configure_server_security() {
