@@ -36,8 +36,9 @@ function configure() {
 }
 
 function configure_access_log_valve() {
-    EAP6_VALVE="<valve name=\"accessLog\" module=\"org.jboss.openshift\" class-name=\"org.jboss.openshift.valves.StdoutAccessLogValve\">\n              \
-    <param param-name=\"pattern\" param-value=\"%h %l %u %t %{X-Forwarded-Host}i \&quot;%r\&quot; %s %b\" />\n        \
+
+    EAP6_VALVE="<valve name=\"accessLog\" module=\"org.jboss.openshift\" class-name=\"org.jboss.openshift.valves.StdoutAccessLogValve\">\n \
+    <param param-name=\"pattern\" param-value=\"%h %l %u %t %{forwarded}i \&quot;%r\&quot; %s %b\" />\n \
     </valve>"
 
     EAP7x_VALVE="<access-log use-server-log=\"true\" pattern=\"%h %l %u %t %{i,X-Forwarded-Host} \&quot;%r\&quot; %s %b\"/>"
