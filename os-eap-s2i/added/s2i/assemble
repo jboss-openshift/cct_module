@@ -10,6 +10,37 @@ fi
 
 LOCAL_SOURCE_DIR=/tmp/src
 
+function copy_injected {
+  source_dir=$1
+  target_dir=$2
+
+  if [ -d "$source_dir" ]; then
+    cp -rf ${source_dir}/* $target_dir
+  fi
+}
+
+function handle_injected() {
+  if [ -n $CUSTOM_INSTALL_DIRECTORIES ]; then
+    IFS=',' read -a install_dir_entries <<< $CUSTOM_INSTALL_DIRECTORIES
+    for install_dir_entry in "${install_dir_entries[@]}"; do
+      for install_dir in $(find ${LOCAL_SOURCE_DIR}/$install_dir_entry -maxdepth 0 2>/dev/null); do
+        chmod -R 755 ${install_dir}
+        if [ -f ${install_dir}/install.sh ]; then
+          ${install_dir}/install.sh ${install_dir}
+        else
+          copy_injected ${install_dir}/modules $JBOSS_HOME/modules
+
+          copy_injected ${install_dir}/configuration $JBOSS_HOME/standalone/configuration
+
+          copy_artifacts ${install_dir}/deployments war ear rar jar
+        fi
+      done
+    done
+  fi
+}
+
+handle_injected
+
 # Resulting WAR files will be deployed to /opt/eap/standalone/deployments
 DEPLOY_DIR=$JBOSS_HOME/standalone/deployments
 
@@ -101,33 +132,6 @@ fi
 if [ -d $LOCAL_SOURCE_DIR/modules ]; then
   echo "Copying modules from project..."
   cp -vr $LOCAL_SOURCE_DIR/modules/* $JBOSS_HOME/modules/
-fi
-
-function copy_injected {
-  source_dir=$1
-  target_dir=$2
-
-  if [ -d "$source_dir" ]; then
-    cp -rf ${source_dir}/* $target_dir
-  fi
-}
-
-if [ -n $CUSTOM_INSTALL_DIRECTORIES ]; then
-  IFS=',' read -a install_dir_entries <<< $CUSTOM_INSTALL_DIRECTORIES
-  for install_dir_entry in "${install_dir_entries[@]}"; do
-    for install_dir in $(find ${LOCAL_SOURCE_DIR}/$install_dir_entry -maxdepth 0 2>/dev/null); do
-      chmod -R 755 ${install_dir}
-      if [ -f ${install_dir}/install.sh ]; then
-        ${install_dir}/install.sh ${install_dir}
-      else
-        copy_injected ${install_dir}/modules $JBOSS_HOME/modules
-
-        copy_injected ${install_dir}/configuration $JBOSS_HOME/standalone/configuration
-
-        copy_artifacts ${install_dir}/deployments war ear rar jar
-      fi
-    done
-  done
 fi
 
 chmod -R g+rwX $HOME
