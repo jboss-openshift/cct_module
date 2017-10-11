@@ -113,3 +113,16 @@ Feature: Check correct variable expansion used
       | ns     | urn:jboss:domain:security:1.2 |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 1 elements on XPath //ns:security-domain[@name='eap-secdomain-name']/ns:authentication/ns:login-module/ns:module-option[@name='password-stacking']
 
+    Scenario: Check HTTPS basic config
+    When container is started with env
+      | variable               | value                        |
+      | HTTPS_NAME             | jboss                        |
+      | HTTPS_PASSWORD         | mykeystorepass               |
+      | HTTPS_KEYSTORE_DIR     | /etc/eap-secret-volume       |
+      | HTTPS_KEYSTORE         | keystore.jks                 |
+      | HTTPS_KEYSTORE_TYPE    | JKS                          |
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value /etc/eap-secret-volume/keystore.jks on XPath //*[local-name()='connector']/*[local-name()='ssl']/@certificate-key-file
+    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mykeystorepass on XPath //*[local-name()='connector']/*[local-name()='ssl']/@password
+    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value jboss on XPath //*[local-name()='connector']/*[local-name()='ssl']/@key-alias
+    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value JKS on XPath //*[local-name()='connector']/*[local-name()='ssl']/@keystore-type
+

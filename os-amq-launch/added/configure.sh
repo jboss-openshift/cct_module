@@ -115,9 +115,13 @@ function configureSSL() {
     keyStorePath="$sslDir/$keyStoreFile"
     trustStorePath="$sslDir/$trustStoreFile"
 
+    if [ -n "$AMQ_KEY_PASSWORD" ]; then
+      keyPassword="keyStoreKeyPassword=\"$AMQ_KEY_PASSWORD\""
+    fi
+
     sslElement="<sslContext>\n\
             <sslContext keyStore=\"file:$keyStorePath\"\n\
-                        keyStorePassword=\"$keyStorePassword\"\n\
+                        keyStorePassword=\"$keyStorePassword\" $keyPassword \n\
                         trustStore=\"file:$trustStorePath\"\n\
                         trustStorePassword=\"$trustStorePassword\" />\n\
         </sslContext>"

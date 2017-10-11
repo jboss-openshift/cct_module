@@ -139,10 +139,15 @@ function configure_server_identities() {
       fi
       if [ -n "$SSL_KEYSTORE_ALIAS" ]; then
         keystore_alias="alias=\"$SSL_KEYSTORE_ALIAS\""
+      elif [ -n "$HTTPS_NAME" ]; then
+        keystore_alias="alias=\"$HTTPS_NAME\""
       fi
       if [ -n "$SSL_KEY_PASSWORD" ]; then
         key_password="key-password=\"$SSL_KEY_PASSWORD\""
+      elif [ -n "$HTTPS_KEY_PASSWORD" ]; then
+        key_password="key-password=\"$HTTPS_KEY_PASSWORD\""
       fi
+
       ssl="\
           <ssl $ssl_protocol>\
             <keystore path=\"$keystore_path\" keystore-password=\"$keystore_password\" $keystore_relative_to $keystore_alias $key_password/>\

@@ -11,8 +11,15 @@ function prepareEnv() {
   unset DATAVIRT_TRANSPORT_KEY_ALIAS
   unset DATAVIRT_TRANSPORT_KEYSTORE
   unset DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD
+  unset DATAVIRT_TRANSPORT_KEY_PASSWORD
   unset DATAVIRT_TRANSPORT_KEYSTORE_TYPE
   unset DATAVIRT_TRANSPORT_KEYSTORE_DIR
+  unset HTTPS_NAME
+  unset HTTPS_PASSWORD
+  unset HTTPS_KEY_PASSWORD
+  unset HTTPS_KEYSTORE_DIR
+  unset HTTPS_KEYSTORE
+  unset HTTPS_KEYSTORE_TYPE
   unset DATAVIRT_USERS
   unset DATAVIRT_USER_PASSWORDS
   unset DATAVIRT_USER_GROUPS
@@ -69,6 +76,7 @@ function add_secure_transport(){
   local key_alias=${DATAVIRT_TRANSPORT_KEY_ALIAS}
   local keystore=${DATAVIRT_TRANSPORT_KEYSTORE-$HTTPS_KEYSTORE}
   local keystore_pwd=${DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD-$HTTPS_PASSWORD}
+  local key_pwd=${DATAVIRT_TRANSPORT_KEY_PASSWORD-$HTTPS_KEY_PASSWORD}
   local keystore_type=${DATAVIRT_TRANSPORT_KEYSTORE_TYPE-$HTTPS_KEYSTORE_TYPE}
   local keystore_dir=${DATAVIRT_TRANSPORT_KEYSTORE_DIR-$HTTPS_KEYSTORE_DIR}
   local auth_mode=${DATAVIRT_TRANSPORT_AUTHENTICATION_MODE}
@@ -91,11 +99,15 @@ function add_secure_transport(){
       fi
     fi
 
+    if [ -n "$key_pwd" ]; then
+      key_password="key-password=\"${key_pwd}\""
+    fi
+
     # JDBC
     transport="<transport name=\"secure-jdbc\" socket-binding=\"secure-teiid-jdbc\" protocol=\"teiid\"><authentication security-domain=\"teiid-security\"/><ssl mode=\"enabled\" authentication-mode=\"$auth_mode\" ssl-protocol=\"TLSv1.2\" keymanagement-algorithm=\"SunX509\">"
 
     if [ "$auth_mode" != "anonymous" ]; then 
-      transport="$transport <keystore name=\"${keystore_dir}/${keystore}\" password=\"$DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD\" type=\"$keystore_type\" key-alias=\"$key_alias\"/><truststore name=\"${keystore_dir}/${keystore}\" password=\"$keystore_pwd\"/>"
+      transport="$transport <keystore name=\"${keystore_dir}/${keystore}\" password=\"$keystore_pwd\" type=\"$keystore_type\" key-alias=\"$key_alias\" ${key_password} /><truststore name=\"${keystore_dir}/${keystore}\" password=\"$keystore_pwd\"/>"
     fi
 
     transport="$transport </ssl></transport>"
@@ -104,7 +116,7 @@ function add_secure_transport(){
     transport="$transport <transport name=\"secure-odbc\" socket-binding=\"secure-teiid-odbc\" protocol=\"pg\"><authentication security-domain=\"teiid-security\"/><ssl mode=\"enabled\" authentication-mode=\"$auth_mode\" ssl-protocol=\"TLSv1.2\" keymanagement-algorithm=\"SunX509\">"
 
     if [ "$auth_mode" != "anonymous" ]; then
-      transport="$transport <keystore name=\"${keystore_dir}/${keystore}\" password=\"$DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD\" type=\"$keystore_type\" key-alias=\"$key_alias\"/><truststore name=\"${keystore_dir}/${keystore}\" password=\"$keystore_pwd\"/>"
+      transport="$transport <keystore name=\"${keystore_dir}/${keystore}\" password=\"$keystore_pwd\" type=\"$keystore_type\" key-alias=\"$key_alias\" ${key_password} /><truststore name=\"${keystore_dir}/${keystore}\" password=\"$keystore_pwd\"/>"
     fi
 
     transport="$transport </ssl></transport>"

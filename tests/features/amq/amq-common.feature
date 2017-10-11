@@ -81,10 +81,12 @@ Feature: Openshift AMQ tests
        | AMQ_KEYSTORE_TRUSTSTORE_DIR | /opt/amq/conf |
        | AMQ_KEYSTORE                | broker.ks     |
        | AMQ_KEYSTORE_PASSWORD       | password      |
+       | AMQ_KEY_PASSWORD            | keypass       |
        | AMQ_TRUSTSTORE              | broker.ts     |
        | AMQ_TRUSTSTORE_PASSWORD     | password      |
     Then XML file /opt/amq/conf/activemq.xml should contain value file:/opt/amq/conf/broker.ks on XPath //amq:sslContext/@keyStore
     And XML file /opt/amq/conf/activemq.xml should contain value password on XPath //amq:sslContext/@keyStorePassword
+    And XML file /opt/amq/conf/activemq.xml should contain value keypass on XPath //amq:sslContext/@keyStoreKeyPassword
     And XML file /opt/amq/conf/activemq.xml should contain value file:/opt/amq/conf/broker.ts on XPath //amq:sslContext/@trustStore
     And XML file /opt/amq/conf/activemq.xml should contain value password on XPath //amq:sslContext/@trustStorePassword
 
