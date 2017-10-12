@@ -11,6 +11,12 @@ function configure() {
 
 function configureEnv() {
   inject_external_datasources
+
+  if [ -n "$JDBC_STORE_JNDI_NAME" ]; then
+    local jdbcStore="<jdbc-store datasource-jndi-name=\"${JDBC_STORE_JNDI_NAME}\"/>"
+    sed -i "s|<!-- ##JDBC_STORE## -->|${jdbcStore}|" $CONFIG_FILE
+  fi
+
 }
 
 function inject_datasources() {
