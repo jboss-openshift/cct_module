@@ -23,7 +23,7 @@ function configure() {
 function configure_admin_security() {
     local kieAdminUser=$(find_env "KIE_ADMIN_USER" "adminUser")
     local kieAdminPwd=$(find_env "KIE_ADMIN_PWD" "admin1!")
-    ${JBOSS_HOME}/bin/add-user.sh -a --user "${kieAdminUser}" --password "${kieAdminPwd}" --role "kie-server,rest-all,admin,kiemgmt"
+    ${JBOSS_HOME}/bin/add-user.sh -a --user "${kieAdminUser}" --password "${kieAdminPwd}" --role "kie-server,rest-all,admin,kiemgmt,Administrators"
     if [ "$?" -ne "0" ]; then
         echo "Failed to create admin user \"${kieAdminUser}\""
         echo "Exiting..."
