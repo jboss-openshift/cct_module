@@ -1,4 +1,5 @@
 source $JBOSS_HOME/bin/launch/launch-common.sh
+source $JBOSS_HOME/bin/launch/logging.sh
 
 function clearResourceAdapterEnv() {
   local prefix=$1
@@ -46,7 +47,7 @@ function add_admin_objects() {
       if [ -n "$class_name" ] && [ -n "$physical_name" ]; then
         admin_objects="${admin_objects}<admin-object class-name=\"$class_name\" jndi-name=\"java:/${physical_name}\" use-java-context=\"true\" pool-name=\"${physical_name}\"><config-property name=\"PhysicalName\">${physical_name}</config-property></admin-object>"
       else
-        echo "Warning - Cannot configure admin-object $object for resource adapter $ra_prefix. Missing ${ra_prefix}_ADMIN_OBJECT_${object}_CLASS_NAME and/or ${ra_prefix}_ADMIN_OBJECT_${object}_PHYSICAL_NAME"
+        log_warning "Cannot configure admin-object $object for resource adapter $ra_prefix. Missing ${ra_prefix}_ADMIN_OBJECT_${object}_CLASS_NAME and/or ${ra_prefix}_ADMIN_OBJECT_${object}_PHYSICAL_NAME"
       fi
     done
   fi
@@ -63,32 +64,32 @@ function inject_resource_adapters_common() {
   for ra_prefix in $(echo $RESOURCE_ADAPTERS | sed "s/,/ /g"); do
     ra_id=$(find_env "${ra_prefix}_ID")
     if [ -z "$ra_id" ]; then
-      echo "Warning - ${ra_prefix}_ID is missing from resource adapter configuration, defaulting to ${ra_prefix}"
+      log_warning "${ra_prefix}_ID is missing from resource adapter configuration, defaulting to ${ra_prefix}"
       ra_id="${ra_prefix}"
     fi
 
     ra_module_slot=$(find_env "${ra_prefix}_MODULE_SLOT")
     if [ -z "$ra_module_slot" ]; then
-      echo "Warning - ${ra_prefix}_MODULE_SLOT is missing from resource adapter configuration, defaulting to main"
+      log_warning "${ra_prefix}_MODULE_SLOT is missing from resource adapter configuration, defaulting to main"
       ra_module_slot="main"
     fi
 
     ra_archive=$(find_env "${ra_prefix}_ARCHIVE")
     ra_module_id=$(find_env "${ra_prefix}_MODULE_ID")
     if [ -z "$ra_module_id" ] && [ -z "$ra_archive" ]; then
-      echo "Warning - ${ra_prefix}_MODULE_ID and ${ra_prefix}_ARCHIVE are missing from resource adapter configuration. One is required. Resource adapter will not be configured"
+      log_warning "${ra_prefix}_MODULE_ID and ${ra_prefix}_ARCHIVE are missing from resource adapter configuration. One is required. Resource adapter will not be configured"
       continue
     fi
 
     ra_class=$(find_env "${ra_prefix}_CONNECTION_CLASS")
     if [ -z "$ra_class" ]; then
-      echo "Warning - ${ra_prefix}_CONNECTION_CLASS is missing from resource adapter configuration. Resource adapter will not be configured"
+      log_warning "${ra_prefix}_CONNECTION_CLASS is missing from resource adapter configuration. Resource adapter will not be configured"
       continue
     fi
 
     ra_jndi=$(find_env "${ra_prefix}_CONNECTION_JNDI")
     if [ -z "$ra_jndi" ]; then
-      echo "Warning - ${ra_prefix}_CONNECTION_JNDI is missing from resource adapter configuration. Resource adapter will not be configured"
+      log_warning "${ra_prefix}_CONNECTION_JNDI is missing from resource adapter configuration. Resource adapter will not be configured"
       continue
     fi
 

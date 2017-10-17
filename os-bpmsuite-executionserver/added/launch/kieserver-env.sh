@@ -1,6 +1,8 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function getKieJavaArgs() {
     local kieJarDir="${JBOSS_HOME}/standalone/deployments/ROOT.war/WEB-INF/lib"
     local kieClassPath="."
@@ -17,17 +19,17 @@ function setKieEnv() {
     # discover kie server container deployments
     local kieServerContainerDeploymentsFile="${JBOSS_HOME}/kieserver-container-deployments.txt"
     if [ "x${KIE_SERVER_CONTAINER_DEPLOYMENT_OVERRIDE}" != "x" ]; then
-        echo "Encountered EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT_OVERRIDE: ${KIE_SERVER_CONTAINER_DEPLOYMENT_OVERRIDE}"
+        log_info "Encountered EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT_OVERRIDE: ${KIE_SERVER_CONTAINER_DEPLOYMENT_OVERRIDE}"
         if [ "x${KIE_SERVER_CONTAINER_DEPLOYMENT}" != "x" ]; then
             KIE_SERVER_CONTAINER_DEPLOYMENT_ORIGINAL="${KIE_SERVER_CONTAINER_DEPLOYMENT}"
             export KIE_SERVER_CONTAINER_DEPLOYMENT_ORIGINAL
-            echo "Setting EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT_ORIGINAL: ${KIE_SERVER_CONTAINER_DEPLOYMENT_ORIGINAL}"
+            log_info "Setting EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT_ORIGINAL: ${KIE_SERVER_CONTAINER_DEPLOYMENT_ORIGINAL}"
         fi
         KIE_SERVER_CONTAINER_DEPLOYMENT="${KIE_SERVER_CONTAINER_DEPLOYMENT_OVERRIDE}"
         export KIE_SERVER_CONTAINER_DEPLOYMENT
-        echo "Using overridden EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT: ${KIE_SERVER_CONTAINER_DEPLOYMENT}"
+        log_info "Using overridden EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT: ${KIE_SERVER_CONTAINER_DEPLOYMENT}"
     elif [ "x${KIE_SERVER_CONTAINER_DEPLOYMENT}" != "x" ]; then
-        echo "Using standard EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT: ${KIE_SERVER_CONTAINER_DEPLOYMENT}"
+        log_info "Using standard EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT: ${KIE_SERVER_CONTAINER_DEPLOYMENT}"
     elif [ -e ${kieServerContainerDeploymentsFile} ]; then
         local kieServerContainerDeployments=""
         while read kieServerContainerDeployment ; do
@@ -38,7 +40,7 @@ function setKieEnv() {
         kieServerContainerDeployments=$(echo ${kieServerContainerDeployments} | sed "s/\(.*\)|/\1/")
         KIE_SERVER_CONTAINER_DEPLOYMENT="${kieServerContainerDeployments}"
         export KIE_SERVER_CONTAINER_DEPLOYMENT
-        echo "Read ${kieServerContainerDeploymentsFile} into EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT: ${KIE_SERVER_CONTAINER_DEPLOYMENT}"
+        log_info "Read ${kieServerContainerDeploymentsFile} into EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT: ${KIE_SERVER_CONTAINER_DEPLOYMENT}"
     fi
 
     # process kie server container deployments
@@ -65,8 +67,8 @@ function setKieEnv() {
         done
     else
         KIE_SERVER_CONTAINER_DEPLOYMENT_COUNT=0
-        echo "Warning: EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT is missing."
-        echo "Example: export KIE_SERVER_CONTAINER_DEPLOYMENT='containerId=groupId:artifactId:version|c2=g2:a2:v2'"
+        log_warning "Warning: EnvVar KIE_SERVER_CONTAINER_DEPLOYMENT is missing."
+        log_warning "Example: export KIE_SERVER_CONTAINER_DEPLOYMENT='containerId=groupId:artifactId:version|c2=g2:a2:v2'"
     fi
 }
 

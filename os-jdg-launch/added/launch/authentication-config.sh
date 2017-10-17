@@ -1,5 +1,7 @@
 # Openshift Datagrid launch script routines for configuring authentication
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function prepareEnv() {
   unset USERNAME
   unset PASSWORD
@@ -34,15 +36,15 @@ function configure_user() {
 
   $JBOSS_HOME/bin/add-user.sh -s --user $username --password $password --group $roles --user-properties $users_properties --group-properties $roles_properties --realm $realm
   if [ "$?" -ne "0" ]; then
-	echo "Failed to create the user $username"
-	echo "Exiting..."
+	log_error "Failed to create the user $username"
+	log_error "Exiting..."
 	exit
   fi
 }
 
 function configure_authentication() {
   if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
-    echo "Using simple authentication"
+    log_info "Using simple authentication"
 
     local realm=ApplicationRealm
     local users_properties=application-users.properties
@@ -61,6 +63,6 @@ function configure_authentication() {
 
     REST_SECURITY_DOMAIN=$SECDOMAIN_NAME
   else
-    echo "Not using simple authentication"
+    log_info "Not using simple authentication"
   fi
 }

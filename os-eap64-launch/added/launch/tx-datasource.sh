@@ -1,7 +1,8 @@
 # Openshift EAP launch script datasource generation routines
 
-. $JBOSS_HOME/bin/launch/launch-common.sh
+source $JBOSS_HOME/bin/launch/launch-common.sh
 source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
+source $JBOSS_HOME/bin/launch/logging.sh
 
 function clearTxDatasourceEnv() {
   tx_backend=${TX_DATABASE_PREFIX_MAPPING}
@@ -93,17 +94,17 @@ function inject_tx_datasource() {
     port=$(find_env "${service}_SERVICE_PORT")
 
     if [ -z $host ] || [ -z $port ]; then
-      echo >&2 "There is a problem with your service configuration!"
-      echo >&2 "You provided following database mapping (via TX_SERVICE_PREFIX_MAPPING environment variable): $tx_backend. To configure datasources we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
-      echo >&2
-      echo >&2 "Current values:"
-      echo >&2
-      echo >&2 "${service}_SERVICE_HOST: $host"
-      echo >&2 "${service}_SERVICE_PORT: $port"
-      echo >&2
-      echo >&2 "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
-      echo >&2
-      echo >&2 "WARNING! The ${db,,} datasource for $prefix service WILL NOT be configured."
+      log_warning "There is a problem with your service configuration!"
+      log_warning "You provided following database mapping (via TX_SERVICE_PREFIX_MAPPING environment variable): $tx_backend. To configure datasources we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
+      log_warning
+      log_warning "Current values:"
+      log_warning
+      log_warning "${service}_SERVICE_HOST: $host"
+      log_warning "${service}_SERVICE_PORT: $port"
+      log_warning
+      log_warning "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
+      log_warning
+      log_warning "The ${db,,} datasource for $prefix service WILL NOT be configured."
       return
     fi
 
@@ -120,16 +121,16 @@ function inject_tx_datasource() {
     database=$(find_env "${prefix}_DATABASE")
 
     if [ -z $jndi ] || [ -z $username ] || [ -z $password ] || [ -z $database ]; then
-      echo >&2 "Ooops, there is a problem with the ${db,,} datasource!"
-      echo >&2 "In order to configure ${db,,} transactional datasource for $prefix service you need to provide following environment variables: ${prefix}_USERNAME, ${prefix}_PASSWORD, ${prefix}_DATABASE."
-      echo >&2
-      echo >&2 "Current values:"
-      echo >&2
-      echo >&2 "${prefix}_USERNAME: $username"
-      echo >&2 "${prefix}_PASSWORD: $password"
-      echo >&2 "${prefix}_DATABASE: $database"
-      echo >&2
-      echo >&2 "WARNING! The ${db,,} datasource for $prefix service WILL NOT be configured."
+      log_warning "Ooops, there is a problem with the ${db,,} datasource!"
+      log_warning "In order to configure ${db,,} transactional datasource for $prefix service you need to provide following environment variables: ${prefix}_USERNAME, ${prefix}_PASSWORD, ${prefix}_DATABASE."
+      log_warning
+      log_warning "Current values:"
+      log_warning
+      log_warning "${prefix}_USERNAME: $username"
+      log_warning "${prefix}_PASSWORD: $password"
+      log_warning "${prefix}_DATABASE: $database"
+      log_warning
+      log_warning "The ${db,,} datasource for $prefix service WILL NOT be configured."
       db="ignore"
     fi
 

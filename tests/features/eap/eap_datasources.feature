@@ -183,7 +183,7 @@ Feature: EAP Openshift datasources
        | TEST_PASSWORD                 | hardtoguess                |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1                   |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                       |
-    Then container log should contain WARNING! The postgresql datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The postgresql datasource for TEST service WILL NOT be configured.
     And container log should contain TEST_PASSWORD: hardtoguess
 
   Scenario: Test warning on missing database type
@@ -196,7 +196,7 @@ Feature: EAP Openshift datasources
        | TEST_SERVICE_HOST             | 10.1.1.1             |
        | TEST_SERVICE_PORT             | 5432                 |
     Then container log should contain The mapping does not contain the database type.
-    Then container log should contain WARNING! The datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The datasource for TEST service WILL NOT be configured.
 
   @redhat-sso-7/sso71-openshift
   Scenario: Test warning on missing driver
@@ -211,7 +211,7 @@ Feature: EAP Openshift datasources
        | TEST_DATABASE                  | pgdb                                   |
        | TEST_NONXA                     | false                                  |
        | TEST_JTA                       | true                                   |
-    Then container log should contain Warning - DRIVER not set for datasource TEST. Datasource will not be configured.
+    Then container log should contain WARN DRIVER not set for datasource TEST. Datasource will not be configured.
 
   @redhat-sso-7/sso71-openshift
   Scenario: Test postgresql xa datasource extension
@@ -466,7 +466,7 @@ Feature: EAP Openshift datasources
        | TEST_SERVICE_PORT              | 5432                                   |
        | TEST_NONXA                     | false                                  |
        | TEST_JTA                       | true                                   |
-    Then container log should contain Warning - At least one TEST_XA_CONNECTION_PROPERTY_property for datasource TEST is required. Datasource will not be configured.
+    Then container log should contain WARN At least one TEST_XA_CONNECTION_PROPERTY_property for datasource TEST is required. Datasource will not be configured.
 
   Scenario: Test warning no password is provided
     When container is started with env
@@ -476,7 +476,7 @@ Feature: EAP Openshift datasources
        | TEST_USERNAME                 | marek                      |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1                   |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                       |
-    Then container log should contain WARNING! The postgresql datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The postgresql datasource for TEST service WILL NOT be configured.
     And container log should contain TEST_JNDI: java:jboss/datasources/test_postgresql
     And container log should contain TEST_USERNAME: marek
 
@@ -488,7 +488,7 @@ Feature: EAP Openshift datasources
        | TEST_PASSWORD                 | hardtoguess                |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1                   |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                       |
-   Then container log should contain WARNING: Missing configuration for datasource TEST. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or TEST_DATABASE is missing. Datasource will not be configured.
+   Then container log should contain WARN Missing configuration for datasource TEST. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or TEST_DATABASE is missing. Datasource will not be configured.
 
   Scenario: Test warning on wrong mapping
     When container is started with env
@@ -496,7 +496,7 @@ Feature: EAP Openshift datasources
        | DB_SERVICE_PREFIX_MAPPING     | test-postgresql=MAREK,abc-mysql=DB         |
        | MAREK_USERNAME                | marek                                      |
        | MAREK_PASSWORD                | hardtoguess                                |
-   Then container log should contain WARNING: Missing configuration for datasource MAREK. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or MAREK_DATABASE is missing. Datasource will not be configured.
+   Then container log should contain WARN Missing configuration for datasource MAREK. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or MAREK_DATABASE is missing. Datasource will not be configured.
    And container log should contain In order to configure mysql datasource for DB service you need to provide following environment variables: DB_USERNAME and DB_PASSWORD.
 
   @redhat-sso-7/sso71-openshift
@@ -507,7 +507,7 @@ Feature: EAP Openshift datasources
        | TEST_USERNAME                 | tombrady                   |
        | TEST_PASSWORD                 | Need6Rings!                |
        | TEST_DRIVER                   | postgresql                 |
-    Then container log should contain WARNING: Missing configuration for XA datasource TEST. Either TEST_XA_CONNECTION_PROPERTY_URL or TEST_XA_CONNECTION_PROPERTY_ServerName, and TEST_XA_CONNECTION_PROPERTY_PortNumber, and TEST_XA_CONNECTION_PROPERTY_DatabaseName is required. Datasource will not be configured.
+    Then container log should contain WARN Missing configuration for XA datasource TEST. Either TEST_XA_CONNECTION_PROPERTY_URL or TEST_XA_CONNECTION_PROPERTY_ServerName, and TEST_XA_CONNECTION_PROPERTY_PortNumber, and TEST_XA_CONNECTION_PROPERTY_DatabaseName is required. Datasource will not be configured.
 
   @redhat-sso-7/sso71-openshift
   Scenario: Test warning for missing mysql xa properties
@@ -517,7 +517,7 @@ Feature: EAP Openshift datasources
        | TEST_USERNAME                 | tombrady                   |
        | TEST_PASSWORD                 | Need6Rings!                |
        | TEST_DRIVER                   | mysql                      |
-    Then container log should contain WARNING: Missing configuration for XA datasource TEST. Either TEST_XA_CONNECTION_PROPERTY_URL or TEST_XA_CONNECTION_PROPERTY_ServerName, and TEST_XA_CONNECTION_PROPERTY_Port, and TEST_XA_CONNECTION_PROPERTY_DatabaseName is required. Datasource will not be configured.
+    Then container log should contain WARN Missing configuration for XA datasource TEST. Either TEST_XA_CONNECTION_PROPERTY_URL or TEST_XA_CONNECTION_PROPERTY_ServerName, and TEST_XA_CONNECTION_PROPERTY_Port, and TEST_XA_CONNECTION_PROPERTY_DatabaseName is required. Datasource will not be configured.
 
    Scenario: Test multiple datasources with one incorrect
     When container is started with env
@@ -532,7 +532,7 @@ Feature: EAP Openshift datasources
        | MYSQL_PASSWORD                | mysqlpass                                  |
        | MYSQL_MYSQL_SERVICE_HOST      | 10.1.1.1                                   |
        | MYSQL_MYSQL_SERVICE_PORT      | 3306                                       |
-    Then container log should contain WARNING: Missing configuration for datasource PG. PG_POSTGRESQL_SERVICE_HOST, PG_POSTGRESQL_SERVICE_PORT, and/or PG_DATABASE is missing. Datasource will not be configured.
+    Then container log should contain WARN Missing configuration for datasource PG. PG_POSTGRESQL_SERVICE_HOST, PG_POSTGRESQL_SERVICE_PORT, and/or PG_DATABASE is missing. Datasource will not be configured.
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/mysql_mysql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysql_mysql-MYSQL on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="ServerName"]
@@ -647,5 +647,5 @@ Feature: EAP Openshift datasources
       | TEST_DATABASE                     | 007                                        |
       | TEST_USERNAME                     | hello                                      |
       | TEST_PASSWORD                     | world                                      |
-     Then container log should contain Warning - DRIVER not set for datasource TEST. Datasource will not be configured.
+     Then container log should contain WARN DRIVER not set for datasource TEST. Datasource will not be configured.
      And container log should not contain sed -e expression #1 

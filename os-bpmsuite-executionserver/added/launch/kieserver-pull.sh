@@ -1,7 +1,8 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
-. /opt/rh/rh-maven33/enable
+source /opt/rh/rh-maven33/enable
+source $JBOSS_HOME/bin/launch/logging.sh
 
 # source the KIE config
 source $JBOSS_HOME/bin/launch/kieserver-env.sh
@@ -40,9 +41,9 @@ if [ "${KIE_SERVER_CONTAINER_DEPLOYMENT}" != "" ]; then
         # Use maven batch mode (CLOUD-579)
         mavenArgsPull="-e -DskipTests dependency:go-offline -f ${pullPomFile} --batch-mode -Djava.net.preferIPv4Stack=true -Popenshift -Dcom.redhat.xpaas.repo.redhatga ${MAVEN_ARGS_APPEND}"
 
-        echo "Attempting to pull dependencies for kjar ${i} with 'mvn ${mavenArgsPull}'"
-        echo "Using MAVEN_OPTS '${MAVEN_OPTS}'"
-        echo "Using $(mvn --version)"
+        log_info "Attempting to pull dependencies for kjar ${i} with 'mvn ${mavenArgsPull}'"
+        log_info "Using MAVEN_OPTS '${MAVEN_OPTS}'"
+        log_info "Using $(mvn --version)"
 
         # Execute the maven pull of dependencies
         mvn ${mavenArgsPull}
@@ -51,7 +52,7 @@ if [ "${KIE_SERVER_CONTAINER_DEPLOYMENT}" != "" ]; then
         rm -f ${pullPomFile}
 
         if [ $ERR -ne 0 ]; then
-            echo "Aborting due to error code $ERR from Maven build"
+            log_error "Aborting due to error code $ERR from Maven build"
             exit $ERR
         fi
     done

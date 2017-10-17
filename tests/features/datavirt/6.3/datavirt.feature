@@ -41,7 +41,7 @@ Feature: OpenShift Datavirt tests
 
   Scenario: check that a warning is present when no password was provided for modeshapeUser
     When container is ready
-    Then container log should contain ERROR! No password was provided for 'modeshapeUser' in the MODESHAPE_PASSWORD environment variable. JBoss Red Hat JBoss Data Virtualization will not work properly.
+    Then container log should contain ERROR No password was provided for 'modeshapeUser' in the MODESHAPE_PASSWORD environment variable. JBoss Red Hat JBoss Data Virtualization will not work properly.
 
   Scenario: check that users and roles are updated
     When container is started with env

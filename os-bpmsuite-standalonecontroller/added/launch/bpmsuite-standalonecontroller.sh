@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source "${JBOSS_HOME}/bin/launch/launch-common.sh"
+source $JBOSS_HOME/bin/launch/logging.sh
 
 function prepareEnv() {
     # please keep these in alphabetical order
@@ -25,8 +26,8 @@ function configure_controller_security() {
     local kieServerControllerPwd=$(find_env "KIE_SERVER_CONTROLLER_PWD" "controller1!")
     ${JBOSS_HOME}/bin/add-user.sh -a --user "${kieServerControllerUser}" --password "${kieServerControllerPwd}" --role "kie-server,rest-all,guest"
     if [ "$?" -ne "0" ]; then
-        echo "Failed to create controller user \"${kieServerControllerUser}\""
-        echo "Exiting..."
+        log_error "Failed to create controller user \"${kieServerControllerUser}\""
+        log_error "Exiting..."
         exit
     fi
 }

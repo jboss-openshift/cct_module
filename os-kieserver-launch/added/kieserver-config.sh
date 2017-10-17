@@ -1,8 +1,9 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
-. /opt/rh/rh-maven33/enable
+source /opt/rh/rh-maven33/enable
 source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
+source $JBOSS_HOME/bin/launch/logging.sh
 
 function getJBossModulesOptsForKieUtilities() {
     local kieJarDir="${JBOSS_HOME}/standalone/deployments/kie-server.war/WEB-INF/lib"
@@ -71,17 +72,17 @@ function setKieContainerEnv() {
     # discover kie container deployments
     kieContainerDeploymentsFile="${JBOSS_HOME}/kiecontainer-deployments.txt"
     if [ "x${KIE_CONTAINER_DEPLOYMENT_OVERRIDE}" != "x" ]; then
-        echo "Encountered EnvVar KIE_CONTAINER_DEPLOYMENT_OVERRIDE: ${KIE_CONTAINER_DEPLOYMENT_OVERRIDE}"
+        log_info "Encountered EnvVar KIE_CONTAINER_DEPLOYMENT_OVERRIDE: ${KIE_CONTAINER_DEPLOYMENT_OVERRIDE}"
         if [ "x${KIE_CONTAINER_DEPLOYMENT}" != "x" ]; then
             KIE_CONTAINER_DEPLOYMENT_ORIGINAL="${KIE_CONTAINER_DEPLOYMENT}"
             export KIE_CONTAINER_DEPLOYMENT_ORIGINAL
-            echo "Setting EnvVar KIE_CONTAINER_DEPLOYMENT_ORIGINAL: ${KIE_CONTAINER_DEPLOYMENT_ORIGINAL}"
+            log_info "Setting EnvVar KIE_CONTAINER_DEPLOYMENT_ORIGINAL: ${KIE_CONTAINER_DEPLOYMENT_ORIGINAL}"
         fi
         KIE_CONTAINER_DEPLOYMENT="${KIE_CONTAINER_DEPLOYMENT_OVERRIDE}"
         export KIE_CONTAINER_DEPLOYMENT
-        echo "Using overridden EnvVar KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
+        log_info "Using overridden EnvVar KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
     elif [ "x${KIE_CONTAINER_DEPLOYMENT}" != "x" ]; then
-        echo "Using standard EnvVar KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
+        log_info "Using standard EnvVar KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
     elif [ -e ${kieContainerDeploymentsFile} ]; then
         kieContainerDeployments=""
         while read kieContainerDeployment ; do
@@ -92,7 +93,7 @@ function setKieContainerEnv() {
         kieContainerDeployments=$(echo ${kieContainerDeployments} | sed "s/\(.*\)|/\1/")
         KIE_CONTAINER_DEPLOYMENT="${kieContainerDeployments}"
         export KIE_CONTAINER_DEPLOYMENT
-        echo "Read ${kieContainerDeploymentsFile} into EnvVar KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
+        log_info "Read ${kieContainerDeploymentsFile} into EnvVar KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
     fi
 
     # process kie container deployments
@@ -120,8 +121,8 @@ function setKieContainerEnv() {
         done
     else
         KIE_CONTAINER_DEPLOYMENT_COUNT=0
-        echo "Warning: EnvVar KIE_CONTAINER_DEPLOYMENT is missing."
-        echo "Example: export KIE_CONTAINER_DEPLOYMENT='containerId=groupId:artifactId:version|c2=g2:a2:v2'"
+        log_warning "Warning: EnvVar KIE_CONTAINER_DEPLOYMENT is missing."
+        log_warning "Example: export KIE_CONTAINER_DEPLOYMENT='containerId=groupId:artifactId:version|c2=g2:a2:v2'"
     fi
 }
 
@@ -131,17 +132,17 @@ function getKieContainerVal() {
 }
 
 function dumpKieContainerEnv() {
-    echo "KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
-    echo "KIE_CONTAINER_DEPLOYMENT_ORIGINAL: ${KIE_CONTAINER_DEPLOYMENT_ORIGINAL}"
-    echo "KIE_CONTAINER_DEPLOYMENT_OVERRIDE: ${KIE_CONTAINER_DEPLOYMENT_OVERRIDE}"
-    echo "KIE_CONTAINER_DEPLOYMENT_COUNT: ${KIE_CONTAINER_DEPLOYMENT_COUNT}"
+    log_info "KIE_CONTAINER_DEPLOYMENT: ${KIE_CONTAINER_DEPLOYMENT}"
+    log_info "KIE_CONTAINER_DEPLOYMENT_ORIGINAL: ${KIE_CONTAINER_DEPLOYMENT_ORIGINAL}"
+    log_info "KIE_CONTAINER_DEPLOYMENT_OVERRIDE: ${KIE_CONTAINER_DEPLOYMENT_OVERRIDE}"
+    log_info "KIE_CONTAINER_DEPLOYMENT_COUNT: ${KIE_CONTAINER_DEPLOYMENT_COUNT}"
     for (( i=0; i<${KIE_CONTAINER_DEPLOYMENT_COUNT}; i++ )); do
-        echo "KIE_CONTAINER_ID_${i}: $(getKieContainerVal ID ${i})"
-        echo "KIE_CONTAINER_KJAR_GROUP_ID_${i}: $(getKieContainerVal KJAR_GROUP_ID ${i})"
-        echo "KIE_CONTAINER_KJAR_ARTIFACT_ID_${i}: $(getKieContainerVal KJAR_ARTIFACT_ID ${i})"
-        echo "KIE_CONTAINER_KJAR_VERSION_${i}: $(getKieContainerVal KJAR_VERSION ${i})"
+        log_info "KIE_CONTAINER_ID_${i}: $(getKieContainerVal ID ${i})"
+        log_info "KIE_CONTAINER_KJAR_GROUP_ID_${i}: $(getKieContainerVal KJAR_GROUP_ID ${i})"
+        log_info "KIE_CONTAINER_KJAR_ARTIFACT_ID_${i}: $(getKieContainerVal KJAR_ARTIFACT_ID ${i})"
+        log_info "KIE_CONTAINER_KJAR_VERSION_${i}: $(getKieContainerVal KJAR_VERSION ${i})"
     done
-    echo "KIE_CONTAINER_REDIRECT_ENABLED: ${KIE_CONTAINER_REDIRECT_ENABLED}"
+    log_info "KIE_CONTAINER_REDIRECT_ENABLED: ${KIE_CONTAINER_REDIRECT_ENABLED}"
 }
 
 function setKieServerEnv() {
@@ -405,50 +406,50 @@ function getKieServerVal() {
 }
 
 function dumpKieServerEnv() {
-    echo "KIE_SERVER_BPM_DISABLED: $(getKieServerVal BPM_DISABLED)"
-    echo "KIE_SERVER_BPM_UI_DISABLED: $(getKieServerVal BPM_UI_DISABLED)"
-    echo "KIE_SERVER_BRM_DISABLED: $(getKieServerVal BRM_DISABLED)"
-    echo "KIE_SERVER_BRP_DISABLED: $(getKieServerVal BRP_DISABLED)"
-    echo "KIE_SERVER_BYPASS_AUTH_USER: $(getKieServerVal BYPASS_AUTH_USER)"
-    echo "KIE_SERVER_CONTEXT: $(getKieServerVal CONTEXT)"
-    echo "KIE_SERVER_DOMAIN: $(getKieServerVal DOMAIN)"
+    log_info "KIE_SERVER_BPM_DISABLED: $(getKieServerVal BPM_DISABLED)"
+    log_info "KIE_SERVER_BPM_UI_DISABLED: $(getKieServerVal BPM_UI_DISABLED)"
+    log_info "KIE_SERVER_BRM_DISABLED: $(getKieServerVal BRM_DISABLED)"
+    log_info "KIE_SERVER_BRP_DISABLED: $(getKieServerVal BRP_DISABLED)"
+    log_info "KIE_SERVER_BYPASS_AUTH_USER: $(getKieServerVal BYPASS_AUTH_USER)"
+    log_info "KIE_SERVER_CONTEXT: $(getKieServerVal CONTEXT)"
+    log_info "KIE_SERVER_DOMAIN: $(getKieServerVal DOMAIN)"
     if [ "${KIE_SERVER_BPM_DISABLED}" = "false" ]; then
-        echo "KIE_SERVER_EXECUTOR_DISABLED: $(getKieServerVal EXECUTOR_DISABLED)"
-        echo "KIE_SERVER_EXECUTOR_POOL_SIZE: $(getKieServerVal EXECUTOR_POOL_SIZE)"
-        echo "KIE_SERVER_EXECUTOR_RETRY_COUNT: $(getKieServerVal EXECUTOR_RETRY_COUNT)"
-        echo "KIE_SERVER_EXECUTOR_INTERVAL: $(getKieServerVal EXECUTOR_INTERVAL)"
-        echo "KIE_SERVER_EXECUTOR_INITIAL_DELAY: $(getKieServerVal EXECUTOR_INITIAL_DELAY)"
-        echo "KIE_SERVER_EXECUTOR_TIMEUNIT: $(getKieServerVal EXECUTOR_TIMEUNIT)"
-        echo "KIE_SERVER_EXECUTOR_JMS: $(getKieServerVal EXECUTOR_JMS)"
-        echo "KIE_SERVER_EXECUTOR_JMS_QUEUE: $(getKieServerVal EXECUTOR_JMS_QUEUE)"
-        echo "KIE_SERVER_EXECUTOR_JMS_TRANSACTED: $(getKieServerVal EXECUTOR_JMS_TRANSACTED)"
+        log_info "KIE_SERVER_EXECUTOR_DISABLED: $(getKieServerVal EXECUTOR_DISABLED)"
+        log_info "KIE_SERVER_EXECUTOR_POOL_SIZE: $(getKieServerVal EXECUTOR_POOL_SIZE)"
+        log_info "KIE_SERVER_EXECUTOR_RETRY_COUNT: $(getKieServerVal EXECUTOR_RETRY_COUNT)"
+        log_info "KIE_SERVER_EXECUTOR_INTERVAL: $(getKieServerVal EXECUTOR_INTERVAL)"
+        log_info "KIE_SERVER_EXECUTOR_INITIAL_DELAY: $(getKieServerVal EXECUTOR_INITIAL_DELAY)"
+        log_info "KIE_SERVER_EXECUTOR_TIMEUNIT: $(getKieServerVal EXECUTOR_TIMEUNIT)"
+        log_info "KIE_SERVER_EXECUTOR_JMS: $(getKieServerVal EXECUTOR_JMS)"
+        log_info "KIE_SERVER_EXECUTOR_JMS_QUEUE: $(getKieServerVal EXECUTOR_JMS_QUEUE)"
+        log_info "KIE_SERVER_EXECUTOR_JMS_TRANSACTED: $(getKieServerVal EXECUTOR_JMS_TRANSACTED)"
     fi
-    echo "KIE_SERVER_FILTER_CLASSES: $(getKieServerVal FILTER_CLASSES)"
-    echo "KIE_SERVER_HOST: $(getKieServerVal HOST)"
+    log_info "KIE_SERVER_FILTER_CLASSES: $(getKieServerVal FILTER_CLASSES)"
+    log_info "KIE_SERVER_HOST: $(getKieServerVal HOST)"
     if [ "${KIE_SERVER_BPM_DISABLED}" = "false" ]; then
-        echo "KIE_SERVER_HT_CALLBACK: $(getKieServerVal HT_CALLBACK)"
-        echo "KIE_SERVER_HT_CUSTOM_CALLBACK: $(getKieServerVal HT_CUSTOM_CALLBACK)"
-        echo "KIE_SERVER_HT_USERINFO: $(getKieServerVal HT_USERINFO)"
-        echo "KIE_SERVER_HT_CUSTOM_USERINFO: $(getKieServerVal HT_CUSTOM_USERINFO)"
+        log_info "KIE_SERVER_HT_CALLBACK: $(getKieServerVal HT_CALLBACK)"
+        log_info "KIE_SERVER_HT_CUSTOM_CALLBACK: $(getKieServerVal HT_CUSTOM_CALLBACK)"
+        log_info "KIE_SERVER_HT_USERINFO: $(getKieServerVal HT_USERINFO)"
+        log_info "KIE_SERVER_HT_CUSTOM_USERINFO: $(getKieServerVal HT_CUSTOM_USERINFO)"
     fi
-    echo "KIE_SERVER_ID: $(getKieServerVal ID)"
-    echo "KIE_SERVER_JMS_QUEUES_REQUEST: $(getKieServerVal JMS_QUEUES_REQUEST)"
-    echo "KIE_SERVER_JMS_QUEUES_RESPONSE: $(getKieServerVal JMS_QUEUES_RESPONSE)"
-    echo "KIE_SERVER_LOCATION: $(getKieServerVal LOCATION)"
-    echo "KIE_SERVER_MBEANS_ENABLED: $(getKieServerVal MBEANS_ENABLED)"
-    echo "KIE_SERVER_OPTS: $(getKieServerVal OPTS)"
-    echo "KIE_SERVER_PASSWORD: $(getKieServerVal PASSWORD)"
+    log_info "KIE_SERVER_ID: $(getKieServerVal ID)"
+    log_info "KIE_SERVER_JMS_QUEUES_REQUEST: $(getKieServerVal JMS_QUEUES_REQUEST)"
+    log_info "KIE_SERVER_JMS_QUEUES_RESPONSE: $(getKieServerVal JMS_QUEUES_RESPONSE)"
+    log_info "KIE_SERVER_LOCATION: $(getKieServerVal LOCATION)"
+    log_info "KIE_SERVER_MBEANS_ENABLED: $(getKieServerVal MBEANS_ENABLED)"
+    log_info "KIE_SERVER_OPTS: $(getKieServerVal OPTS)"
+    log_info "KIE_SERVER_PASSWORD: $(getKieServerVal PASSWORD)"
     if [ "${KIE_SERVER_BPM_DISABLED}" = "false" ]; then
-        echo "KIE_SERVER_PERSISTENCE_DIALECT: $(getKieServerVal PERSISTENCE_DIALECT)"
-        echo "KIE_SERVER_PERSISTENCE_DS: $(getKieServerVal PERSISTENCE_DS)"
-        echo "KIE_SERVER_PERSISTENCE_TM: $(getKieServerVal PERSISTENCE_TM)"
+        log_info "KIE_SERVER_PERSISTENCE_DIALECT: $(getKieServerVal PERSISTENCE_DIALECT)"
+        log_info "KIE_SERVER_PERSISTENCE_DS: $(getKieServerVal PERSISTENCE_DS)"
+        log_info "KIE_SERVER_PERSISTENCE_TM: $(getKieServerVal PERSISTENCE_TM)"
     fi
-    echo "KIE_SERVER_PORT: $(getKieServerVal PORT)"
-    echo "KIE_SERVER_PROTOCOL: $(getKieServerVal PROTOCOL)"
-    echo "KIE_SERVER_REPO: $(getKieServerVal REPO)"
-    echo "KIE_SERVER_STATE_FILE: $(getKieServerVal STATE_FILE)"
-    echo "KIE_SERVER_USER: $(getKieServerVal USER)"
-    echo "M2_HOME: ${M2_HOME}"
+    log_info "KIE_SERVER_PORT: $(getKieServerVal PORT)"
+    log_info "KIE_SERVER_PROTOCOL: $(getKieServerVal PROTOCOL)"
+    log_info "KIE_SERVER_REPO: $(getKieServerVal REPO)"
+    log_info "KIE_SERVER_STATE_FILE: $(getKieServerVal STATE_FILE)"
+    log_info "KIE_SERVER_USER: $(getKieServerVal USER)"
+    log_info "M2_HOME: ${M2_HOME}"
 }
 
 function setKieFullEnv() {
