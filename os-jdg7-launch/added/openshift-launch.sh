@@ -1,8 +1,10 @@
 #!/bin/sh
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 CONFIG_FILE=$JBOSS_HOME/standalone/configuration/clustered-openshift.xml
@@ -29,7 +31,7 @@ CONFIGURE_SCRIPTS=(
 function runServer() {
   local instanceDir=$1
 
-  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+  log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
   exec $JBOSS_HOME/bin/standalone.sh -c clustered-openshift.xml -bmanagement 127.0.0.1 -Djboss.server.data.dir="$instanceDir" ${JBOSS_HA_ARGS} ${JAVA_PROXY_OPTIONS}
 }
@@ -50,7 +52,7 @@ if [ "${DATAGRID_SPLIT^^}" = "TRUE" ]; then
 
   partitionPV "${DATA_DIR}" "${DATAGRID_LOCK_TIMEOUT:-30}"
 else
-  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+  log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
   exec $JBOSS_HOME/bin/standalone.sh -c clustered-openshift.xml -bmanagement 127.0.0.1 ${JBOSS_HA_ARGS} ${JAVA_PROXY_OPTIONS}
 fi

@@ -1,9 +1,11 @@
 #!/bin/sh
 # Openshift EAP launch script
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 CONFIG_FILE=$JBOSS_HOME/standalone/configuration/standalone-openshift.xml
@@ -32,11 +34,11 @@ CONFIGURE_SCRIPTS=(
 
 source $JBOSS_HOME/bin/launch/configure.sh
 
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
 # TERM signal handler
 function clean_shutdown() {
-  echo "*** JBossAS wrapper process ($$) received TERM signal ***"
+  log_error "*** JBossAS wrapper process ($$) received TERM signal ***"
   $JBOSS_HOME/bin/jboss-cli.sh -c ":shutdown(timeout=60)"
   wait $!
 }
@@ -45,7 +47,7 @@ trap "clean_shutdown" TERM
 
 if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
   trap "" TERM
-  echo "Using CLI Graceful Shutdown instead of TERM signal"
+  log_info "Using CLI Graceful Shutdown instead of TERM signal"
 fi
 
 $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS} &

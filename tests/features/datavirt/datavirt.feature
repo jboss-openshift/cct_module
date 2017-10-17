@@ -7,12 +7,6 @@ Feature: OpenShift Datavirt tests
     Then container log should contain -javaagent:/opt/jolokia/jolokia.jar=config=/opt/jolokia/etc/jolokia.properties
      And available container log should not contain java.net.BindException
 
-  Scenario: check ownership when started as alternative UID
-    When container is started as uid 26458
-    Then run id -u in container and check its output contains 26458
-     And all files under /opt/eap are writeable by current user
-     And all files under /deployments are writeable by current user
-
   Scenario: check for secure jdbc/odbc config
     When container is started with env  
       | variable                                 | value                                       |
@@ -49,4 +43,4 @@ Feature: OpenShift Datavirt tests
       | DATAVIRT_TRANSPORT_KEY_ALIAS             | jboss                                       |
       | DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD     | mykeystorepass                              |
       | DATAVIRT_TRANSPORT_KEYSTORE_DIR          | /etc/jdv-secret-volume                      |
-    Then container log should contain WARNING - Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '1-way'. Will not be enabled
+    Then container log should contain WARN Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '1-way'. Will not be enabled

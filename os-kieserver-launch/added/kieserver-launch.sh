@@ -1,9 +1,11 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 CONFIG_FILE=$JBOSS_HOME/standalone/configuration/standalone-openshift.xml
@@ -31,6 +33,6 @@ CONFIGURE_SCRIPTS=(
 
 source $JBOSS_HOME/bin/launch/configure.sh
 
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
 exec $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS}

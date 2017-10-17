@@ -47,4 +47,4 @@ Feature: Openshift Decision Server s2i tests
     Given s2i build https://github.com/jboss-openshift/openshift-quickstarts from decisionserver/helloworld
       | variable                   | value                                                      |
       | KIE_CONTAINER_DEPLOYMENT   | hello-world=com.redhat.xpaas.brms:hello-world:1.0-SNAPSHOT |
-    Then s2i build log should not contain WARNING: Unable to resolve artifact:
+    Then s2i build log should not contain WARN Unable to resolve artifact:

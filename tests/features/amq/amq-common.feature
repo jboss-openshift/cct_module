@@ -97,7 +97,7 @@ Feature: Openshift AMQ tests
        | AMQ_TRUSTSTORE              | broker.ts     |
        | AMQ_TRUSTSTORE_PASSWORD     | password      |
     Then XML file /opt/amq/conf/activemq.xml should have 0 elements on XPath //amq:sslContext
-    AND container log should contain WARNING! Partial ssl configuration, the ssl context WILL NOT be configured.
+    AND container log should contain WARN Partial ssl configuration, the ssl context WILL NOT be configured.
 
   Scenario: check SSL configuration with missing truststore password
     Given XML namespace amq:http://activemq.apache.org/schema/core
@@ -108,7 +108,7 @@ Feature: Openshift AMQ tests
        | AMQ_KEYSTORE_PASSWORD       | password      |
        | AMQ_TRUSTSTORE              | broker.ts     |
     Then XML file /opt/amq/conf/activemq.xml should have 0 elements on XPath //amq:sslContext
-    AND container log should contain WARNING! Partial ssl configuration, the ssl context WILL NOT be configured.
+    AND container log should contain WARN Partial ssl configuration, the ssl context WILL NOT be configured.
 
   Scenario: check SSL configuration with missing keystore and truststore passwords
     Given XML namespace amq:http://activemq.apache.org/schema/core
@@ -118,7 +118,7 @@ Feature: Openshift AMQ tests
        | AMQ_KEYSTORE                | broker.ks     |
        | AMQ_TRUSTSTORE              | broker.ts     |
     Then XML file /opt/amq/conf/activemq.xml should have 0 elements on XPath //amq:sslContext
-    AND container log should contain WARNING! Partial ssl configuration, the ssl context WILL NOT be configured.
+    AND container log should contain WARN Partial ssl configuration, the ssl context WILL NOT be configured.
 
   Scenario: Check if jolokia is configured correctly
     When container is ready
