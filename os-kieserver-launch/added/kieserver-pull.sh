@@ -3,6 +3,7 @@
 
 # source the KIE config
 source $JBOSS_HOME/bin/kieserver-config.sh
+source $JBOSS_HOME/bin/launch/logging.sh
 # set the KIE environment
 setKieContainerEnv
 # dump the KIE environment
@@ -37,9 +38,9 @@ for (( i=0; i<${KIE_CONTAINER_DEPLOYMENT_COUNT}; i++ )); do
     # Use maven batch mode (CLOUD-579)
     MAVEN_ARGS_PULL="-e -DskipTests dependency:go-offline -f ${PULL_POM_FILE} --batch-mode -Djava.net.preferIPv4Stack=true -Popenshift -Dcom.redhat.xpaas.repo.redhatga ${MAVEN_ARGS_APPEND}"
 
-    echo "Attempting to pull dependencies for kjar ${i} with 'mvn ${MAVEN_ARGS_PULL}'"
-    echo "Using MAVEN_OPTS '${MAVEN_OPTS}'"
-    echo "Using $(mvn --version)"
+    log_info "Attempting to pull dependencies for kjar ${i} with 'mvn ${MAVEN_ARGS_PULL}'"
+    log_info "Using MAVEN_OPTS '${MAVEN_OPTS}'"
+    log_ino "Using $(mvn --version)"
 
     # Execute the maven pull of dependencies
     mvn $MAVEN_ARGS_PULL
@@ -48,7 +49,7 @@ for (( i=0; i<${KIE_CONTAINER_DEPLOYMENT_COUNT}; i++ )); do
     rm -f ${PULL_POM_FILE}
 
     if [ $ERR -ne 0 ]; then
-        echo "Aborting due to error code $ERR from Maven build"
+        log_error "Aborting due to error code $ERR from Maven build"
         exit $ERR
     fi
 done

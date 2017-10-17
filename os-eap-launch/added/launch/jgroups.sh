@@ -1,5 +1,7 @@
 # only processes a single environment as the placeholder is not preserved
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function prepareEnv() {
   unset JGROUPS_ENCRYPT_SECRET
   unset JGROUPS_ENCRYPT_PASSWORD
@@ -57,7 +59,7 @@ function configure_jgroups_encryption() {
           </protocol>"
       fi
     else
-      echo "WARNING! Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted."
+      log_warning "Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted."
     fi
   fi
 

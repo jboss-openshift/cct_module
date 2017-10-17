@@ -17,7 +17,7 @@ Feature: Openshift JDG replicated-cache tests
        | ADDRESSBOOK_CACHE_TYPE                            | replicated                       |
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPath //*[local-name()='replicated-cache']
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPATH //*[local-name()='replicated-cache'][@name="addressbook"]
-    Then container log should contain WARNING! The cache for memcached-connector is not set so the connector will not be configured.
+    Then container log should contain WARN The cache for memcached-connector is not set so the connector will not be configured.
 
   Scenario: replicated-cache multiple caches
     When container is started with env
@@ -28,4 +28,4 @@ Feature: Openshift JDG replicated-cache tests
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 2 elements on XPath //*[local-name()='replicated-cache']
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPATH //*[local-name()='replicated-cache'][@name="addressbook"]
     Then XML file /opt/datagrid/standalone/configuration/clustered-openshift.xml should have 1 elements on XPATH //*[local-name()='replicated-cache'][@name="addressbook_indexed"]
-    Then container log should contain WARNING! The cache for memcached-connector is not set so the connector will not be configured.
+    Then container log should contain WARN The cache for memcached-connector is not set so the connector will not be configured.

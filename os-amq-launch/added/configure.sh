@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source $AMQ_HOME/bin/launch/logging.sh
+
 OPENSHIFT_CONFIG_FILE=$AMQ_HOME/conf/openshift-activemq.xml
 CONFIG_FILE=$AMQ_HOME/conf/activemq.xml
 OPENSHIFT_LOGIN_FILE=$AMQ_HOME/conf/openshift-login.config
@@ -32,14 +34,14 @@ function checkViewEndpointsPermission() {
             endpointsAuth="Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
             endpointsCode=$(curl -s -o /dev/null -w "%{http_code}" -G -k -H "${endpointsAuth}" ${endpointsUrl})
             if [ "${endpointsCode}" = "200" ]; then
-                echo "Service account has sufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be available."
+                log_info "Service account has sufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be available."
             elif [ "${endpointsCode}" = "403" ]; then
-                >&2 echo "WARNING: Service account has insufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
+                log_warning "Service account has insufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
             else
-                >&2 echo "WARNING: Service account unable to test permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
+                log_warning "Service account unable to test permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
             fi
         else
-            >&2 echo "WARNING: Environment variables AMQ_MESH_SERVICE_NAMESPACE and AMQ_MESH_SERVICE_NAME both need to be defined when using AMQ_MESH_DISCOVERY_TYPE=\"kube\". Mesh will be unavailable. Please refer to the documentation for configuration."
+            log_warning "Environment variables AMQ_MESH_SERVICE_NAMESPACE and AMQ_MESH_SERVICE_NAME both need to be defined when using AMQ_MESH_DISCOVERY_TYPE=\"kube\". Mesh will be unavailable. Please refer to the documentation for configuration."
         fi
     fi
 }
@@ -135,7 +137,7 @@ function configureSSL() {
 
     sed -i "s|<!-- ##### SSL_CONTEXT ##### -->|${sslElement}|" "$CONFIG_FILE"
   elif sslPartial ; then
-    echo "WARNING! Partial ssl configuration, the ssl context WILL NOT be configured."
+    log_warning "Partial ssl configuration, the ssl context WILL NOT be configured."
   fi
 }
 

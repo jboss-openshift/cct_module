@@ -2,6 +2,7 @@
 # if using vim, do ':set ft=zsh' for easier reading
 
 source ${JBOSS_HOME}/bin/launch/openshift-common.sh
+source $JBOSS_HOME/bin/launch/logging.sh
 
 function runServer() {
   local instanceDir=$1
@@ -11,7 +12,7 @@ function runServer() {
 
   source $JBOSS_HOME/bin/launch/configure.sh
 
-  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+  log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
   exec $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 -Djboss.server.data.dir="$instanceDir" ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS}
 }
@@ -32,7 +33,7 @@ if [ "${SPLIT_DATA^^}" = "TRUE" ]; then
 else
   source $JBOSS_HOME/bin/launch/configure.sh
 
-  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+  log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
   exec $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS}
 fi

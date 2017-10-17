@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+source $AMQ_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 source $AMQ_HOME/bin/configure.sh

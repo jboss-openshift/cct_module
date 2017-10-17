@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source "${JBOSS_HOME}/bin/launch/launch-common.sh"
+source $JBOSS_HOME/bin/launch/logging.sh
 
 function prepareEnv() {
     # please keep these in alphabetical order
@@ -205,8 +206,8 @@ function configure_server_security() {
     local kieServerPwd=$(find_env "KIE_SERVER_PWD" "execution1!")
     ${JBOSS_HOME}/bin/add-user.sh -a --user "${kieServerUser}" --password "${kieServerPwd}" --role "kie-server,rest-all,guest"
     if [ "$?" -ne "0" ]; then
-        echo "Failed to create execution user \"${kieServerUser}\""
-        echo "Exiting..."
+        log_error "Failed to create execution user \"${kieServerUser}\""
+        log_error "Exiting..."
         exit
     fi
     JBOSS_BPMSUITE_ARGS="${JBOSS_BPMSUITE_ARGS} -Dorg.kie.server.user=${kieServerUser}"
@@ -294,7 +295,7 @@ function configure_server_state() {
         $JBOSS_HOME/bin/launch/kieserver-pull.sh
         ERR=$?
         if [ $ERR -ne 0 ]; then
-            echo "Aborting due to error code $ERR from maven kjar dependency pull"
+            log_error "Aborting due to error code $ERR from maven kjar dependency pull"
             exit $ERR
         fi
 
@@ -302,17 +303,17 @@ function configure_server_state() {
         $JBOSS_HOME/bin/launch/kieserver-verify.sh
         ERR=$?
         if [ $ERR -ne 0 ]; then
-            echo "Aborting due to error code $ERR from maven kjar verification"
+            log_error "Aborting due to error code $ERR from maven kjar verification"
             exit $ERR
         fi
 
         # create a KIE server state file with all configured containers and properties
         local stateFileInit="org.kie.server.services.impl.storage.file.KieServerStateFileInit"
-        echo "Attempting to generate kie server state file with 'java ${JBOSS_BPMSUITE_ARGS} ${stateFileInit}'"
+        log_info "Attempting to generate kie server state file with 'java ${JBOSS_BPMSUITE_ARGS} ${stateFileInit}'"
         java ${JBOSS_BPMSUITE_ARGS} $(getKieJavaArgs) ${stateFileInit}
         ERR=$?
         if [ $ERR -ne 0 ]; then
-            echo "Aborting due to error code $ERR from kie server state file init"
+            log_error "Aborting due to error code $ERR from kie server state file init"
             exit $ERR
         fi
     fi

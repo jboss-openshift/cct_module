@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $JWS_HOME/bin/launch/logging.sh
+
 function find_env() {
   var=${!1}
   echo "${var:-$2}"
@@ -70,14 +72,14 @@ function inject_external_datasources() {
     for prefix in $(echo $RESOURCES | sed "s/,/ /g"); do
       name=$(find_env "${prefix}_NAME" )
       if [ -z "$name" ]; then
-        echo "WARNING! ${prefix}_NAME is missing. Resource $prefix WILL NOT be configured." 
+        log_warning "${prefix}_NAME is missing. Resource $prefix WILL NOT be configured." 
         continue  
       fi      
 
       resource="<Resource name=\"${name}\""
       driver=$(find_env "${prefix}_DRIVER" )
       if [ -z "$driver" ]; then
-        echo "WARNING! ${prefix}_DRIVER is missing. Resource $prefix WILL NOT be configured." 
+        log_warning "${prefix}_DRIVER is missing. Resource $prefix WILL NOT be configured." 
         continue
       fi
       resource="${resource} driverClassName=\"$driver\""
@@ -90,7 +92,7 @@ function inject_external_datasources() {
       if [ -n "$url" ]; then
          resource="${resource} url=\"$url\"" 
       elif [ -z "${protocol}" ] || [ -z "$host" ] || [ -z "$port" ] || [ -z "$database" ]; then
-        echo "WARNING! ${prefix}_PROTOCOL, ${prefix}_HOST, ${prefix}_PORT, ${prefix}_DATABASE, or ${prefix}_URL is missing. Resource $prefix WILL NOT be configured." 
+        log_warning "${prefix}_PROTOCOL, ${prefix}_HOST, ${prefix}_PORT, ${prefix}_DATABASE, or ${prefix}_URL is missing. Resource $prefix WILL NOT be configured." 
         continue
       else
         resource="${resource} url=\"${protocol}://${host}:${port}/${database}\""
@@ -98,14 +100,14 @@ function inject_external_datasources() {
 
       factory=$(find_env "${prefix}_FACTORY" )
       if [ -z "$factory" ]; then
-        echo "WARNING! ${prefix}_FACTORY is missing. Resource $prefix WILL NOT be configured." 
+        log_warning "${prefix}_FACTORY is missing. Resource $prefix WILL NOT be configured." 
         continue
       fi
       resource="${resource} factory=\"$factory\""
 
       type=$(find_env "${prefix}_TYPE" )
       if [ -z "$type" ]; then
-        echo "WARNING! ${prefix}_TYPE is missing. Resource $prefix WILL NOT be configured." 
+        log_warning "${prefix}_TYPE is missing. Resource $prefix WILL NOT be configured." 
         continue
       fi
       resource="${resource} type=\"$type\""
@@ -116,7 +118,7 @@ function inject_external_datasources() {
         if [ -n "$password" ]; then
           resource="${resource} username=\"$username\" password=\"$password\""
         else
-          echo "WARNING! ${prefix}_PASSWORD is missing. Resource $prefix WILL NOT be configured." 
+          log_warning "${prefix}_PASSWORD is missing. Resource $prefix WILL NOT be configured." 
           continue
         fi
       fi
@@ -217,17 +219,17 @@ function inject_datasources() {
 
     if [ "$configurable_db" = true ]; then
       if [ -z $host ] || [ -z $port ]; then
-        echo "There is a problem with your service configuration!"
-        echo "You provided following database mapping (via DB_SERVICE_PREFIX_MAPPING environment variable): $db_backend. To configure datasources we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
-        echo
-        echo "Current values:"
-        echo
-        echo "${service}_SERVICE_HOST: $host"
-        echo "${service}_SERVICE_PORT: $port"
-        echo
-        echo "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
-        echo
-        echo "WARNING! The ${db,,} datasource for $prefix service WILL NOT be configured."
+        log_warning "There is a problem with your service configuration!"
+        log_warning "You provided following database mapping (via DB_SERVICE_PREFIX_MAPPING environment variable): $db_backend. To configure datasources we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
+        log_warning
+        log_warning "Current values:"
+        log_warning
+        log_warning "${service}_SERVICE_HOST: $host"
+        log_warning "${service}_SERVICE_PORT: $port"
+        log_warning
+        log_warning "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
+        log_warning
+        log_warning "The ${db,,} datasource for $prefix service WILL NOT be configured."
         continue
       fi
 
@@ -244,16 +246,16 @@ function inject_datasources() {
       database=$(find_env "${prefix}_DATABASE")
 
       if [ -z $jndi ] || [ -z $username ] || [ -z $password ] || [ -z $database ]; then
-        echo "Ooops, there is a problem with the ${db,,} datasource!"
-        echo "In order to configure ${db,,} datasource for $prefix service you need to provide following environment variables: ${prefix}_USERNAME, ${prefix}_PASSWORD, ${prefix}_DATABASE."
-        echo
-        echo "Current values:"
-        echo
-        echo "${prefix}_USERNAME: $username"
-        echo "${prefix}_PASSWORD: $password"
-        echo "${prefix}_DATABASE: $database"
-        echo
-        echo "WARNING! The ${db,,} datasource for $prefix service WILL NOT be configured."
+        log_warning "Ooops, there is a problem with the ${db,,} datasource!"
+        log_warning "In order to configure ${db,,} datasource for $prefix service you need to provide following environment variables: ${prefix}_USERNAME, ${prefix}_PASSWORD, ${prefix}_DATABASE."
+        log_warning
+        log_warning "Current values:"
+        log_warning
+        log_warning "${prefix}_USERNAME: $username"
+        log_warning "${prefix}_PASSWORD: $password"
+        log_warning "${prefix}_DATABASE: $database"
+        log_warning
+        log_warning "The ${db,,} datasource for $prefix service WILL NOT be configured."
         continue
       fi
 

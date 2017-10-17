@@ -3,6 +3,8 @@
 
 # source the KIE config
 source $JBOSS_HOME/bin/kieserver-config.sh
+source $JBOSS_HOME/bin/launch/logging.sh
+
 # set the KIE environment
 setKieContainerEnv
 # dump the KIE environment
@@ -17,7 +19,7 @@ function verifyContainers() {
         releaseIds="${releaseIds} ${groupId}:${artifactId}:${version}"
     done
     containerVerifier="org.openshift.kieserver.common.server.ContainerVerifier"
-    echo "Attempting to verify containers with 'java ${containerVerifier} ${releaseIds}'"
+    log_info "Attempting to verify containers with 'java ${containerVerifier} ${releaseIds}'"
     java -jar $JBOSS_HOME/jboss-modules.jar -mp $JBOSS_HOME/modules $(getJBossModulesOptsForKieUtilities) ${containerVerifier} ${releaseIds}
 }
 
@@ -26,7 +28,7 @@ verifyContainers
 ERR=$?
 
 if [ $ERR -ne 0 ]; then
-  echo "Aborting due to error code $ERR from container verification"
+  log_error "Aborting due to error code $ERR from container verification"
   exit $ERR
 fi
 

@@ -2,6 +2,7 @@
 
 source "${JBOSS_HOME}/bin/launch/launch-common.sh"
 source "/opt/rh/rh-maven33/enable"
+source $JBOSS_HOME/bin/launch/logging.sh
 
 function prepareEnv() {
     # please keep these in alphabetical order
@@ -25,8 +26,8 @@ function configure_admin_security() {
     local kieAdminPwd=$(find_env "KIE_ADMIN_PWD" "admin1!")
     ${JBOSS_HOME}/bin/add-user.sh -a --user "${kieAdminUser}" --password "${kieAdminPwd}" --role "kie-server,rest-all,admin,kiemgmt,Administrators"
     if [ "$?" -ne "0" ]; then
-        echo "Failed to create admin user \"${kieAdminUser}\""
-        echo "Exiting..."
+        log_error "Failed to create admin user \"${kieAdminUser}\""
+        log_error "Exiting..."
         exit
     fi
 }

@@ -42,7 +42,7 @@ Feature: Openshift DataVirt JGroups tests
        | JGROUPS_ENCRYPT_KEYSTORE                     | keystore.jks                           |
        | JGROUPS_ENCRYPT_PASSWORD                     | mykeystorepass                         |
     Then container log should contain JBAS015874:
-    And available container log should contain WARNING! Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
+    And available container log should contain WARN Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
 
   Scenario: Check jgroups encryption does not create invalid configuration with missing password
     Given XML namespaces
@@ -55,4 +55,4 @@ Feature: Openshift DataVirt JGroups tests
        | JGROUPS_ENCRYPT_KEYSTORE                     | keystore.jks                           |
        | JGROUPS_ENCRYPT_NAME                         | jboss                                  |
     Then container log should contain JBAS015874:
-    And available container log should contain WARNING! Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
+    And available container log should contain WARN Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.

@@ -34,9 +34,9 @@ Feature: EAP Openshift resource adapters
        | TEST_CONNECTION_JNDI           | java:/marketdata-file                                        |
        | TEST_PROPERTY_ParentDirectory  | /home/jboss/source/injected/injected-files/data              |
        | TEST_PROPERTY_AllowParentPaths | true                                                         |
-    Then container log should contain Warning - TEST_ID is missing from resource adapter configuration, defaulting to TEST
-    And container log should contain Warning - TEST_MODULE_SLOT is missing from resource adapter configuration, defaulting to main
-    And container log should contain Warning - TEST_MODULE_ID and TEST_ARCHIVE are missing from resource adapter configuration. One is required. Resource adapter will not be configured
+    Then container log should contain WARN TEST_ID is missing from resource adapter configuration, defaulting to TEST
+    And container log should contain WARN TEST_MODULE_SLOT is missing from resource adapter configuration, defaulting to main
+    And container log should contain WARN TEST_MODULE_ID and TEST_ARCHIVE are missing from resource adapter configuration. One is required. Resource adapter will not be configured
 
    Scenario: Test AMQ resource adapter extension
     When container is started with env

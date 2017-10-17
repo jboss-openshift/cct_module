@@ -58,8 +58,8 @@ Feature: Openshift common tests
   @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: CLOUD-582, logs should not contain clustering warnings for kieserver
     When container is ready
-    Then container log should not contain WARNING: Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined
-    And container log should not contain WARNING: No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD.
+    Then container log should not contain WARN Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined
+    And container log should not contain WARN No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD.
 
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-bpmsuite-7/bpmsuite70-businesscentral-openshift @jboss-bpmsuite-7/bpmsuite70-businesscentral-monitoring-openshift @jboss-bpmsuite-7/bpmsuite70-executionserver-openshift @jboss-bpmsuite-7/bpmsuite70-standalonecontroller-openshift @rhdm-7
   Scenario: Enable Access Log
