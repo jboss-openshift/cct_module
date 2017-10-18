@@ -12,6 +12,6 @@ Feature: Openshift EAP Messaging Tests
     When container is started with args
       | arg        | value    |
       | cpu_quota  | 100000   |
-      | cpu-period | 100000   |
+      | cpu_period | 100000   |
     Then container log should contain -Dactivemq.artemis.client.global.thread.pool.max.size=8
     Then container log should contain -Dactivemq.artemis.client.global.scheduled.thread.pool.core.size=5
