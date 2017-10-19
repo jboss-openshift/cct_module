@@ -393,6 +393,7 @@
                 <file-audit-log name="local-audit" path="audit.log" relative-to="jboss.server.log.dir" format="JSON"/>
             </audit-logging>
             <security-domains>
+                <!-- ##ELYTRON_SECURITY_DOMAIN## -->
                 <security-domain name="ApplicationDomain" default-realm="ApplicationRealm" permission-mapper="default-permission-mapper">
                     <realm name="ApplicationRealm" role-decoder="groups-to-roles"/>
                     <realm name="local"/>
@@ -433,6 +434,7 @@
                 </constant-role-mapper>
             </mappers>
             <http>
+                <!-- ##HTTP_AUTHENTICATION_FACTORY## -->
                 <http-authentication-factory name="management-http-authentication" http-server-mechanism-factory="global" security-domain="ManagementDomain">
                     <mechanism-configuration>
                         <mechanism mechanism-name="DIGEST">
@@ -443,7 +445,7 @@
                 <http-authentication-factory name="application-http-authentication" http-server-mechanism-factory="global" security-domain="ApplicationDomain">
                     <mechanism-configuration>
                         <mechanism mechanism-name="BASIC">
-                            <mechanism-realm realm-name="Application Realm"/>
+                            <mechanism-realm realm-name="ApplicationRealm"/>
                         </mechanism>
                         <mechanism mechanism-name="FORM"/>
                     </mechanism-configuration>
@@ -479,8 +481,10 @@
                     </properties>
                 </configurable-sasl-server-factory>
             </sasl>
+            <!-- ##TLS## -->
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:security:2.0">
+            <!-- ##ELYTRON_INTEGRATION## -->
             <security-domains>
                 <security-domain name="other" cache-type="default">
                     <authentication>
@@ -548,6 +552,7 @@
                 <response-header name="server-header" header-name="Server" header-value="JBoss-EAP/7"/>
                 <response-header name="x-powered-by-header" header-name="X-Powered-By" header-value="Undertow/1"/>
             </filters>
+            <!-- ##APPLICATION_SECURITY_DOMAINS## -->
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:2.0">
             <modify-wsdl-address>true</modify-wsdl-address>

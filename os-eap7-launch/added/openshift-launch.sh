@@ -20,6 +20,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/ha.sh
   $JBOSS_HOME/bin/launch/jgroups.sh
   $JBOSS_HOME/bin/launch/https.sh
+  $JBOSS_HOME/bin/launch/elytron.sh
   $JBOSS_HOME/bin/launch/json_logging.sh
   $JBOSS_HOME/bin/launch/security-domains.sh
   $JBOSS_HOME/bin/launch/jboss_modules_system_pkgs.sh
