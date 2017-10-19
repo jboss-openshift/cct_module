@@ -4,6 +4,7 @@
 HORNETQ_SUBSYSTEM_FILE=$JBOSS_HOME/bin/launch/hornetq-subsystem.xml
 
 source $JBOSS_HOME/bin/launch/launch-common.sh
+source $JBOSS_HOME/bin/launch/logging.sh
 
 # Messaging doesn't currently support configuration using env files, but this is
 # a start at what it would need to do to clear the env.  The reason for this is
@@ -104,7 +105,7 @@ function configure_hornetq() {
 # $2 - jndi name
 # $3 - class
 function generate_object_config() {
-  echo "generating object config for $1" >&2
+  log_info "generating object config for $1" >&2
 
   ao="
                         <admin-object
@@ -131,7 +132,7 @@ function generate_object_config() {
 # $11 - queue names
 # $12 - topic names
 function generate_resource_adapter() {
-  echo "Generating resource adapter configuration for service: $1 (${10})" >&2
+  log_info "Generating resource adapter configuration for service: $1 (${10})" >&2
   IFS=',' read -a queues <<< ${11}
   IFS=',' read -a topics <<< ${12}
   case "${10}" in
@@ -224,7 +225,7 @@ function inject_brokers() {
   else
     for broker in ${brokers[@]}; do
 
-      echo "Processing broker: $broker"
+      log_info "Processing broker: $broker"
 
       service_name=${broker%=*}
       service=${service_name^^}
@@ -241,8 +242,8 @@ function inject_brokers() {
       fi
 
       if [ "${protocol}" != "tcp" ]; then
-        echo "There is a problem with your service configuration!"
-        echo "Only openwire (tcp) transports are supported."
+        log_warning "There is a problem with your service configuration!"
+        log_warning "Only openwire (tcp) transports are supported."
         continue
       fi
 
@@ -253,17 +254,17 @@ function inject_brokers() {
       port=$(find_env "${service}_${protocol_env}_SERVICE_PORT")
 
       if [ -z $host ] || [ -z $port ]; then
-        echo "There is a problem with your service configuration!"
-        echo "You provided following MQ mapping (via MQ_SERVICE_PREFIX_MAPPING environment variable): $brokers. To configure resource adapters we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
-        echo
-        echo "Current values:"
-        echo
-        echo "${service}_${protocol_env}_SERVICE_HOST: $host"
-        echo "${service}_${protocol_env}_SERVICE_PORT: $port"
-        echo
-        echo "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
-        echo
-        echo "WARNING! The ${type,,} broker for $prefix service WILL NOT be configured."
+        log_warning "There is a problem with your service configuration!"
+        log_warning "You provided following MQ mapping (via MQ_SERVICE_PREFIX_MAPPING environment variable): $brokers. To configure resource adapters we expect ${service}_SERVICE_HOST and ${service}_SERVICE_PORT to be set."
+        log_warning
+        log_warning "Current values:"
+        log_warning
+        log_warning "${service}_${protocol_env}_SERVICE_HOST: $host"
+        log_warning "${service}_${protocol_env}_SERVICE_PORT: $port"
+        log_warning
+        log_warning "Please make sure you provided correct service name and prefix in the mapping. Additionally please check that you do not set portalIP to None in the $service_name service. Headless services are not supported at this time."
+        log_warning
+        log_warning "The ${type,,} broker for $prefix service WILL NOT be configured."
         continue
       fi
 

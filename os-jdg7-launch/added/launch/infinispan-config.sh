@@ -1,5 +1,7 @@
 # Openshift Datagrid launch script routines for configuring infinispan
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 CACHE_CONTAINER_FILE=$JBOSS_HOME/bin/launch/cache-container.xml
 
 function clear_prefix() {
@@ -104,28 +106,28 @@ function configure_server_identities() {
   local ssl_protocol
 
   if [ -n "$SSL_KEYSTORE_PATH" ]; then
-    echo "Using SSL_KEYSTORE_PATH to configure HotRod SSL keystore"
+    log_info "Using SSL_KEYSTORE_PATH to configure HotRod SSL keystore"
     keystore_path="$SSL_KEYSTORE_PATH"
     keystore_relative_to="$SSL_KEYSTORE_RELATIVE_TO"
   elif [ -n "$HTTPS_KEYSTORE" ]; then
-    echo "Using HTTPS_KEYSTORE to configure HotRod SSL keystore"
+    log_info "Using HTTPS_KEYSTORE to configure HotRod SSL keystore"
     keystore_path="${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}"
     keystore_relative_to=""
   fi
 
   if [ -n "$SSL_KEYSTORE_PASSWORD" ]; then
-    echo "Using SSL_KEYSTORE_PASSWORD for the HotRod SSL keystore"
+    log_info "Using SSL_KEYSTORE_PASSWORD for the HotRod SSL keystore"
     keystore_password="$SSL_KEYSTORE_PASSWORD"
   elif [ -n "$HTTPS_PASSWORD" ] ; then
-    echo "Using HTTPS_PASSWORD for the HotRod SSL keystore"
+    lof_info "Using HTTPS_PASSWORD for the HotRod SSL keystore"
     keystore_password="$HTTPS_PASSWORD"
   fi
 
   if [ -z "$keystore_path" -o -z "$keystore_password" ]; then
     if [ -z "$keystore_path$keystore_password" ]; then
-      echo "INFO: HotRod SSL will not be configured due to the absense of variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD."
+      log_info "HotRod SSL will not be configured due to the absense of variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD."
     else
-      echo "WARNING! HotRod SSL will not be configured due to misconfiguration of the variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD. Both must be set."
+      log_warning "HotRod SSL will not be configured due to misconfiguration of the variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD. Both must be set."
     fi
   fi
 
@@ -587,7 +589,7 @@ function configure_infinispan_endpoint() {
             memcached="\
             <memcached-connector cache-container=\"clustered\" cache=\"${MEMCACHED_CACHE}\" socket-binding=\"memcached\"/>"
           else
-            echo "WARNING! The cache for memcached-connector is not set so the connector will not be configured."
+            log_warning "The cache for memcached-connector is not set so the connector will not be configured."
           fi
         ;;
         "rest")

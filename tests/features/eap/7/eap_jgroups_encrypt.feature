@@ -35,7 +35,7 @@ Feature: Openshift EAP jgroups secure
        | JGROUPS_ENCRYPT_KEYSTORE                     | keystore.jks                           |
        | JGROUPS_ENCRYPT_PASSWORD                     | mykeystorepass                         |
     Then container log should contain WFLYSRV0025:
-     And available container log should contain WARNING! Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
+     And available container log should contain WARN Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
 
   Scenario: Check jgroups encryption does not create invalid configuration with missing password
     When container is started with env
@@ -45,4 +45,4 @@ Feature: Openshift EAP jgroups secure
        | JGROUPS_ENCRYPT_KEYSTORE                     | keystore.jks                           |
        | JGROUPS_ENCRYPT_NAME                         | jboss                                  |
     Then container log should contain WFLYSRV0025:
-     And available container log should contain WARNING! Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
+     And available container log should contain WARN Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.

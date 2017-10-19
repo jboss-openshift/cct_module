@@ -18,7 +18,7 @@ Feature: Tomcat Openshift realms
        | JWS_REALM_USERNAME_COL    | name        |
        | JWS_REALM_USERCRED_COL    | pass        |
        | JWS_REALM_USERROLE_TABLE  | roles       |
-    Then container log should contain WARNING! Partial Realm configuration, additional realms WILL NOT be configured.
+    Then container log should contain WARN Partial Realm configuration, additional realms WILL NOT be configured.
 
   Scenario: check user-specified DataSourceName is accepted
     When container is started with env
