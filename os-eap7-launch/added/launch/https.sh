@@ -20,6 +20,11 @@ function configure_https() {
   local ssl="<!-- No SSL configuration discovered -->"
   local https_connector="<!-- No HTTPS configuration discovered -->"
 
+  if [ "${CONFIGURE_ELYTRON_SSL}" == "true" ]; then
+    echo "Using Elytron for SSL configuration."
+    return 
+  fi
+
   if [ -n "${HTTPS_PASSWORD}" -a -n "${HTTPS_KEYSTORE_DIR}" -a -n "${HTTPS_KEYSTORE}" ]; then
 
     if [ -n "$HTTPS_KEYSTORE_TYPE" ]; then
