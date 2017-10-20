@@ -37,8 +37,8 @@ Feature: Openshift AMQ tests
     Given XML namespace amq:http://activemq.apache.org/schema/core
     When container is started with env
        | variable                  | value           |
-       | AMQ_STORAGE_USAGE_LIMIT   | 200 gb          |
-    Then XML file /opt/amq/conf/activemq.xml should contain value 200 gb on XPath //amq:systemUsage/amq:storeUsage/amq:storeUsage/@limit
+       | AMQ_STORAGE_USAGE_LIMIT   | 10 gb           |
+    Then XML file /opt/amq/conf/activemq.xml should contain value 10 gb on XPath //amq:systemUsage/amq:storeUsage/amq:storeUsage/@limit
 
   Scenario: check authentication plugin configuration
     Given XML namespace amq:http://activemq.apache.org/schema/core
