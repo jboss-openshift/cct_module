@@ -28,9 +28,7 @@ rm -rf ${JBOSS_HOME}/vault*
 
 find $JBOSS_HOME/modules/system/layers/base -name javax.script.ScriptEngineFactory -exec sed -i "s|com.sun.script.javascript.RhinoScriptEngineFactory||" {} \;
 
-chown -R jboss:root $JBOSS_HOME
-chmod -R g+rwX $JBOSS_HOME
-
-chown -R jboss:root $HOME
-chmod -R g+rwX $HOME
-
+for dir in ${JBOSS_HOME} ${HOME} /deployments; do
+  chown -R jboss:root $dir
+  chmod -R g+rwX $dir
+done
