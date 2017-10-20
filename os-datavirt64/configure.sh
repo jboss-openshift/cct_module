@@ -14,6 +14,7 @@ cp ${JBOSS_HOME}/dataVirtualization/dataServiceBuilder/komodo-rest.war ${JBOSS_H
 
 rm -rf ${JBOSS_HOME}/dataVirtualization
 
-chown -R jboss:root $JBOSS_HOME/standalone
-chmod -R g+rwX $JBOSS_HOME/standalone
-
+for dir in $JBOSS_HOME/standalone /deployments; do
+  chown -R jboss:root $dir
+  chmod -R g+rwX $dir
+done
