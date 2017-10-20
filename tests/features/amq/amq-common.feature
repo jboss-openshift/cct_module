@@ -137,7 +137,8 @@ Feature: Openshift AMQ tests
 
   Scenario: check ownership when started as alternative UID
     When container is started as uid 26458
-    Then run id -u in container and check its output contains 26458
+    Then container log should contain Running
+     And run id -u in container and check its output contains 26458
      And all files under /opt/amq are writeable by current user
 
   Scenario: CLOUD-865: check HTTP_PROXY gets converted to java proxy options
