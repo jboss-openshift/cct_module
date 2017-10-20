@@ -121,7 +121,8 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
   @jboss-eap-7 @jboss-eap-6/eap64-openshift @redhat-sso-7 @jboss-datavirt-6
   Scenario: check ownership when started as alternative UID
     When container is started as uid 26458
-    Then run id -u in container and check its output contains 26458
+    Then container log should contain Running
+     And run id -u in container and check its output contains 26458
      And all files under /opt/eap are writeable by current user
      And all files under /deployments are writeable by current user
 
