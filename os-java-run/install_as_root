@@ -22,4 +22,5 @@ chmod 755 /opt/run-java/run-java.sh \
     /opt/run-java/container-limits \
     /opt/run-java/java-default-options \
     /opt/run-java/proxy-options \
-    /home/jboss
+
+chmod g+rwX /home/jboss
