@@ -129,7 +129,13 @@ function configureSSL() {
 }
 
 function configureStoreUsage() {
-  storeUsage=$(find_env "AMQ_STORAGE_USAGE_LIMIT" "100 gb")
+
+  # backwards-compatibility
+  if [ -n "$AMQ_STORAGE_USAGE_LIMIT" ]; then
+    AMQ_STORE_USAGE_LIMIT="$AMQ_STORAGE_USAGE_LIMIT"
+  fi
+
+  storeUsage=$(find_env "AMQ_STORE_USAGE_LIMIT" "100 gb")
   sed -i "s|##### STORE_USAGE #####|${storeUsage}|" "$CONFIG_FILE"
 }
 

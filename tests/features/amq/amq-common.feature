@@ -33,12 +33,21 @@ Feature: Openshift AMQ tests
        | AMQ_TRUSTSTORE_PASSWORD     | password      |
     Then XML file /opt/amq/conf/activemq.xml should have 4 elements on XPath //amq:transportConnectors/amq:transportConnector
 
+  @wip
   Scenario: check storage usage configuration
     Given XML namespace amq:http://activemq.apache.org/schema/core
     When container is started with env
-       | variable                  | value           |
-       | AMQ_STORAGE_USAGE_LIMIT   | 200 gb          |
+       | variable                | value           |
+       | AMQ_STORE_USAGE_LIMIT   | 200 gb          |
     Then XML file /opt/amq/conf/activemq.xml should contain value 200 gb on XPath //amq:systemUsage/amq:storeUsage/amq:storeUsage/@limit
+
+  @wip
+  Scenario: check storage usage configuration - backwards compatibility
+    Given XML namespace amq:http://activemq.apache.org/schema/core
+    When container is started with env
+      | variable                  | value           |
+      | AMQ_STORAGE_USAGE_LIMIT   | 100 gb          |
+    Then XML file /opt/amq/conf/activemq.xml should contain value 100 gb on XPath //amq:systemUsage/amq:storeUsage/amq:storeUsage/@limit
 
   Scenario: check authentication plugin configuration
     Given XML namespace amq:http://activemq.apache.org/schema/core
@@ -192,4 +201,5 @@ Feature: Openshift AMQ tests
        | AMQ_QUEUE_MEMORY_LIMIT    | 2mb             |
     Then XML file /opt/amq/conf/activemq.xml should have 3 elements on XPath //amq:destinations/amq:queue
     And XML file /opt/amq/conf/activemq.xml should contain value 2mb on XPath //*[local-name()='policyEntry']/@memoryLimit
+
 
