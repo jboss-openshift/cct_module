@@ -155,8 +155,13 @@ function setKieServerEnv() {
             JBOSS_NODE_NAME="${HOSTNAME}"
         fi
         if [ "x${JBOSS_NODE_NAME}" != "x" ]; then
+            # [CLOUD-2105] - Process server does not truncate the node name to 23 bytes
+            if [ ${#JBOSS_NODE_NAME} -gt 23 ]; then
+                JBOSS_NODE_NAME=${JBOSS_NODE_NAME: -23}
+            fi
             KIE_SERVER_ID="${KIE_SERVER_ID}-${JBOSS_NODE_NAME}"
         fi
+        JBOSS_HA_ARGS="${JBOSS_HA_ARGS} -Djboss.node.name=${JBOSS_NODE_NAME}"
     fi
 
     # server state

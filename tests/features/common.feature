@@ -55,6 +55,14 @@ Feature: Openshift common tests
     And container log should contain Failed to create the user openshift
     And container log should contain Exiting...
 
+  @jboss-kieserver-6
+  Scenario: Check that long node names are truncated to 23 characters
+    When container is started with env
+      | variable  | value                      |
+      | EAP_NODE_NAME | abcdefghijklmnopqrstuvwxyz |
+    Then container log should contain jboss.node.name = defghijklmnopqrstuvwxyz
+
+
   @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: CLOUD-582, logs should not contain clustering warnings for kieserver
     When container is ready
