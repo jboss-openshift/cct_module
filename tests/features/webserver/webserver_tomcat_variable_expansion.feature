@@ -70,3 +70,19 @@ Feature: Check correct variable expansion used
     And file /opt/webserver/conf/server.xml should contain prefix="1" suffix="" rotatable="false" requestAttributesEnabled="true"
     And file /opt/webserver/conf/server.xml should contain pattern="%h %l %u %t %{X-Forwarded-Host}i &quot;%r&quot; %s %b" />
     And file /opt/webserver/conf/server.xml should contain <Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"/>
+
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  Scenario: APR is enabled for 64 bit 
+    When container is started with env
+      | variable          | value                 |
+      | USE_32_BIT_JVM    | false                 |
+    Then file /opt/webserver/conf/server.xml should contain <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+
+  @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  Scenario: APR is disabled for 32 bit
+    When container is started with env
+      | variable          | value                 |
+      | USE_32_BIT_JVM    | true                  |
+    Then file /opt/webserver/conf/server.xml should not contain org.apache.catalina.core.AprLifecycleListener
+
+

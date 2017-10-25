@@ -17,7 +17,14 @@ function source_java_run_scripts() {
     source "${java_scripts_dir}/java-default-options"
 }
 
+function set_java_arch(){
+    source /opt/run-java/java-alternatives.sh
+
+    export JAVA_HOME="$(set_java_alternatives)"
+}
+
 source_java_run_scripts
+set_java_arch
 
 # deprecated, left for backward compatibility
 function get_heap_size {
