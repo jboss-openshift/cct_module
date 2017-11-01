@@ -548,6 +548,13 @@ avail-set-dmr:
     time-units: seconds
     attribute:  server-state
     up-regex:   "run.*|.*-required"
+- name: Domain Availability
+  avail-dmr:
+  - name: Domain Availability
+    interval:   30
+    time-units: seconds
+    attribute:  host-state
+    up-regex:   "run.*|.*-required"
 - name: Deployment Status
   avail-dmr:
   - name: Deployment Status
@@ -800,6 +807,8 @@ resource-type-set-dmr:
     metric-sets:
     - WildFly Memory Metrics
     - WildFly Threading Metrics
+    avail-sets:
+    - Domain Availability
     resource-config-dmr:
     - name: Name
       attribute: name
@@ -1001,16 +1010,6 @@ resource-type-set-dmr:
     - Undertow Metrics
     avail-sets:
     - Deployment Status
-    operation-dmr:
-    - name: Redeploy
-      internal-name: redeploy
-      modifies: true
-    - name: Remove
-      internal-name: remove
-      modifies: true
-    - name: Undeploy
-      internal-name: undeploy
-      modifies: true
   - name: SubDeployment
     resource-name-template: "SubDeployment [%-]"
     path: "/subdeployment=*"
