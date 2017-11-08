@@ -8,6 +8,8 @@ ADDED_DIR=${SCRIPT_DIR}/added
 
 cp -p ${ADDED_DIR}/openshift-launch.sh $JBOSS_HOME/bin/
 
+cp -p ${ADDED_DIR}/launch/standalone.sh $JBOSS_HOME/bin/launch
+
 # Add infinispan config script
 cp -p ${ADDED_DIR}/launch/infinispan-config.sh $JBOSS_HOME/bin/launch
 
