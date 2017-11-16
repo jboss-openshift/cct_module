@@ -1,7 +1,7 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
-. /opt/rh/rh-maven33/enable
+source /usr/local/s2i/scl-enable-maven
 
 # source the KIE config
 source $JBOSS_HOME/bin/launch/kieserver-env.sh

@@ -6,7 +6,7 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
 fi
 
 . $(dirname $0)/common.sh
-. /opt/rh/rh-maven33/enable
+source /usr/local/s2i/scl-enable-maven
 
 LOCAL_SOURCE_DIR=/tmp/src
 mkdir -p $LOCAL_SOURCE_DIR
