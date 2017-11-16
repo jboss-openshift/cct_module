@@ -1,7 +1,7 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
-source /opt/rh/rh-maven33/enable
+source /usr/local/s2i/scl-enable-maven
 source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
 source $JBOSS_HOME/bin/launch/logging.sh
 
