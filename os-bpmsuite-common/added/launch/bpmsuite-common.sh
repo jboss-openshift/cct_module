@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "${JBOSS_HOME}/bin/launch/launch-common.sh"
-source "/opt/rh/rh-maven33/enable"
+source /usr/local/s2i/scl-enable-maven
 source $JBOSS_HOME/bin/launch/logging.sh
 
 function prepareEnv() {
