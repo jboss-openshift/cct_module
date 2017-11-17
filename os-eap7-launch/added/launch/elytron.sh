@@ -67,11 +67,15 @@ function configure_security_domains() {
                     <elytron-realm name=\"${SECDOMAIN_NAME}\" legacy-jaas-config=\"${SECDOMAIN_NAME}\"/>\n\
                 </security-realms>\n\
             </elytron-integration>"
-    application_security_domains="<application-security-domains>\n\
+    ejb_application_security_domains="<application-security-domains>\n\
+                <application-security-domain name=\"${SECDOMAIN_NAME}\" security-domain=\"${SECDOMAIN_NAME}\"/>\n\
+            </application-security-domains>"
+    http_application_security_domains="<application-security-domains>\n\
                 <application-security-domain name=\"${SECDOMAIN_NAME}\" http-authentication-factory=\"${SECDOMAIN_NAME}-http\"/>\n\
             </application-security-domains>"
     http_authentication_factory="<http-authentication-factory name=\"${SECDOMAIN_NAME}-http\" http-server-mechanism-factory=\"global\" security-domain=\"${SECDOMAIN_NAME}\">\n\
                     <mechanism-configuration>\n\
+                        <mechanism mechanism-name=\"BASIC\"/>\n\
                         <mechanism mechanism-name=\"FORM\"/>\n\
                     </mechanism-configuration>\n\
                 </http-authentication-factory>"
@@ -81,7 +85,8 @@ function configure_security_domains() {
   fi
 
   sed -i "s|<!-- ##ELYTRON_INTEGRATION## -->|${elytron_integration}|" $CONFIG_FILE
-  sed -i "s|<!-- ##APPLICATION_SECURITY_DOMAINS## -->|${application_security_domains}|" $CONFIG_FILE
+  sed -i "s|<!-- ##EJB_APPLICATION_SECURITY_DOMAINS## -->|${ejb_application_security_domains}|" $CONFIG_FILE
+  sed -i "s|<!-- ##HTTP_APPLICATION_SECURITY_DOMAINS## -->|${http_application_security_domains}|" $CONFIG_FILE
   sed -i "s|<!-- ##HTTP_AUTHENTICATION_FACTORY## -->|${http_authentication_factory}|" $CONFIG_FILE
   sed -i "s|<!-- ##ELYTRON_SECURITY_DOMAIN## -->|${elytron_security_domain}|" $CONFIG_FILE
 }
