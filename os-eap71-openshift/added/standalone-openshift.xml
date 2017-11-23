@@ -381,7 +381,7 @@
                 </maximum-set>
             </deployment-permissions>
         </subsystem>
-        <subsystem xmlns="urn:wildfly:elytron:1.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
+        <subsystem xmlns="urn:wildfly:elytron:1.2" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
             <providers>
                 <provider-loader name="elytron" module="org.wildfly.security.elytron"/>
                 <provider-loader name="openssl" module="org.wildfly.openssl"/>
