@@ -224,10 +224,18 @@ get_exec_args() {
   fi
 }
 
+function configure_passwd() {
+  sed "/^jboss/s/[^:]*/$(id -u)/3" /etc/passwd > /tmp/passwd
+  cat /tmp/passwd > /etc/passwd
+  rm /tmp/passwd
+}
+
 # Start JVM
 startup() {
   # Initialize environment
   load_env $(get_script_dir)
+
+  configure_passwd
 
   local args
   cd ${JAVA_APP_DIR}
