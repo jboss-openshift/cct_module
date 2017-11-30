@@ -72,11 +72,31 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
 
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @redhat-sso-7
   # https://issues.jboss.org/browse/CLOUD-204
-  Scenario: Check if kube ping protocol is used
+  Scenario: Check if kube ping protocol is used by default
     When container is ready
     # 2 matches, one for TCP, one for UDP
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
+
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @redhat-sso-7
+  # https://issues.jboss.org/browse/CLOUD-1958
+  Scenario: Check if kube ping protocol is used when specified
+    When container is started with env
+      | variable                             | value           |
+      | JGROUPS_PING_PROTOCOL                | openshift.KUBE_PING     |
+    # 2 matches, one for TCP, one for UDP
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
+
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @redhat-sso-7
+  # https://issues.jboss.org/browse/CLOUD-1958
+  Scenario: Check if dns ping protocol is used when specified
+    When container is started with env
+      | variable                             | value           |
+      | JGROUPS_PING_PROTOCOL                | openshift.DNS_PING     |
+    # 2 matches, one for TCP, one for UDP
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
 
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6
   Scenario: Check if jolokia is configured correctly

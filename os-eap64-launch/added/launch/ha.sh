@@ -2,12 +2,14 @@
 function prepareEnv() {
   unset OPENSHIFT_KUBE_PING_NAMESPACE
   unset OPENSHIFT_KUBE_PING_LABELS
+  unset OPENSHIFT_DNS_PING_SERVICE_NAME
+  unset OPENSHIFT_DNS_PING_SERVICE_PORT
   unset JGROUPS_CLUSTER_PASSWORD
+  unset JGROUPS_PING_PROTOCOL
   unset NODE_NAME
 }
 
 function configure() {
-  check_view_pods_permission
   configure_ha
 }
 
@@ -42,6 +44,22 @@ function check_view_pods_permission() {
     fi
 }
 
+function validate_dns_ping_settings() {
+  if [ "x$OPENSHIFT_DNS_PING_SERVICE_NAME" = "x" ]; then
+    >&2 echo "WARNING: Environment variable OPENSHIFT_DNS_PING_SERVICE_NAME undefined. Clustering will be unavailable. Please refer to the documentation for configuration."
+  fi
+}
+
+function validate_ping_protocol() {
+  if [ "$1" = "openshift.KUBE_PING" ]; then
+    check_view_pods_permission
+  elif [ "$1" = "openshift.DNS_PING" ]; then
+    validate_dns_ping_settings
+  else
+    >&2 echo "WARNING: Unknown protocol specified for JGroups discovery protocol: $1.  Expecting one of: openshift.KUBE_PING or openshift.DNS_PING."
+  fi
+}
+
 function configure_ha() {
   # Set HA args
   IP_ADDR=`hostname -i`
@@ -74,6 +92,12 @@ function configure_ha() {
                 </protocol>\n"
   fi
 
+  local ping_protocol=${JGROUPS_PING_PROTOCOL:-openshift.KUBE_PING}
+  local ping_protocol_element="<protocol type=\"${ping_protocol}\"/>"
+  validate_ping_protocol "${ping_protocol}" 
+
   sed -i "s|<!-- ##JGROUPS_AUTH## -->|${JGROUPS_AUTH}|g" $CONFIG_FILE
+  >&2 echo "INFO: Configuring JGroups discovery protocol to ${ping_protocol}"
+  sed -i "s|<!-- ##JGROUPS_PING_PROTOCOL## -->|${ping_protocol_element}|g" $CONFIG_FILE
 
 }
