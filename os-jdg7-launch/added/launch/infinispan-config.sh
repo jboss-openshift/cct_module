@@ -491,7 +491,7 @@ function configure_container_security() {
         local CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS="class=\"$CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS\""
       fi
       local rolemapper="\
-                        <$CONTAINER_SECURITY_ROLE_MAPPER $CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS/>"
+                        <$CONTAINER_SECURITY_ROLE_MAPPER/>"
     fi
 
     if [ -n "$CONTAINER_SECURITY_ROLES" ]; then
