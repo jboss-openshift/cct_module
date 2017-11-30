@@ -261,7 +261,7 @@
         <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="tcp">
             <stack name="udp">
                 <transport type="UDP" socket-binding="jgroups-udp"/>
-                <protocol type="openshift.KUBE_PING"/>
+                <!-- ##JGROUPS_PING_PROTOCOL## -->
                 <protocol type="MERGE3"/>
                 <protocol type="FD_SOCK" socket-binding="jgroups-udp-fd"/>
                 <protocol type="FD"/>
@@ -279,7 +279,7 @@
             </stack>
             <stack name="tcp">
                 <transport type="TCP" socket-binding="jgroups-tcp"/>
-                <protocol type="openshift.KUBE_PING"/>
+                <!-- ##JGROUPS_PING_PROTOCOL## -->
                 <protocol type="MERGE2"/>
                 <protocol type="FD_SOCK" socket-binding="jgroups-tcp-fd"/>
                 <protocol type="FD"/>

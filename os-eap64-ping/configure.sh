@@ -5,7 +5,7 @@ set -e
 SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 SOURCES_DIR="/tmp/artifacts"
-VERSION="1.1.4.Final-redhat-1"
+VERSION="1.1.5.Final-redhat-1"
 
 DEST=${JBOSS_HOME}/modules/system/layers/openshift/org/openshift/ping/main
 mkdir -p ${DEST}
