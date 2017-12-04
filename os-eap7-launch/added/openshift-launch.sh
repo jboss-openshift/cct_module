@@ -1,39 +1,7 @@
 #!/bin/sh
 # Openshift EAP launch script
 
-if [ "${SCRIPT_DEBUG}" = "true" ] ; then
-    set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
-fi
-
-CONFIG_FILE=$JBOSS_HOME/standalone/configuration/standalone-openshift.xml
-LOGGING_FILE=$JBOSS_HOME/standalone/configuration/logging.properties
-
-CONFIGURE_SCRIPTS=(
-  $JBOSS_HOME/bin/launch/backward-compatibility.sh
-  $JBOSS_HOME/bin/launch/configure_extensions.sh
-  $JBOSS_HOME/bin/launch/passwd.sh
-  $JBOSS_HOME/bin/launch/messaging.sh
-  $JBOSS_HOME/bin/launch/datasource.sh
-  $JBOSS_HOME/bin/launch/resource-adapter.sh
-  $JBOSS_HOME/bin/launch/admin.sh
-  $JBOSS_HOME/bin/launch/ha.sh
-  $JBOSS_HOME/bin/launch/jgroups.sh
-  $JBOSS_HOME/bin/launch/https.sh
-  $JBOSS_HOME/bin/launch/elytron.sh
-  $JBOSS_HOME/bin/launch/json_logging.sh
-  $JBOSS_HOME/bin/launch/security-domains.sh
-  $JBOSS_HOME/bin/launch/jboss_modules_system_pkgs.sh
-  $JBOSS_HOME/bin/launch/keycloak.sh
-  $JBOSS_HOME/bin/launch/deploymentScanner.sh
-  $JBOSS_HOME/bin/launch/ports.sh
-  $JBOSS_HOME/bin/launch/access_log_valve.sh
-  /opt/run-java/proxy-options
-)
-
-source $JBOSS_HOME/bin/launch/configure.sh
-
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+source ${JBOSS_HOME}/bin/launch/openshift-common.sh
 
 # TERM signal handler
 function clean_shutdown() {
@@ -42,12 +10,58 @@ function clean_shutdown() {
   wait $!
 }
 
-trap "clean_shutdown" TERM
+function runServer() {
+  local instanceDir=$1
+  local count=$2
 
-if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
-  trap "" TERM
-  echo "Using CLI Graceful Shutdown instead of TERM signal"
+  export NODE_NAME="${NODE_NAME:-node}-${count}"
+
+  source $JBOSS_HOME/bin/launch/configure.sh
+
+  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+
+  trap "clean_shutdown" TERM
+
+  if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
+    trap "" TERM
+    echo "Using CLI Graceful Shutdown instead of TERM signal"
+  fi
+
+  $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 -Djboss.server.data.dir="$instanceDir" ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS} &
+
+  PID=$!
+  wait $PID 2>/dev/null
+  wait $PID 2>/dev/null
+}
+
+function init_data_dir() {
+  local DATA_DIR="$1"
+  if [ -d "${JBOSS_HOME}/standalone/data" ]; then
+    cp -rf ${JBOSS_HOME}/standalone/data/* $DATA_DIR
+  fi
+}
+
+if [ "${SPLIT_DATA^^}" = "TRUE" ]; then
+  source /opt/partition/partitionPV.sh
+
+  DATA_DIR="${JBOSS_HOME}/standalone/partitioned_data"
+
+  partitionPV "${DATA_DIR}" "${SPLIT_LOCK_TIMEOUT:-30}"
+else
+  source $JBOSS_HOME/bin/launch/configure.sh
+
+  echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+
+  trap "clean_shutdown" TERM
+
+  if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
+    trap "" TERM
+    echo "Using CLI Graceful Shutdown instead of TERM signal"
+  fi
+
+  $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS} &
+
+  PID=$!
+  wait $PID 2>/dev/null
+  wait $PID 2>/dev/null
 fi
-
-$JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS} &
-wait $!
