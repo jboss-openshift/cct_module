@@ -6,6 +6,8 @@
 CLI_TIMEOUT=10s
 CLI_KILLTIME=30s
 
+EAP_7_WARNING="Warning! The CLI is running in a non-modular environment and cannot load commands from management extensions."
+
 run_cli_cmd() {
     cmd="$1"
 
@@ -23,7 +25,7 @@ run_cli_cmd() {
       cli_port=$(($cli_port+$PORT_OFFSET))
     fi
 
-    timeout --foreground -k "$CLI_KILLTIME" "$CLI_TIMEOUT" java -jar $JBOSS_HOME/bin/client/jboss-cli-client.jar --connect --controller=localhost:${cli_port} "$cmd"
+    timeout --foreground -k "$CLI_KILLTIME" "$CLI_TIMEOUT" java -jar $JBOSS_HOME/bin/client/jboss-cli-client.jar --connect --controller=localhost:${cli_port} "$cmd" | grep -v "$EAP_7_WARNING"
 }
 
 is_eap7() {

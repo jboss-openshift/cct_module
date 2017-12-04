@@ -147,8 +147,8 @@ function setKieServerEnv() {
     # server id
     if [ "${KIE_SERVER_ID}" = "" ]; then
         KIE_SERVER_ID="kieserver"
-        if [ "x${EAP_NODE_NAME}" != "x" ]; then
-            JBOSS_NODE_NAME="${EAP_NODE_NAME}"
+        if [ "x${NODE_NAME}" != "x" ]; then
+            JBOSS_NODE_NAME="${NODE_NAME}"
         elif [ "x${container_uuid}" != "x" ]; then
             JBOSS_NODE_NAME="${container_uuid}"
         elif [ "x${HOSTNAME}" != "x" ]; then

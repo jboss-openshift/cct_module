@@ -53,7 +53,7 @@ function partitionPV() {
             touch "${SERVER_DATA_DIR}/../data_initialized"
           fi
 
-          runServer "${SERVER_DATA_DIR}" &
+          runServer "${SERVER_DATA_DIR}" "${COUNT}" &
 
           PID=$!
 
@@ -164,7 +164,7 @@ function migratePV() {
                 mkdir -p "${MIGRATION_DIR}"
                 cd "${MIGRATION_DIR}"
 
-                runMigration "${SERVER_DATA_DIR}" &
+                runMigration "${SERVER_DATA_DIR}" "${COUNT}" &
 
                 PID=$!
 
@@ -198,13 +198,8 @@ function migratePV() {
         trap "kill -TERM $PID" TERM
 
         wait $PID 2>/dev/null
-        STATUS=$?
         trap - TERM
         wait $PID 2>/dev/null
-
-        if [ $STATUS -ne 255 -a $STATUS -ne 0 ] ; then
-          break;
-        fi
       fi
       COUNT=$(expr $COUNT + 1)
     else
