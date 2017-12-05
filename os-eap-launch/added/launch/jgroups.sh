@@ -36,7 +36,8 @@ function configure_jgroups_encryption() {
       product=`read_product_name`
       version=`read_product_version`
 
-      if [ "$product" == "Red Hat JBoss Enterprise Application Platform" -a "$(version_compare $version '6.4.4.GA')" == "newer" ]; then
+      if [ "$product" == "Red Hat JBoss Enterprise Application Platform" -a "$(version_compare $version '6.4.4.GA')" == "newer" ] ||
+         [ "$product" == "Red Hat JBoss Data Grid" -a "$(version_compare $version '7.1.0')" == "newer" ]; then
         # For new JGroups we need to use SYM_ENCRYPT protocol
         jgroups_encrypt="\
           <protocol type=\"SYM_ENCRYPT\">\
