@@ -16,16 +16,12 @@ function configureEnv() {
   configure
 }
 
+function read_jgroups_major_verion() {
+  ls $JBOSS_HOME/modules/system/layers/openshift/org/jgroups/main | grep -o "[0-9]" | head -n 1
+}
+
 function version_compare() {
   [ "$1" = "`echo -e \"$1\n$2\" | sort -V | head -n1`" ] && echo "older" || echo "newer"
-}
-
-function read_product_name() {
-  cat $JBOSS_HOME/version.txt | awk -F'- Version' '{ print $1 }' | xargs
-}
-
-function read_product_version() {
-  cat $JBOSS_HOME/version.txt | awk -F'- Version' '{ print $2 }' | xargs
 }
 
 function configure_jgroups_encryption() {
@@ -33,10 +29,9 @@ function configure_jgroups_encryption() {
 
   if [ -n "${JGROUPS_ENCRYPT_SECRET}" ]; then
     if [ -n "${JGROUPS_ENCRYPT_NAME}" -a -n "${JGROUPS_ENCRYPT_PASSWORD}" ] ; then
-      product=`read_product_name`
-      version=`read_product_version`
+      jgroups_version=`read_jgroups_major_verion`
 
-      if [ "$product" == "Red Hat JBoss Enterprise Application Platform" -a "$(version_compare $version '6.4.4.GA')" == "newer" ]; then
+      if [ "$(version_compare $jgroups_version '3')" == "newer" ]; then
         # For new JGroups we need to use SYM_ENCRYPT protocol
         jgroups_encrypt="\
           <protocol type=\"SYM_ENCRYPT\">\
