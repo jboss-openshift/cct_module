@@ -12,7 +12,7 @@ CONFIGURE_SCRIPTS=(
 
 source /opt/${JBOSS_PRODUCT}/launch/configure.sh
 
-echo "Running $JBOSS_PRODUCT image, version $PRODUCT_VERSION"
+echo "Running $JBOSS_IMAGE_NAME image, version $PRODUCT_VERSION"
 
 if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
   trap "" TERM
