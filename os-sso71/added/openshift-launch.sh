@@ -48,6 +48,24 @@ CONFIGURE_SCRIPTS=(
 
 source $JBOSS_HOME/bin/launch/configure.sh
 
+XML_HISTORY_CURRENT_DIR="$JBOSS_HOME/standalone/configuration/standalone_xml_history/current"
+if [ -d "$XML_HISTORY_CURRENT_DIR" ]; then
+  XML_HISTORY_CURRENT_DIR_FSTYPE=$(stat -f -c %T "$XML_HISTORY_CURRENT_DIR")
+  if [ "$XML_HISTORY_CURRENT_DIR_FSTYPE" != "xfs" ]; then
+    rm -rf "$XML_HISTORY_CURRENT_DIR"
+    if [ "$?" -ne "0" ]; then
+      echo "Error trying to clean up the history directory!"
+      if [ "$XML_HISTORY_CURRENT_DIR_FSTYPE" = "overlayfs" ]; then
+        if ! "$JBOSS_HOME/bin/launch/overlayfs_check_d_type_support.py" "$XML_HISTORY_CURRENT_DIR"; then
+          echo "The backing filesystem is formatted without d_type support."
+          echo "Reformat the filesystem with ftype=1 to enable d_type support."
+        fi
+      fi 
+      exit 1
+    fi
+  fi
+fi
+
 echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
 # TERM signal handler
