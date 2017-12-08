@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-sso72
+version: '1.0'
+description: Legacy os-sso72 script package.
+execute:
+- script: configure.sh
