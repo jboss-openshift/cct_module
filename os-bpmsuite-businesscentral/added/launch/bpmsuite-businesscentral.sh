@@ -105,5 +105,8 @@ function configure_guvnor_settings() {
 
 function configure_misc_security() {
     add_management_interface_realm
-    configure_login_modules "org.kie.security.jaas.KieLoginModule" "optional" "deployment.ROOT.war"
+    # KieLoginModule breaks Decision Central; it needs to be added only for Business Central & Business Central Monitoring
+    if [ "$JBOSS_PRODUCT" = "bpmsuite-businesscentral" ] || [ "$JBOSS_PRODUCT" = "bpmsuite-businesscentral-monitoring" ]; then
+        configure_login_modules "org.kie.security.jaas.KieLoginModule" "optional" "deployment.ROOT.war"
+    fi
 }
