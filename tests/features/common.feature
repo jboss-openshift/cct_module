@@ -61,14 +61,14 @@ Feature: Openshift common tests
     Then container log should not contain WARNING: Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined
     And container log should not contain WARNING: No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD.
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-bpmsuite-7/bpmsuite70-businesscentral-openshift @jboss-bpmsuite-7/bpmsuite70-businesscentral-monitoring-openshift @jboss-bpmsuite-7/bpmsuite70-executionserver-openshift @jboss-bpmsuite-7/bpmsuite70-standalonecontroller-openshift @rhdm-7
   Scenario: Enable Access Log
     When container is started with env
       | variable          | value            |
       | ENABLE_ACCESS_LOG | true             |
     Then container log should contain Configuring Access Log Valve.
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-bpmsuite-7/bpmsuite70-businesscentral-openshift @jboss-bpmsuite-7/bpmsuite70-businesscentral-monitoring-openshift @jboss-bpmsuite-7/bpmsuite70-executionserver-openshift @jboss-bpmsuite-7/bpmsuite70-standalonecontroller-openshift @rhdm-7
   Scenario: Test Default Access Log behavior
     When container is ready
     Then container log should not contain Configuring Access Log Valve.
