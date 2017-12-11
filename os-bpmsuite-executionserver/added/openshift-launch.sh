@@ -27,6 +27,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/deploymentScanner.sh
   $JBOSS_HOME/bin/launch/ports.sh
   $JBOSS_HOME/bin/launch/maven-repos.sh
+  $JBOSS_HOME/bin/launch/access_log_valve.sh
   $JBOSS_HOME/bin/launch/bpmsuite-common.sh
   $JBOSS_HOME/bin/launch/bpmsuite-executionserver.sh
   /opt/run-java/proxy-options
