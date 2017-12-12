@@ -7,7 +7,7 @@ ADDED_DIR=${SCRIPT_DIR}/added
 
 cp ${ADDED_DIR}/standalone-openshift.xml $JBOSS_HOME/standalone/configuration
 cp ${ADDED_DIR}/import-realm.json $JBOSS_HOME/standalone/configuration
-cp ${ADDED_DIR}/openshift-launch.sh $JBOSS_HOME/bin/
+cp ${ADDED_DIR}/openshift-launch.sh ${ADDED_DIR}/openshift-migrate.sh $JBOSS_HOME/bin/
 
 mkdir -p ${JBOSS_HOME}/bin/launch
 cp -r ${ADDED_DIR}/launch/* ${JBOSS_HOME}/bin/launch

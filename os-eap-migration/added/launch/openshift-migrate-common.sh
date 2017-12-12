@@ -18,7 +18,7 @@ function runMigration() {
 
   local txOptions="-Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.recoveryBackoffPeriod=1 -Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.periodicRecoveryPeriod=1 -Dcom.arjuna.ats.jta.JTAEnvironmentBean.orphanSafetyInterval=1"
 
-  (exec $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 -Djboss.server.data.dir="$instanceDir" ${txOptions} ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS}) &
+  (runMigrationServer "$instanceDir" "${txOptions}") &
 
   PID=$!
 

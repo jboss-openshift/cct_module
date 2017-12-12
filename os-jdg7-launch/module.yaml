@@ -2,6 +2,11 @@ schema_version: 1
 name: os-jdg7-launch
 version: '1.0'
 description: Legacy os-jdg7-launch script package.
+
+modules:
+  install:
+  - name: os-eap-migration
+
 execute:
 - script: configure.sh
   user: '185'

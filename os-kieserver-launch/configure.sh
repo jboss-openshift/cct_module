@@ -9,8 +9,8 @@ SOURCES_DIR="/tmp/artifacts"
 pushd "$ADDED_DIR" &> /dev/null
     # Necessary to permit running with a randomised UID
     chmod ug+x kieserver-setup.sh kieserver-config.sh kieserver-install.sh kieserver-pull.sh kieserver-verify.sh kieserver-launch.sh ha.sh
-    cp -p kieserver-config.sh kieserver-install.sh kieserver-pull.sh kieserver-verify.sh kieserver-launch.sh quartz.properties ${JBOSS_HOME}/bin/
-    cp -p kieserver-setup.sh ha.sh ${JBOSS_HOME}/bin/launch
+    cp -p kieserver-config.sh kieserver-install.sh kieserver-pull.sh kieserver-verify.sh kieserver-launch.sh kieserver-migrate.sh quartz.properties ${JBOSS_HOME}/bin/
+    cp -p openshift-common.sh kieserver-setup.sh ha.sh ${JBOSS_HOME}/bin/launch
 popd &> /dev/null
 
 # supplementary tools only exist in kieserver > 6.2
