@@ -69,8 +69,7 @@ function prepareEnv() {
   IFS=',' read -a cachenames <<< "$DATAVIRT_CACHE_NAMES"
   for cachename in ${cachenames[@]}; do
     clear_prefix ${cachename}
-    clear_prefix ${cachename}_staging
-    clear_prefix ${cachename}_alias
+    clear_prefix ST_${cachename}
   done
   unset DATAVIRT_CACHE_NAMES
 
@@ -399,9 +398,9 @@ function define_datavirt_caches(){
   if [ -n "$DATAVIRT_CACHE_NAMES" ]; then
     for cache_name in $(echo $DATAVIRT_CACHE_NAMES | sed "s/,/ /g"); do
       define_datavirt_cache_variables "${cache_name}" "true"
-      define_datavirt_cache_variables "${cache_name}_staging" "true"
-      define_datavirt_cache_variables "${cache_name}_alias" "false"
+      define_datavirt_cache_variables "ST_${cache_name}" "true"
     done
+    define_datavirt_cache_variables "teiid-alias-naming-cache" "false"
   fi
 }
 
