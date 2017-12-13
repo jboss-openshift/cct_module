@@ -18,4 +18,5 @@ cp -p ${ADDED_DIR}/launch/authentication-config.sh $JBOSS_HOME/bin/launch
 cp -p ${ADDED_DIR}/launch/backward-compatibility.sh $JBOSS_HOME/bin/launch
 
 cp ${ADDED_DIR}/launch/management-realm.sh $JBOSS_HOME/bin/launch
+cp ${ADDED_DIR}/launch/jgroups.sh $JBOSS_HOME/bin/launch
 cp ${ADDED_DIR}/launch/cache-container.xml $JBOSS_HOME/bin/launch
