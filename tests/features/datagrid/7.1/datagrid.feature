@@ -11,7 +11,7 @@ Feature: Openshift DataGrid tests
        | CONTAINER_SECURITY_ROLES                      | admin=ALL             |
        | DEFAULT_CACHE_SECURITY_AUTHORIZATION_ENABLED  | true                  |
        | DEFAULT_CACHE_SECURITY_AUTHORIZATION_ROLES    | admin                 |
-    Then container log should contain WFLYSRV0025: Data Grid 7.1.0
+    Then container log should contain WFLYSRV0025: Data Grid 7.1.1
     Then run /opt/datagrid/bin/readinessProbe.sh in container once
     Then run /opt/datagrid/bin/livenessProbe.sh in container once
 
