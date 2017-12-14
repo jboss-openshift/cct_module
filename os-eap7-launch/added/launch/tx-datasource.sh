@@ -67,7 +67,11 @@ function generate_tx_datasource() {
 }
 
 function inject_jdbc_store() {
-  jdbcStore="<jdbc-store datasource-jndi-name=\"${1}ObjectStore\"/>"
+  jdbcStore="<jdbc-store datasource-jndi-name=\"${1}\">\\
+                <action table-prefix=\"\${jboss.node.name}\"/>\\
+                <communication table-prefix=\"\${jboss.node.name}\"/>\\
+                <state table-prefix=\"\${jboss.node.name}\"/>\\
+            </jdbc-store>"
   sed -i "s|<!-- ##JDBC_STORE## -->|${jdbcStore}|" $CONFIG_FILE
 }
 
@@ -138,12 +142,12 @@ function inject_tx_datasource() {
       "MYSQL")
         driver="mysql"
         datasource="$(generate_tx_datasource ${service,,} $jndi $username $password $host $port $database $driver)\n"
-        inject_jdbc_store $jndi
+        inject_jdbc_store "${jndi}ObjectStore"
         ;;
       "POSTGRESQL")
         driver="postgresql"
         datasource="$(generate_tx_datasource ${service,,} $jndi $username $password $host $port $database $driver)\n"
-        inject_jdbc_store $jndi
+        inject_jdbc_store "${jndi}ObjectStore"
         ;;
       *)
         datasource=""
@@ -152,8 +156,7 @@ function inject_tx_datasource() {
     echo ${datasource} | sed ':a;N;$!ba;s|\n|\\n|g'
   else
     if [ -n "$JDBC_STORE_JNDI_NAME" ]; then
-      local jdbcStore="<jdbc-store datasource-jndi-name=\"${JDBC_STORE_JNDI_NAME}\"/>"
-      sed -i "s|<!-- ##JDBC_STORE## -->|${jdbcStore}|" $CONFIG_FILE
+      inject_jdbc_store "${JDBC_STORE_JNDI_NAME}"
     fi
   fi
 }
