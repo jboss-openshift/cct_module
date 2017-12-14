@@ -236,6 +236,32 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password on XPath //*[local-name()='xa-datasource']/*[local-name()='security']/*[local-name()='password']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 3 elements on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:/jboss/datasources/testds on XPath //*[local-name()='jdbc-store']/@datasource-jndi-name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value ${jboss.node.name} on XPath //*[local-name()='jdbc-store']/*[local-name()='action']/@table-prefix
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value ${jboss.node.name} on XPath //*[local-name()='jdbc-store']/*[local-name()='communication']/@table-prefix
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value ${jboss.node.name} on XPath //*[local-name()='jdbc-store']/*[local-name()='state']/@table-prefix
+
+  @redhat-sso-7/sso71-openshift
+  Scenario: Test postgresql xa datasource extension with TX_DATABASE_PREFIX_MAPPING
+    When container is started with env
+       | variable                       | value                                  |
+       | TX_DATABASE_PREFIX_MAPPING     | TEST_POSTGRESQL                        |
+       | TEST_POSTGRESQL_JNDI           | java:/jboss/datasources/testds         |
+       | TEST_POSTGRESQL_USERNAME       | tombrady                               |
+       | TEST_POSTGRESQL_PASSWORD       | password                               |
+       | TEST_POSTGRESQL_SERVICE_HOST   | 10.1.1.1                               |
+       | TEST_POSTGRESQL_SERVICE_PORT   | 5432                                   |
+       | TEST_POSTGRESQL_DATABASE       | pgdb                                   |
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:/jboss/datasources/testdsObjectStore on XPath //*[local-name()='datasource']/@jndi-name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //*[local-name()='datasource']/@jta
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test_postgresqlObjectStorePool on XPath //*[local-name()='datasource']/@pool-name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value true on XPath //*[local-name()='datasource']/@enabled
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value jdbc:postgresql://10.1.1.1:5432/pgdb on XPath //*[local-name()='datasource']/*[local-name()='connection-url']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value postgresql on XPath //*[local-name()='datasource']/*[local-name()='driver']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value tombrady on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='user-name']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value password on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='password']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value ${jboss.node.name} on XPath //*[local-name()='jdbc-store']/*[local-name()='action']/@table-prefix
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value ${jboss.node.name} on XPath //*[local-name()='jdbc-store']/*[local-name()='communication']/@table-prefix
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value ${jboss.node.name} on XPath //*[local-name()='jdbc-store']/*[local-name()='state']/@table-prefix
 
   @redhat-sso-7/sso71-openshift
   Scenario: Test postgresql non-xa datasource extension
