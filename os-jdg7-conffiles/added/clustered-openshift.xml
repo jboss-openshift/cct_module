@@ -284,7 +284,7 @@
                     <uuid/>
                 </process-id>
             </core-environment>
-            <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
+            <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager" recovery-listener="true"/>
             <coordinator-environment default-timeout="300"/>
             <!-- ##JDBC_STORE## -->
         </subsystem>

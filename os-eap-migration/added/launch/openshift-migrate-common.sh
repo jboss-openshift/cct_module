@@ -29,10 +29,25 @@ function runMigration() {
   local success=false
   local message="Finished, migration pod has been terminated"
   ${JBOSS_HOME}/bin/readinessProbe.sh
+
   if [ $? -eq 0 ] ; then
     echo "$(date): Server started, checking for transactions"
     local startTime=$(date +'%s')
     local endTime=$((startTime + ${RECOVERY_TIMEOUT} + 1))
+
+    local socketBinding=$(run_cli_cmd '/subsystem=transactions/:read-attribute(name="socket-binding")' | grep -w result | sed -e 's+^.*=> "++' -e 's+".*$++')
+    local recoveryPort=$(run_cli_cmd '/socket-binding-group=standard-sockets/socket-binding='"${socketBinding}"'/:read-attribute(name="bound-port")' | grep -w result | sed -e 's+^.*=> ++')
+    local recoveryHost=$(run_cli_cmd '/socket-binding-group=standard-sockets/socket-binding='"${socketBinding}"'/:read-attribute(name="bound-address")' | grep -w result | sed -e 's+^.*=> "++' -e 's+".*$++')
+
+    if [ -n "${recoveryPort}" ] ; then
+      local recoveryClass="com.arjuna.ats.arjuna.tools.RecoveryMonitor"
+      recoveryJar=$(find "${JBOSS_HOME}" -name \*.jar | xargs grep -l "${recoveryClass}")
+      if [ -n "${recoveryJar}" ] ; then
+        echo "$(date): Executing synchronous recovery scan"
+        java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}"
+      fi
+    fi
+
     while [ $(date +'%s') -lt $endTime -a ! -f "${terminatingFile}" ] ; do
       run_cli_cmd '/subsystem=transactions/log-store=log-store/:probe' > /dev/null 2>&1
       local transactions="$(run_cli_cmd 'ls /subsystem=transactions/log-store=log-store/transactions')"
