@@ -17,20 +17,23 @@ function runMigration() {
   echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
   local txOptions="-Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.recoveryBackoffPeriod=1 -Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.periodicRecoveryPeriod=1 -Dcom.arjuna.ats.jta.JTAEnvironmentBean.orphanSafetyInterval=1"
+  local terminatingFile="${JBOSS_HOME}/terminatingMigration"
 
   (runMigrationServer "$instanceDir" "${txOptions}") &
 
   PID=$!
 
-  trap "echo Received TERM ; kill -TERM $PID" TERM
+  rm -f "${terminatingFile}"
+
+  trap "echo Received TERM ; touch \"${terminatingFile}\" ; kill -TERM $PID ; " TERM
   local success=false
-  local message=
+  local message="Finished, migration pod has been terminated"
   ${JBOSS_HOME}/bin/readinessProbe.sh
   if [ $? -eq 0 ] ; then
     echo "$(date): Server started, checking for transactions"
     local startTime=$(date +'%s')
     local endTime=$((startTime + ${RECOVERY_TIMEOUT} + 1))
-    while [ $(date +'%s') -lt $endTime ] ; do
+    while [ $(date +'%s') -lt $endTime -a ! -f "${terminatingFile}" ] ; do
       run_cli_cmd '/subsystem=transactions/log-store=log-store/:probe' > /dev/null 2>&1
       local transactions="$(run_cli_cmd 'ls /subsystem=transactions/log-store=log-store/transactions')"
       if [ -z "${transactions}" ] ; then
@@ -50,7 +53,9 @@ function runMigration() {
     fi
   fi
 
-  run_cli_cmd ':shutdown' >/dev/null 2>&1
+  if [ ! -f "${terminatingFile}" ] ; then
+      run_cli_cmd ':shutdown' >/dev/null 2>&1
+  fi
   wait $PID 2>/dev/null
   trap - TERM
   wait $PID 2>/dev/null
