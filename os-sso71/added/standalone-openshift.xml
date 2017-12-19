@@ -403,7 +403,7 @@
                     <uuid/>
                 </process-id>
             </core-environment>
-            <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
+            <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager" recovery-listener="true"/>
             <!-- ##JDBC_STORE## -->
         </subsystem>
          <subsystem xmlns="urn:jboss:domain:undertow:3.0">
