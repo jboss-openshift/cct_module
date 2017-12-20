@@ -490,8 +490,9 @@ function configure_container_security() {
       if [ -n "$CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS" ] && [ "$CONTAINER_SECURITY_ROLE_MAPPER" == "custom-role-mapper" ]; then
         local CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS="class=\"$CONTAINER_SECURITY_CUSTOM_ROLE_MAPPER_CLASS\""
       fi
-      local rolemapper="\
-                        <$CONTAINER_SECURITY_ROLE_MAPPER/>"
+      if [ "$CONTAINER_SECURITY_ROLE_MAPPER" == "identity-role-mapper" -o "$CONTAINER_SECURITY_ROLE_MAPPER" == "common-name-role-mapper" -o "$CONTAINER_SECURITY_ROLE_MAPPER" == "cluster-role-mapper" -o "$CONTAINER_SECURITY_ROLE_MAPPER" == "custom-role-mapper" ]; then
+        local rolemapper="<$CONTAINER_SECURITY_ROLE_MAPPER/>"
+      fi
     fi
 
     if [ -n "$CONTAINER_SECURITY_ROLES" ]; then
