@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-kieserver-chmod
+version: '1.0'
+description: Legacy os-kieserver-chmod script package.
+execute:
+- script: run

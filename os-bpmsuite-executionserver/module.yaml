@@ -1,0 +1,6 @@
+schema_version: 1
+name: os-bpmsuite-executionserver
+version: '1.0'
+description: Legacy os-bpmsuite-executionserver script package.
+execute:
+- script: configure.sh

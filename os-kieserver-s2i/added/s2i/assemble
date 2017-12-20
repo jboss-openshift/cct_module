@@ -1,0 +1,58 @@
+#!/bin/sh
+# if using vim, do ':set ft=zsh' for easier reading
+
+if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+    set -x
+    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+fi
+
+# run the parent EAP assemble script, but do not allow it to clear the local maven repository
+# after the build, as it is used by KIE to load kjars and their dependencies
+mcr=$(echo "${MAVEN_CLEAR_REPO}" | tr [:upper:] [:lower:])
+if [ "${mcr}" = "true" ]; then
+    >&2 echo "WARNING: Cannot clear local maven repository as KIE depends on it. Overriding MAVEN_CLEAR_REPO to false."
+    MAVEN_CLEAR_REPO="false"
+    export MAVEN_CLEAR_REPO
+fi
+/usr/local/s2i/assemble_eap
+ERR=$?
+if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from parent eap assembly phase"
+    exit $ERR
+fi
+
+# install all KIE kjars into local m2 repository
+$JBOSS_HOME/bin/kieserver-install.sh
+ERR=$?
+if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from maven kjar installation"
+    exit $ERR
+fi
+
+# ensure all KIE dependencies are pulled for offline use
+$JBOSS_HOME/bin/kieserver-pull.sh
+ERR=$?
+if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from maven kjar dependency pull"
+    exit $ERR
+fi
+
+# verify all KIE containers
+$JBOSS_HOME/bin/kieserver-verify.sh
+ERR=$?
+if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from maven kjar verification"
+    exit $ERR
+fi
+
+LOCAL_SOURCE_DIR=/tmp/src
+# Copy KIE server resource files
+KIE_SERVER_WEBINF_CLASSES_DIR="${JBOSS_HOME}/standalone/deployments/kie-server.war/WEB-INF/classes"
+mkdir -p $KIE_SERVER_WEBINF_CLASSES_DIR
+if [ -d $LOCAL_SOURCE_DIR/kie-server-resources ]; then
+    echo "Copying resource files from KIE server resources ..."
+    cp -v $LOCAL_SOURCE_DIR/kie-server-resources/* $KIE_SERVER_WEBINF_CLASSES_DIR
+fi
+
+# Remove java tmp perf data dir owned by 185
+rm -rf /tmp/hsperfdata_jboss
