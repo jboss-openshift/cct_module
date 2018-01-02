@@ -64,11 +64,16 @@ function partitionPV() {
           trap - TERM
           wait $PID 2>/dev/null
 
-          echo "Server terminated with status $STATUS ($(kill -l $STATUS))"
+          echo "Server terminated with status $STATUS ($(kill -l $STATUS 2>/dev/null))"
 
           if [ "$STATUS" -eq 255 ] ; then
             echo "Server returned 255, changing to 254"
             STATUS=254
+          fi
+
+          # If not successful and not TERM then update the terminating file to force a check
+          if [ "$STATUS" -ne 0 -a "$STATUS" -ne 143 ] ; then
+            echo "$HOSTNAME" > "$TERMINATING_FILE"
           fi
 
           echo "Releasing lock: ($INSTANCE_DIR)"
