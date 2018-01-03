@@ -19,6 +19,7 @@ function partitionPV() {
     echo "Attempting to obtain lock for directory: ($INSTANCE_DIR)"
 
     TERMINATING_FILE="${INSTANCE_DIR}/terminating"
+    RUNNING_FILE="${INSTANCE_DIR}/running"
     (
       flock -n $WAITING_FD
       if [ $? -eq 0 ]; then
@@ -43,6 +44,7 @@ function partitionPV() {
           echo "Successfully locked directory: ($INSTANCE_DIR)"
 
           > "$TERMINATING_FILE"
+          echo "$HOSTNAME" > "$RUNNING_FILE"
           flock -u $WAITING_FD
 
           SERVER_DATA_DIR="${INSTANCE_DIR}/serverData"
@@ -64,6 +66,8 @@ function partitionPV() {
           trap - TERM
           wait $PID 2>/dev/null
 
+          > "${RUNNING_FILE}"
+
           echo "Server terminated with status $STATUS ($(kill -l $STATUS 2>/dev/null))"
 
           if [ "$STATUS" -eq 255 ] ; then
@@ -71,8 +75,8 @@ function partitionPV() {
             STATUS=254
           fi
 
-          # If not successful and not TERM then update the terminating file to force a check
-          if [ "$STATUS" -ne 0 -a "$STATUS" -ne 143 ] ; then
+          # If not TERM then update the terminating file to force a check
+          if [ "$STATUS" -ne 143 ] ; then
             echo "$HOSTNAME" > "$TERMINATING_FILE"
           fi
 
@@ -126,6 +130,23 @@ function migratePV() {
       mkdir -p "${INSTANCE_DIR}"
 
       TERMINATING_FILE="${INSTANCE_DIR}/terminating"
+      RUNNING_FILE="${INSTANCE_DIR}/running"
+
+      RUNNING=$(cat "${RUNNING_FILE}" 2>/dev/null)
+      if [ -n "$RUNNING" ] ; then
+        (
+          flock -n $LOCK_FD
+          if [ $? -eq 0 ] ; then
+            RUNNING=$(cat "${RUNNING_FILE}" 2>/dev/null)
+            if [ -n "$RUNNING" ] ; then
+              echo "Process has terminated abnorminally, forcing a termination check"
+              echo "FORCED" > "${TERMINATING_FILE}"
+              > "${RUNNING_FILE}"
+            fi
+          fi
+        ) 200> "${INSTANCE_DIR}/lock"
+      fi
+
       TERMINATING=$(cat "${TERMINATING_FILE}" 2>/dev/null)
       if [ -n "$TERMINATING" ] ; then
         echo "Attempting to migrate directory: ($INSTANCE_DIR)"
