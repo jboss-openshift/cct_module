@@ -67,7 +67,9 @@ function generate_tx_datasource() {
 }
 
 function inject_jdbc_store() {
-  jdbcStore="<jdbc-store datasource-jndi-name=\"${1}ObjectStore\"/>"
+  local PREFIX='os\${jboss.node.name}'
+  [ -n "$JBOSS_NODE_NAME" ] && PREFIX="os${JBOSS_NODE_NAME//-/}"
+  jdbcStore="<jdbc-store datasource-jndi-name=\"${1}ObjectStore\"><action table-prefix=\"${PREFIX}\"/></jdbc-store>"
   sed -i "s|<!-- ##JDBC_STORE## -->|${jdbcStore}|" $CONFIG_FILE
 }
 

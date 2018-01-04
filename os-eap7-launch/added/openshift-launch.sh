@@ -14,10 +14,11 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/configure_extensions.sh
   $JBOSS_HOME/bin/launch/passwd.sh
   $JBOSS_HOME/bin/launch/messaging.sh
+  # ha.sh run before datasource, it provides env variable used by txn objectstore
+  $JBOSS_HOME/bin/launch/ha.sh
   $JBOSS_HOME/bin/launch/datasource.sh
   $JBOSS_HOME/bin/launch/resource-adapter.sh
   $JBOSS_HOME/bin/launch/admin.sh
-  $JBOSS_HOME/bin/launch/ha.sh
   $JBOSS_HOME/bin/launch/jgroups.sh
   $JBOSS_HOME/bin/launch/https.sh
   $JBOSS_HOME/bin/launch/elytron.sh
