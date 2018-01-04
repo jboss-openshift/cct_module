@@ -2,6 +2,7 @@
 # if using vim, do ':set ft=zsh' for easier reading
 
 . /opt/rh/rh-maven33/enable
+source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
 
 function getJBossModulesOptsForKieUtilities() {
     local kieJarDir="${JBOSS_HOME}/standalone/deployments/kie-server.war/WEB-INF/lib"
@@ -147,16 +148,10 @@ function setKieServerEnv() {
     # server id
     if [ "${KIE_SERVER_ID}" = "" ]; then
         KIE_SERVER_ID="kieserver"
-        if [ "x${NODE_NAME}" != "x" ]; then
-            JBOSS_NODE_NAME="${NODE_NAME}"
-        elif [ "x${container_uuid}" != "x" ]; then
-            JBOSS_NODE_NAME="${container_uuid}"
-        elif [ "x${HOSTNAME}" != "x" ]; then
-            JBOSS_NODE_NAME="${HOSTNAME}"
-        fi
-        if [ "x${JBOSS_NODE_NAME}" != "x" ]; then
-            KIE_SERVER_ID="${KIE_SERVER_ID}-${JBOSS_NODE_NAME}"
-        fi
+
+        init_node_name
+
+        KIE_SERVER_ID="${KIE_SERVER_ID}-${JBOSS_NODE_NAME}"
     fi
 
     # server state

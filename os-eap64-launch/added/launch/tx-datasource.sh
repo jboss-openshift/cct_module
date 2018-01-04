@@ -1,6 +1,7 @@
 # Openshift EAP launch script datasource generation routines
 
 . $JBOSS_HOME/bin/launch/launch-common.sh
+source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
 
 function clearTxDatasourceEnv() {
   tx_backend=${TX_DATABASE_PREFIX_MAPPING}
@@ -67,10 +68,13 @@ function generate_tx_datasource() {
 }
 
 function inject_jdbc_store() {
+  init_node_name
+
+  local prefix="os${JBOSS_NODE_NAME//-/}"
   jdbcStore="<jdbc-store datasource-jndi-name=\"${1}\">\\
-                <action table-prefix=\"\${jboss.node.name}\"/>\\
-                <communication table-prefix=\"\${jboss.node.name}\"/>\\
-                <state table-prefix=\"\${jboss.node.name}\"/>\\
+                <action table-prefix=\"${prefix}\"/>\\
+                <communication table-prefix=\"${prefix}\"/>\\
+                <state table-prefix=\"${prefix}\"/>\\
             </jdbc-store>"
   sed -i "s|<!-- ##JDBC_STORE## -->|${jdbcStore}|" $CONFIG_FILE
 }

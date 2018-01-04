@@ -1,0 +1,8 @@
+schema_version: 1
+name: os-eap-node-name
+version: '1.0'
+description: EAP common node name functionality
+
+execute:
+- script: configure.sh
+  user: '185'

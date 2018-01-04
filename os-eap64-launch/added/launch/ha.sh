@@ -1,3 +1,4 @@
+source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
 
 function prepareEnv() {
   unset OPENSHIFT_KUBE_PING_NAMESPACE
@@ -64,21 +65,10 @@ function configure_ha() {
   # Set HA args
   IP_ADDR=`hostname -i`
   JBOSS_HA_ARGS="-b ${IP_ADDR}"
-  if [ -n "${NODE_NAME}" ]; then
-      JBOSS_NODE_NAME="${NODE_NAME}"
-  elif [ -n "${container_uuid}" ]; then
-      JBOSS_NODE_NAME="${container_uuid}"
-  elif [ -n "${HOSTNAME}" ]; then
-      JBOSS_NODE_NAME="${HOSTNAME}"
-  fi
-  if [ -n "${JBOSS_NODE_NAME}" ]; then
-      # CLOUD-427: truncate to 23 characters max (from the end backwards)
-      if [ ${#JBOSS_NODE_NAME} -gt 23 ]; then
-          JBOSS_NODE_NAME=${JBOSS_NODE_NAME: -23}
-      fi
 
-      JBOSS_HA_ARGS="${JBOSS_HA_ARGS} -Djboss.node.name=${JBOSS_NODE_NAME}"
-  fi
+  init_node_name
+
+  JBOSS_HA_ARGS="${JBOSS_HA_ARGS} -Djboss.node.name=${JBOSS_NODE_NAME}"
 
   if [ -z "${JGROUPS_CLUSTER_PASSWORD}" ]; then
       >&2 echo "WARNING: No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD."

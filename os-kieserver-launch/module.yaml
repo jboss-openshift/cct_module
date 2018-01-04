@@ -5,6 +5,7 @@ description: Legacy os-kieserver-launch script package.
 
 modules:
   install:
+  - name: os-eap-node-name
   - name: os-eap-migration
 
 execute:
