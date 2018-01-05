@@ -39,7 +39,7 @@ function runMigration() {
     local recoveryPort=$(run_cli_cmd '/socket-binding-group=standard-sockets/socket-binding='"${socketBinding}"'/:read-attribute(name="bound-port")' | grep -w result | sed -e 's+^.*=> ++')
     local recoveryHost=$(run_cli_cmd '/socket-binding-group=standard-sockets/socket-binding='"${socketBinding}"'/:read-attribute(name="bound-address")' | grep -w result | sed -e 's+^.*=> "++' -e 's+".*$++')
 
-    if [ -n "${recoveryPort}" ] ; then
+    if [ "${recoveryPort}" != "undefined" ] ; then
       local recoveryClass="com.arjuna.ats.arjuna.tools.RecoveryMonitor"
       recoveryJar=$(find "${JBOSS_HOME}" -name \*.jar | xargs grep -l "${recoveryClass}")
       if [ -n "${recoveryJar}" ] ; then
