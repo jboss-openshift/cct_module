@@ -22,6 +22,9 @@ function init_data_dir() {
   fi
 }
 
+SPLIT_DATA=${SPLIT_DATA:-$DATAGRID_SPLIT}
+SPLIT_LOCK_TIMEOUT=${SPLIT_LOCK_TIMEOUT:-$DATAGRID_LOCK_TIMEOUT}
+
 if [ "${SPLIT_DATA^^}" = "TRUE" ]; then
   source /opt/partition/partitionPV.sh
 
