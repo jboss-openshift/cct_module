@@ -16,7 +16,7 @@ function runMigration() {
 
   echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
-  local txOptions="-Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.recoveryBackoffPeriod=1 -Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.periodicRecoveryPeriod=1 -Dcom.arjuna.ats.jta.JTAEnvironmentBean.orphanSafetyInterval=1"
+  local txOptions="-Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.recoveryBackoffPeriod=1 -Dcom.arjuna.ats.arjuna.common.RecoveryEnvironmentBean.periodicRecoveryPeriod=1 -Dcom.arjuna.ats.jta.common.JTAEnvironmentBean.orphanSafetyInterval=1"
   local terminatingFile="${JBOSS_HOME}/terminatingMigration"
 
   (runMigrationServer "$instanceDir" "${txOptions}") &
@@ -44,6 +44,8 @@ function runMigration() {
       recoveryJar=$(find "${JBOSS_HOME}" -name \*.jar | xargs grep -l "${recoveryClass}")
       if [ -n "${recoveryJar}" ] ; then
         echo "$(date): Executing synchronous recovery scan"
+        java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}"
+        echo "$(date): Executing synchronous recovery scan for a second time"
         java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}"
       fi
     fi
