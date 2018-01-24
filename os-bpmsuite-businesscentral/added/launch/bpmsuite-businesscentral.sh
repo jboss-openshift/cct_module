@@ -23,6 +23,7 @@ function configureEnv() {
 }
 
 function configure() {
+    configure_metaspace
     configure_controller_security
     configure_controller_access
     configure_server_access
@@ -109,4 +110,10 @@ function configure_misc_security() {
     if [ "$JBOSS_PRODUCT" = "bpmsuite-businesscentral" ] || [ "$JBOSS_PRODUCT" = "bpmsuite-businesscentral-monitoring" ]; then
         configure_login_modules "org.kie.security.jaas.KieLoginModule" "optional" "deployment.ROOT.war"
     fi
+}
+
+# Set the max metaspace size only for the workbench
+# It avoid to set the max metaspace size if there is a multiple container instantiation.
+function configure_metaspace() {
+    export GC_MAX_METASPACE_SIZE=${WORKBENCH_MAX_METASPACE_SIZE:-1024}
 }
