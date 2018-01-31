@@ -13,7 +13,7 @@ Feature: OpenShift Process Server 6.4 basic tests
 
   Scenario: Checks if the kie-server webapp is deployed.
     When container is ready
-    Then container log should contain JBAS015859: Deployed "kie-server.war"
+    Then container log should contain Deployed "kie-server.war"
 
   Scenario: Test REST API is secure
     When container is ready
@@ -38,9 +38,6 @@ Feature: OpenShift Process Server 6.4 basic tests
     Then container log should contain QUARTZ_JNDI env not found, skipping SqlImporter
 
    Scenario: Checks if the Quartz was successfully configured with MySQL
-    Given XML namespaces
-       | prefix | url                              |
-       | ds     | urn:jboss:domain:datasources:1.2 |
     When container is started with env
        | variable                   | value |
        | DB_SERVICE_PREFIX_MAPPING  | kie-app-mysql=DB,kie-app-mysql=QUARTZ |
@@ -56,15 +53,13 @@ Feature: OpenShift Process Server 6.4 basic tests
        | QUARTZ_NONXA               | true  |
        | KIE_APP_MYSQL_SERVICE_HOST | 10.1.1.1 |
        | KIE_APP_MYSQL_SERVICE_PORT | 3306 |
-    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysql on XPath //ds:datasource/ds:driver
-    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDS on XPath //ds:xa-datasource/@jndi-name
-    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDSNotManaged on XPath //ds:datasource/@jndi-name
-    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //ds:datasource/@jta
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysql on XPath //*[local-name()='xa-datasource']/*[local-name()='driver']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysql on XPath //*[local-name()='datasource']/*[local-name()='driver']
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDS on XPath //*[local-name()='xa-datasource']/@jndi-name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDSNotManaged on XPath //*[local-name()='datasource']/@jndi-name
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //*[local-name()='datasource']/@jta
 
    Scenario: Checks if the Quartz was successfully configured with PostgreSQL
-    Given XML namespaces
-       | prefix | url                              |
-       | ds     | urn:jboss:domain:datasources:1.2 |
     When container is started with env
        | variable                   | value |
        | DB_SERVICE_PREFIX_MAPPING  | kie-app-postgresql=DB,kie-app-postgresql=QUARTZ |
@@ -80,10 +75,11 @@ Feature: OpenShift Process Server 6.4 basic tests
        | QUARTZ_NONXA               | true  |
        | KIE_APP_POSTGRESQL_SERVICE_HOST | 10.1.1.1 |
        | KIE_APP_POSTGRESQL_SERVICE_PORT | 5432 |
-    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value postgresql on XPath //ds:datasource/ds:driver
-    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDS on XPath //ds:xa-datasource/@jndi-name
-    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDSNotManaged on XPath //ds:datasource/@jndi-name
-    And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //ds:datasource/@jta
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value postgresql on XPath //*[local-name()='xa-datasource']/*[local-name()='driver']
+     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value postgresql on XPath //*[local-name()='datasource']/*[local-name()='driver']
+     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDS on XPath //*[local-name()='xa-datasource']/@jndi-name
+     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/ExampleDSNotManaged on XPath //*[local-name()='datasource']/@jndi-name
+     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //*[local-name()='datasource']/@jta
 
   Scenario: check ownership when started as alternative UID
     When container is started as uid 26458
@@ -97,5 +93,5 @@ Feature: OpenShift Process Server 6.4 basic tests
     Then file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/web.xml should contain org.openshift.kieserver
     And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/security-filter-rules.properties should exist
     And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/kie-api-6.5.0.Final-redhat-2.jar should not exist
-    And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/kie-api-6.5.0.Final-redhat-7.jar should exist
+    And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/kie-api-6.5.0.Final-redhat-19.jar should exist
     And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/openshift-kieserver-common-1.2.0.Final-redhat-1.jar should exist

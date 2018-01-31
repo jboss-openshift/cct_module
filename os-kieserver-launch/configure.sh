@@ -21,3 +21,9 @@ if [ -e ${SOURCES_DIR}/jboss-bpmsuite-*-supplementary-tools.zip ]; then
     cp -p ${SCRIPT_DIR}/quartz_tables_mysql.sql ${JBOSS_HOME}/bin/
     cp -p ${SCRIPT_DIR}/quartz_tables_postgres.sql ${JBOSS_HOME}/bin/
 fi
+
+# Enforces eap70 password policy for the add-user script.
+# The default behavior was changed on EAP7, more details on https://issues.jboss.org/browse/CLOUD-2251
+if [[ "$JBOSS_EAP_VERSION" == "7."* ]]; then
+    sed -i "s/password.restriction=WARN/password.restriction=REJECT/" ${JBOSS_HOME}/bin/add-user.properties
+fi
