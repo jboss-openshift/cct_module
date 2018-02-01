@@ -4,4 +4,4 @@ S2I_SOURCE_DIR="${S2I_DESTINATION}/src"
 S2I_ARTIFACTS_DIR="${S2I_DESTINATION}/artifacts"
 DEPLOYMENTS_DIR="/deployments"
 
-. /opt/rh/rh-maven33/enable
+source /usr/local/s2i/scl-enable-maven

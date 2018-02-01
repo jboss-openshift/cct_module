@@ -1,7 +1,85 @@
 schema_version: 1
 name: jboss-maven
 version: '1.0'
-description: Legacy jboss-maven script package.
+description: Maven module
+labels:
+    - name: io.fabric8.s2i.version.maven
+      value: "3.5"
+envs:
+    - name: MAVEN_VERSION
+      value: "3.5"
+    - name: MAVEN_ARGS
+      description: Arguments to use when calling Maven, replacing the default `package hawt-app:build -DskipTests -e`. Please be sure to run the `hawt-app:build` goal (when not already bound to the `package` execution phase), otherwise the startup scripts won't work.
+      example: "-e -Popenshift -DskipTests -Dcom.redhat.xpaas.repo.redhatga package"
+    - name: MAVEN_ARGS_APPEND
+      description: Additional Maven arguments.
+      example: "-X -am -pl"
+    - name: ARTIFACT_DIR
+      description: Path to `target/` where the jar files are created for Maven multi module builds. These are added to **$MAVEN_ARGS**.
+      example: "plugins/"
+    - name: ARTIFACT_COPY_ARGS
+      description: Arguments to use when copying artifacts from the output directory to the application directory. Useful to specify which artifacts will be part of the image. It defaults to `-r hawt-app/*` when a `hawt-app` directory is found on the build directory, otherwise jar files only will be included (`*.jar`).
+      example: "-r hawt-app/*"
+    - name: MAVEN_CLEAR_REPO
+      description: If set then the Maven repository is removed after the artifact is built. This is useful for keeping the created application image small, but prevents *incremental* builds. Defaults to *false*.
+    - name: MAVEN_MIRROR_URL
+      description: The base URL of a mirror used for retrieving artifacts.
+      example: "http://10.0.0.1:8080/repository/internal/"
+    - name: "MAVEN_REPOS"
+      example: "dev-one,qe-two"
+      description: "If set, multi-repo support is enabled, and other MAVEN_REPO_* variables will be prefixed. For example: DEV_ONE_MAVEN_REPO_URL and QE_TWO_MAVEN_REPO_URL"
+    - name: "MAVEN_REPO_URL"
+      example: "http://repo.example.com:8080/maven2/"
+      description: "Maven repository url (fully defined)"
+    - name: "MAVEN_REPO_SERVICE"
+      example: "buscentr-myapp"
+      description: "Maven repository service to lookup if MAVEN_REPO_URL not specified"
+    - name: "MAVEN_REPO_PROTOCOL"
+      example: "http"
+      description: "Maven repository protocol (if not using fully defined url; will fallback to service)"
+    - name: "MAVEN_REPO_HOST"
+      example: "repo.example.com"
+      description: "Maven repository host (if not using fully defined url; will fallback to service)"
+    - name: "MAVEN_REPO_PORT"
+      example: "8080"
+      description: "Maven repository port (if not using fully defined url; will fallback to service)"
+    - name: "MAVEN_REPO_PATH"
+      example: "/maven2/"
+      description: "Maven repository path (if not using fully defined url; will fallback to service)"
+    - name: "MAVEN_REPO_ID"
+      example: "my-repo"
+      description: "Maven repository id"
+    - name: "MAVEN_REPO_USERNAME"
+      example: "mavenUser"
+      description: "Maven repository username"
+    - name: "MAVEN_REPO_PASSWORD"
+      example: "maven1!"
+      description: "Maven repository password"
+    - name: "MAVEN_REPO_PRIVATE_KEY"
+      example: "${user.home}/.ssh/id_dsa"
+      description: "Maven repository private key"
+    - name: "MAVEN_REPO_PASSPHRASE"
+      example: "maven1!"
+      description: "Maven repository passphrase"
+    - name: "MAVEN_REPO_LAYOUT"
+      example: "default"
+      description: "Maven repository layout"
+    - name: "MAVEN_REPO_RELEASES_ENABLED"
+      example: "true"
+      description: "Maven repository releases enabled"
+    - name: "MAVEN_REPO_RELEASES_UPDATE_POLICY"
+      example: "always"
+      description: "Maven repository releases update policy"
+    - name: "MAVEN_REPO_SNAPSHOTS_ENABLED"
+      example: "true"
+      description: "Maven repository snapshots enabled"
+    - name: "MAVEN_REPO_SNAPSHOTS_UPDATE_POLICY"
+      example: "always"
+      description: "Maven repository snapshots update policy"
 execute:
 - script: configure.sh
-  user: '185'
+packages:
+  repositories:
+      - jboss-rhscl
+  install:
+      - rh-maven35
