@@ -28,7 +28,7 @@
 #
 
 __DEFAULT_JAVA_MAX_MEM_RATIO=50
-__DEFAULT_JAVA_INITIAL_MEM_RATIO=100
+__DEFAULT_JAVA_INITIAL_MEM_RATIO=25
 __DEFAULT_JAVA_MAX_INITIAL_MEM=4096
 
 initialize_container_limits() {
@@ -112,13 +112,15 @@ cpu_core_tunning() {
 }
 
 gc_config() {
-  local minHeapFreeRatio=${GC_MIN_HEAP_FREE_RATIO:-20}
-  local maxHeapFreeRatio=${GC_MAX_HEAP_FREE_RATIO:-40}
+  local minHeapFreeRatio=${GC_MIN_HEAP_FREE_RATIO:-10}
+  local maxHeapFreeRatio=${GC_MAX_HEAP_FREE_RATIO:-20}
   local timeRatio=${GC_TIME_RATIO:-4}
   local adaptiveSizePolicyWeight=${GC_ADAPTIVE_SIZE_POLICY_WEIGHT:-90}
   local maxMetaspaceSize=${GC_MAX_METASPACE_SIZE:-100}
 
-  echo "-XX:+UseParallelGC " \
+  echo "-XX:+UnlockExperimentalVMOptions " \
+       "-XX:+UseCGroupMemoryLimitForHeap " \
+       "-XX:+UseParallelOldGC " \
        "-XX:MinHeapFreeRatio=${minHeapFreeRatio} "\
        "-XX:MaxHeapFreeRatio=${maxHeapFreeRatio} "\
        "-XX:GCTimeRatio=${timeRatio} "\

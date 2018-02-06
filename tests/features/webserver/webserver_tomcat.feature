@@ -38,7 +38,7 @@ Feature: Openshift tomcat basic tests
     When container is started with args
       | arg                    | value             |
       | mem_limit              | 1073741824        |
-    Then container log should contain -Xms512m
+    Then container log should contain -Xms128m
     And container log should contain -Xmx512m
 
   Scenario: check ownership when started as alternative UID
@@ -57,12 +57,12 @@ Feature: Openshift tomcat basic tests
      And available container log should contain Command line argument: -Dhttp.proxyPort=1337
 
   # CLOUD-193 (mem-limit) & CLOUD-459
-  # default heap size == max heap size == 1/2 available memory
+  # default heap size == 1/4 max heap size == 1/2 available memory
   Scenario: Check for dynamic resource allocation
     When container is started with args
       | arg                    | value             |
       | mem_limit              | 1073741824        |
-    Then container log should contain Command line argument: -Xms512m
+    Then container log should contain Command line argument: -Xms128m
     Then container log should contain Command line argument: -Xmx512m
 
   # CLOUD-459 (override default heap size)

@@ -163,7 +163,7 @@ Feature: Openshift AMQ tests
     When container is started with args
       | arg                    | value             |
       | mem_limit              | 1073741824        |
-    Then container log should contain -Xms512m -Xmx512m
+    Then container log should contain -Xms128m -Xmx512m
 
   Scenario: Make sure we use the urandom
     When container is ready
@@ -187,7 +187,7 @@ Feature: Openshift AMQ tests
     When container is started with args
       | arg                    | value             |
       | mem_limit              | 1073741824        |
-    Then container log should contain Heap sizes: current=502784k
+    Then container log should contain Heap sizes: current=125952k
 
   # CLOUD-459 (override default heap size)
   Scenario: Check for adjusted default heap size
