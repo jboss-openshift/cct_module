@@ -15,7 +15,7 @@ Feature: Openshift tomcat s2i tests
     Then container log should contain Deployment of web application archive /deployments/hello.war has finished in
     Then s2i build log should contain -Djava.net.preferIPv4Stack=true
     Then s2i build log should contain -Dfoo=bar
-    Then s2i build log should contain -XX:+UseParallelGC -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:MaxMetaspaceSize=100m
+    Then s2i build log should contain -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:MaxMetaspaceSize=100m
     Then run sh -c 'test -d /home/jboss/.m2/repository/org && echo oops || echo all good' in container and check its output for all good
 
   # CLOUD-579
