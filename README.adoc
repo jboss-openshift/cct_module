@@ -1,5 +1,3 @@
 = Cloud Enablement CCT module
 
 This repository serves as a temporary public link:https://github.com/containers-tools/cct[CCT] module for building JBoss Openshift Docker images. This repository is an enhanced copy of shell scripts used to build JBoss images for OpenShift.
-
-The repository is daily synced and will be divided into smaller CCT modules in a near future - Please don't open any PR against it.
