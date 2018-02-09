@@ -2,5 +2,10 @@ schema_version: 1
 name: os-sso72
 version: '1.0'
 description: Legacy os-sso72 script package.
+
+modules:
+  install:
+  - name: os-eap-migration
+
 execute:
 - script: configure.sh
