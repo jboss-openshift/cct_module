@@ -1,5 +1,7 @@
 # only processes a single environment as the placeholder is not preserved
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function prepareEnv() {
   unset HTTPS_NAME
   unset HTTPS_PASSWORD
@@ -38,7 +40,7 @@ function configure_https() {
 
     https_connector="<https-listener name=\"https\" socket-binding=\"https\" security-realm=\"ApplicationRealm\"/>"
   elif [ -n "${HTTPS_PASSWORD}" -o -n "${HTTPS_KEYSTORE_DIR}" -o -n "${HTTPS_KEYSTORE}" ]; then
-    echo "WARNING! Partial HTTPS configuration, the https connector WILL NOT be configured."
+    log_warning "Partial HTTPS configuration, the https connector WILL NOT be configured."
   fi
 
   sed -i "s|<!-- ##SSL## -->|${ssl}|" $CONFIG_FILE

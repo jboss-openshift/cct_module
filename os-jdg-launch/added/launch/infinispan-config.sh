@@ -1,5 +1,7 @@
 # Openshift Datagrid launch script routines for configuring infinispan
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function clear_prefix() {
   local prefix="$1"
   unset ${prefix}_CACHE_MODE
@@ -102,28 +104,28 @@ function configure_server_identities() {
   local ssl_protocol
 
   if [ -n "$SSL_KEYSTORE_PATH" ]; then
-    echo "Using SSL_KEYSTORE_PATH to configure HotRod SSL keystore"
+    log_info "Using SSL_KEYSTORE_PATH to configure HotRod SSL keystore"
     keystore_path="$SSL_KEYSTORE_PATH"
     keystore_relative_to="$SSL_KEYSTORE_RELATIVE_TO"
   elif [ -n "$HTTPS_KEYSTORE" ]; then
-    echo "Using HTTPS_KEYSTORE to configure HotRod SSL keystore"
+    log_info "Using HTTPS_KEYSTORE to configure HotRod SSL keystore"
     keystore_path="${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}"
     keystore_relative_to=""
   fi
 
   if [ -n "$SSL_KEYSTORE_PASSWORD" ]; then
-    echo "Using SSL_KEYSTORE_PASSWORD for the HotRod SSL keystore"
+    log_info "Using SSL_KEYSTORE_PASSWORD for the HotRod SSL keystore"
     keystore_password="$SSL_KEYSTORE_PASSWORD"
   elif [ -n "$HTTPS_PASSWORD" ] ; then
-    echo "Using HTTPS_PASSWORD for the HotRod SSL keystore"
+    log_info "Using HTTPS_PASSWORD for the HotRod SSL keystore"
     keystore_password="$HTTPS_PASSWORD"
   fi
 
   if [ -z "$keystore_path" -o -z "$keystore_password" ]; then
     if [ -z "$keystore_path$keystore_password" ]; then
-      echo "INFO: HotRod SSL will not be configured due to the absense of variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD."
+      log_info "HotRod SSL will not be configured due to the absense of variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD."
     else
-      echo "WARNING! HotRod SSL will not be configured due to misconfiguration of the variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD. Both must be set."
+      log_warning "HotRod SSL will not be configured due to misconfiguration of the variables SSL_KEYSTORE_PATH and SSL_KEYSTORE_PASSWORD. Both must be set."
     fi
   fi
 
@@ -279,8 +281,21 @@ function configure_cache() {
                     <expiration $CACHE_EXPIRATION_LIFESPAN $CACHE_EXPIRATION_MAX_IDLE $CACHE_EXPIRATION_INTERVAL/>"
   fi
 
-  if [ -n "$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")$(find_env "${prefix}_LOCKING_CONCURRENCY_LEVEL")$(find_env "${prefix}_LOCKING_STRIPING")" ]; then
+  if [ -n "$(find_env "${prefix}_TRANSACTION_MODE")" ]; then
+    local transaction="<transaction mode=\"$(find_env "${prefix}_TRANSACTION_MODE")\" />"
+  fi
+
+  if [ -n "$(find_env "${prefix}_STATE_TRANSFER_TIMEOUT")" ]; then
+    local state_transfer="<state-transfer timeout=\"$(find_env "${prefix}_STATE_TRANSFER_TIMEOUT")\" />"
+  fi
+
+  if [ -n "$(find_env "${prefix}_LOCKING_ISOLATION")$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")$(find_env "${prefix}_LOCKING_CONCURRENCY_LEVEL")$(find_env "${prefix}_LOCKING_STRIPING")" ]; then
     local locking="<locking"
+
+    if [ -n "$(find_env "${prefix}_LOCKING_ISOLATION")" ]; then
+      locking="$locking isolation=\"$(find_env "${prefix}_LOCKING_ISOLATION")\""
+    fi
+
     if [ -n "$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")" ]; then
       locking="$locking acquire-timeout=\"$(find_env "${prefix}_LOCKING_ACQUIRE_TIMEOUT")\""
     fi
@@ -344,7 +359,7 @@ function configure_cache() {
     cache="$cache mode=\"$CACHE_MODE\" $CACHE_QUEUE_SIZE $CACHE_QUEUE_FLUSH_INTERVAL $CACHE_REMOTE_TIMEOUT"
   fi
 
-  cache="$cache $CACHE_START $CACHE_BATCHING $CACHE_STATISTICS $CACHE_OWNERS $CACHE_SEGMENTS $CACHE_L1_LIFESPAN>$eviction $expiration $jdbcstore $indexing $cachesecurity $partitionhandling $locking\
+  cache="$cache $CACHE_START $CACHE_BATCHING $CACHE_STATISTICS $CACHE_OWNERS $CACHE_SEGMENTS $CACHE_L1_LIFESPAN>$eviction $expiration $jdbcstore $indexing $cachesecurity $partitionhandling $locking $transaction $state_transfer \
                 </$CACHE_TYPE-cache><!-- ##INFINISPAN_CACHE## -->"
 
   sed -i "s|<!-- ##INFINISPAN_CACHE## -->|$cache|" "$CONFIG_FILE"
@@ -582,7 +597,7 @@ function configure_infinispan_endpoint() {
             memcached="\
             <memcached-connector cache-container=\"clustered\" cache=\"${MEMCACHED_CACHE}\" socket-binding=\"memcached\"/>"
           else
-            echo "WARNING! The cache for memcached-connector is not set so the connector will not be configured."
+            log_warning "The cache for memcached-connector is not set so the connector will not be configured."
           fi
         ;;
         "rest")

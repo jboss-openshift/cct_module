@@ -1,6 +1,8 @@
 # bourne shell script snippet
 # used by OpenShift JBoss Web Server launch script
 
+source $JWS_HOME/bin/launch/logging.sh
+
 function prepareEnv() {
   unset JWS_HTTPS_CERTIFICATE_DIR
   unset JWS_HTTPS_CERTIFICATE
@@ -36,7 +38,7 @@ function configure_https() {
       https="$https />"
 
   elif [ -n "${JWS_HTTPS_CERTIFICATE_DIR}" -o -n "${JWS_HTTPS_CERTIFICATE}" -o -n "${JWS_HTTPS_CERTIFICATE_KEY}" ] ; then
-      echo "WARNING! Partial HTTPS configuration, the https connector WILL NOT be configured."
+      log_warning "Partial HTTPS configuration, the https connector WILL NOT be configured."
   fi
   sed -i "s|### HTTPS_CONNECTOR ###|${https}|" $JWS_HOME/conf/server.xml
 }

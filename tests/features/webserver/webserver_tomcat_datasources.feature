@@ -218,7 +218,7 @@ Feature: Tomcat Openshift datasources
        | TEST_PASSWORD                 | hardtoguess          |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1             |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                 |
-    Then container log should contain WARNING! The postgresql datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The postgresql datasource for TEST service WILL NOT be configured.
     And container log should contain TEST_DATABASE: kitchensink
     And container log should contain TEST_PASSWORD: hardtoguess
 
@@ -230,7 +230,7 @@ Feature: Tomcat Openshift datasources
        | TEST_USERNAME                 | marek                |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1             |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                 |
-    Then container log should contain WARNING! The postgresql datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The postgresql datasource for TEST service WILL NOT be configured.
     And container log should contain TEST_DATABASE: kitchensink
     And container log should contain TEST_USERNAME: marek
 
@@ -242,7 +242,7 @@ Feature: Tomcat Openshift datasources
        | TEST_PASSWORD                 | hardtoguess          |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1             |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                 |
-   Then container log should contain WARNING! The postgresql datasource for TEST service WILL NOT be configured.
+   Then container log should contain WARN The postgresql datasource for TEST service WILL NOT be configured.
    And container log should contain TEST_PASSWORD: hardtoguess
    And container log should contain TEST_USERNAME: marek
 

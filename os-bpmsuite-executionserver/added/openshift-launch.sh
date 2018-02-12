@@ -1,9 +1,11 @@
 #!/bin/sh
 # Openshift BPMS Execution Server launch script
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 CONFIG_FILE=$JBOSS_HOME/standalone/configuration/standalone-openshift.xml
@@ -27,6 +29,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/deploymentScanner.sh
   $JBOSS_HOME/bin/launch/ports.sh
   $JBOSS_HOME/bin/launch/maven-repos.sh
+  $JBOSS_HOME/bin/launch/access_log_valve.sh
   $JBOSS_HOME/bin/launch/bpmsuite-common.sh
   $JBOSS_HOME/bin/launch/bpmsuite-executionserver.sh
   /opt/run-java/proxy-options
@@ -34,11 +37,11 @@ CONFIGURE_SCRIPTS=(
 
 source $JBOSS_HOME/bin/launch/configure.sh
 
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
 if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
   trap "" TERM
-  echo "Using CLI Graceful Shutdown instead of TERM signal"
+  log_info "Using CLI Graceful Shutdown instead of TERM signal"
 fi
 
 exec env M2_HOME=${M2_HOME} $JBOSS_HOME/bin/standalone.sh -c standalone-openshift.xml -bmanagement 127.0.0.1 ${JAVA_PROXY_OPTIONS} ${JBOSS_HA_ARGS} ${JBOSS_MESSAGING_ARGS} ${JBOSS_BPMSUITE_ARGS}

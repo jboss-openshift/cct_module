@@ -1,6 +1,8 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function prepareEnv() {
     unset KIE_SERVER_JMS_QUEUES_REQUEST
     unset KIE_SERVER_JMS_QUEUES_RESPONSE
@@ -83,8 +85,8 @@ setupKieServerForOpenShift() {
     # add the KIE Server user
     $JBOSS_HOME/bin/add-user.sh -a -u "${KIE_SERVER_USER}" -p "${KIE_SERVER_PASSWORD}" -ro "kie-server,guest"
     if [ "$?" -ne "0" ]; then
-        echo "Failed to create the user ${KIE_SERVER_USER}"
-        echo "Exiting..."
+        log_error "Failed to create the user ${KIE_SERVER_USER}"
+        log_error "Exiting..."
         exit
     fi
 }

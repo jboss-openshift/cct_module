@@ -1,8 +1,10 @@
 #!/bin/sh
 
+source $JWS_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 CONFIGURE_SCRIPTS=(
@@ -23,6 +25,6 @@ source $JWS_HOME/bin/launch/configure.sh
 
 CATALINA_OPTS="${CATALINA_OPTS} ${JAVA_PROXY_OPTIONS}"
 
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
 exec $JWS_HOME/bin/catalina.sh run

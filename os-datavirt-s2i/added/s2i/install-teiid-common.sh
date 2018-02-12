@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 # Resulting WAR files will be deployed to /opt/eap/standalone/deployments
 DEPLOY_DIR=$JBOSS_HOME/standalone/deployments
 
@@ -21,13 +23,13 @@ function configure_translators() {
     for t_prefix in $(echo $TRANSLATORS | sed "s/,/ /g"); do
       t_name=$(find_env ${t_prefix}_NAME)
       if [ -z "$t_name" ]; then
-        echo "Warning - ${t_prefix}_NAME  is missing from translator configuration. Translator will not be configured"
+        log_warning "${t_prefix}_NAME  is missing from translator configuration. Translator will not be configured"
         continue
       fi
 
       t_module=$(find_env ${t_prefix}_MODULE)
       if [ -z "$t_module" ]; then
-        echo "Warning - ${t_prefix}_MODULE  is missing from translator configuration. Translator will not be configured"
+        log_warning "${t_prefix}_MODULE  is missing from translator configuration. Translator will not be configured"
         continue
       fi
 

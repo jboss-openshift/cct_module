@@ -50,4 +50,4 @@ Feature: OpenShift Datavirt tests
       | DATAVIRT_TRANSPORT_KEY_ALIAS             | jboss                                       |
       | DATAVIRT_TRANSPORT_KEYSTORE_PASSWORD     | mykeystorepass                              |
       | DATAVIRT_TRANSPORT_KEYSTORE_DIR          | /etc/jdv-secret-volume                      |
-    Then container log should contain WARNING - Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '1-way'. Will not be enabled
+    Then container log should contain WARN Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '1-way'. Will not be enabled

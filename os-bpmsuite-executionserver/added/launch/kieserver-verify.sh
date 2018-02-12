@@ -3,6 +3,7 @@
 
 # source the KIE config
 source $JBOSS_HOME/bin/launch/kieserver-env.sh
+source $JBOSS_HOME/bin/launch/logging.sh
 # set the KIE environment
 setKieEnv
 # dump the KIE environment
@@ -18,7 +19,7 @@ function verifyServerContainers() {
             releaseIds="${releaseIds} ${groupId}:${artifactId}:${version}"
         done
         local containerVerifier="org.kie.server.services.impl.KieServerContainerVerifier"
-        echo "Attempting to verify kie server containers with 'java ${containerVerifier} ${releaseIds}'"
+        log_info "Attempting to verify kie server containers with 'java ${containerVerifier} ${releaseIds}'"
         java $(getKieJavaArgs) ${containerVerifier} ${releaseIds}
     fi
 }
@@ -28,7 +29,7 @@ verifyServerContainers
 ERR=$?
 
 if [ $ERR -ne 0 ]; then
-  echo "Aborting due to error code $ERR from kie server container verification"
+  log_error "Aborting due to error code $ERR from kie server container verification"
   exit $ERR
 fi
 

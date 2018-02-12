@@ -1,11 +1,14 @@
 #!/bin/sh
 
+source $AMQ_HOME/bin/launch/logging.sh
+
 OPENSHIFT_CONFIG_FILE=$AMQ_HOME/conf/openshift-activemq.xml
 CONFIG_FILE=$AMQ_HOME/conf/activemq.xml
 OPENSHIFT_LOGIN_FILE=$AMQ_HOME/conf/openshift-login.config
 LOGIN_FILE=$AMQ_HOME/conf/login.config
 OPENSHIFT_USERS_FILE=$AMQ_HOME/conf/openshift-users.properties
 USERS_FILE=$AMQ_HOME/conf/users.properties
+USERS_DNAME_FILE=$AMQ_HOME/conf/users-dname.properties
 
 function configure_passwd() {
   sed "/^jboss/s/[^:]*/$(id -u)/3" /etc/passwd > /tmp/passwd
@@ -31,14 +34,14 @@ function checkViewEndpointsPermission() {
             endpointsAuth="Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
             endpointsCode=$(curl -s -o /dev/null -w "%{http_code}" -G -k -H "${endpointsAuth}" ${endpointsUrl})
             if [ "${endpointsCode}" = "200" ]; then
-                echo "Service account has sufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be available."
+                log_info "Service account has sufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be available."
             elif [ "${endpointsCode}" = "403" ]; then
-                >&2 echo "WARNING: Service account has insufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
+                log_warning "Service account has insufficient permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
             else
-                >&2 echo "WARNING: Service account unable to test permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
+                log_warning "Service account unable to test permissions to view endpoints in kubernetes (HTTP ${endpointsCode}). Mesh will be unavailable. Please refer to the documentation for configuration."
             fi
         else
-            >&2 echo "WARNING: Environment variables AMQ_MESH_SERVICE_NAMESPACE and AMQ_MESH_SERVICE_NAME both need to be defined when using AMQ_MESH_DISCOVERY_TYPE=\"kube\". Mesh will be unavailable. Please refer to the documentation for configuration."
+            log_warning "Environment variables AMQ_MESH_SERVICE_NAMESPACE and AMQ_MESH_SERVICE_NAME both need to be defined when using AMQ_MESH_DISCOVERY_TYPE=\"kube\". Mesh will be unavailable. Please refer to the documentation for configuration."
         fi
     fi
 }
@@ -47,6 +50,7 @@ function configureMesh() {
   serviceName="${AMQ_MESH_SERVICE_NAME}"
   username="${AMQ_USER}"
   password="${AMQ_PASSWORD}"
+  dname="${AMQ_DNAME}"
   discoveryType="${AMQ_MESH_DISCOVERY_TYPE:-dns}"
   queryInterval="${AMQ_MESH_QUERY_INTERVAL:-30}"
 
@@ -64,9 +68,18 @@ function configureMesh() {
 function configureAuthentication() {
   username="${AMQ_USER}"
   password="${AMQ_PASSWORD}"
+  dname="${AMQ_DNAME}"
 
+  if [ -n "${username}" -a -n "${dname}" ] ; then
+    sed -i "s|##### AUTHENTICATION #####|${username}=${dname}|" "${USERS_DNAME_FILE}"
+  fi
   if [ -n "${username}" -a -n "${password}" ] ; then
     sed -i "s|##### AUTHENTICATION #####|${username}=${password}|" "${USERS_FILE}"
+  fi
+
+  if [ -n "${username}" -a -n "${dname}" ] ; then
+    authentication="<jaasDualAuthenticationPlugin configuration=\"activemq\" sslConfiguration=\"activemq\"/>"
+  elif [ -n "${username}" -a -n "${password}" ] ; then
     authentication="<jaasAuthenticationPlugin configuration=\"activemq\" />"
   else
     authentication="<jaasAuthenticationPlugin configuration=\"activemq-guest\" />"
@@ -124,7 +137,7 @@ function configureSSL() {
 
     sed -i "s|<!-- ##### SSL_CONTEXT ##### -->|${sslElement}|" "$CONFIG_FILE"
   elif sslPartial ; then
-    echo "WARNING! Partial ssl configuration, the ssl context WILL NOT be configured."
+    log_warning "Partial ssl configuration, the ssl context WILL NOT be configured."
   fi
 }
 
@@ -145,25 +158,53 @@ function configureTransportOptions() {
         "openwire")
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"openwire\" uri=\"tcp://0.0.0.0:61616?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
-            transportConnectors="${transportConnectors}\n            <transportConnector name=\"ssl\" uri=\"ssl://0.0.0.0:61617?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
+            transportConnectors="${transportConnectors}\n            <transportConnector name=\"ssl\" uri=\"ssl://0.0.0.0:61617?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}" 
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
+            if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
+            fi
+            transportConnectors="${transportConnectors}\"/>"
           fi
           ;;
         "mqtt")
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"mqtt\" uri=\"mqtt://0.0.0.0:1883?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
-            transportConnectors="${transportConnectors}\n            <transportConnector name=\"mqtt+ssl\" uri=\"mqtt+ssl://0.0.0.0:8883?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
+            transportConnectors="${transportConnectors}\n            <transportConnector name=\"mqtt+ssl\" uri=\"mqtt+ssl://0.0.0.0:8883?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}"
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
+            if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
+            fi
+            transportConnectors="${transportConnectors}\"/>"
           fi
           ;;
         "amqp")
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"amqp\" uri=\"amqp://0.0.0.0:5672?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
-            transportConnectors="${transportConnectors}\n            <transportConnector name=\"amqp+ssl\" uri=\"amqp+ssl://0.0.0.0:5671?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
+            transportConnectors="${transportConnectors}\n            <transportConnector name=\"amqp+ssl\" uri=\"amqp+ssl://0.0.0.0:5671?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}"
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
+            if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
+            fi
+            transportConnectors="${transportConnectors}\"/>"
           fi
           ;;
         "stomp")
           transportConnectors="${transportConnectors}\n            <transportConnector name=\"stomp\" uri=\"stomp://0.0.0.0:61613?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
           if sslEnabled ; then
-            transportConnectors="${transportConnectors}\n            <transportConnector name=\"stomp+ssl\" uri=\"stomp+ssl://0.0.0.0:61612?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}\" />"
+            transportConnectors="${transportConnectors}\n            <transportConnector name=\"stomp+ssl\" uri=\"stomp+ssl://0.0.0.0:61612?maximumConnections=${maxConnections}\&amp;wireFormat.maxFrameSize=${maxFrameSize}"
+            if [ -n "$AMQ_NEED_CLIENT_AUTH" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.needClientAuth=${AMQ_NEED_CLIENT_AUTH}"
+            fi
+            if [ -n "$AMQ_TRANSPORT_ENABLED_PROTOCOLS" ]; then
+              transportConnectors="${transportConnectors}\&amp;transport.enabledProtocols=${AMQ_TRANSPORT_ENABLED_PROTOCOLS}"
+            fi
+            transportConnectors="${transportConnectors}\"/>"
           fi
           ;;
       esac
@@ -192,6 +233,7 @@ function configurePolicy() {
 cp "${OPENSHIFT_CONFIG_FILE}" "${CONFIG_FILE}"
 cp "${OPENSHIFT_LOGIN_FILE}" "${LOGIN_FILE}"
 cp "${OPENSHIFT_USERS_FILE}" "${USERS_FILE}"
+cp "${OPENSHIFT_USERS_FILE}" "${USERS_DNAME_FILE}"
 
 configure_passwd
 configureAuthentication
