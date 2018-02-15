@@ -3,7 +3,7 @@ Feature: Openshift AMQ tests
 
   Scenario: check that container is started correctly
     When container is ready
-    Then container log should contain INFO | Apache ActiveMQ 5.11.0.redhat-630310
+    Then container log should contain INFO | Apache ActiveMQ 5.11.0.redhat-630329
     And check that port 61616 is open
 
   Scenario: Check that the labels are correctly set
