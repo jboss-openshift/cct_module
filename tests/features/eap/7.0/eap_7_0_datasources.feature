@@ -318,7 +318,7 @@ Feature: EAP Openshift datasources
        | TEST_PASSWORD                 | hardtoguess          |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1             |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                 |
-    Then container log should contain WARNING! The postgresql datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The postgresql datasource for TEST service WILL NOT be configured.
     And container log should contain TEST_PASSWORD: hardtoguess
 
   Scenario: Test warning on missing database type
@@ -331,7 +331,7 @@ Feature: EAP Openshift datasources
        | TEST_SERVICE_HOST             | 10.1.1.1             |
        | TEST_SERVICE_PORT             | 5432                 |
     Then container log should contain The mapping does not contain the database type.
-    Then container log should contain WARNING! The datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The datasource for TEST service WILL NOT be configured.
 
   Scenario: Test warning no password is provided
     When container is started with env
@@ -341,7 +341,7 @@ Feature: EAP Openshift datasources
        | TEST_USERNAME                 | marek                |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1             |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                 |
-    Then container log should contain WARNING! The postgresql datasource for TEST service WILL NOT be configured.
+    Then container log should contain WARN The postgresql datasource for TEST service WILL NOT be configured.
     And container log should contain TEST_JNDI: java:jboss/datasources/test_postgresql
     And container log should contain TEST_USERNAME: marek
 
@@ -353,7 +353,7 @@ Feature: EAP Openshift datasources
        | TEST_PASSWORD                 | hardtoguess          |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1             |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                 |
-    Then container log should contain WARNING: Missing configuration for datasource TEST. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or TEST_DATABASE is missing. Datasource will not be configured.
+    Then container log should contain WARN Missing configuration for datasource TEST. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or TEST_DATABASE is missing. Datasource will not be configured.
 
   Scenario: Test warning on wrong mapping
     When container is started with env
@@ -361,5 +361,5 @@ Feature: EAP Openshift datasources
        | DB_SERVICE_PREFIX_MAPPING     | test-postgresql=MAREK,abc-mysql=DB |
        | MAREK_USERNAME                | marek                              |
        | MAREK_PASSWORD                | hardtoguess                        |
-    Then container log should contain WARNING: Missing configuration for datasource MAREK. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or MAREK_DATABASE is missing. Datasource will not be configured.
+    Then container log should contain WARN Missing configuration for datasource MAREK. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or MAREK_DATABASE is missing. Datasource will not be configured.
     And container log should contain In order to configure mysql datasource for DB service you need to provide following environment variables: DB_USERNAME and DB_PASSWORD.   

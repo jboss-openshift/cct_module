@@ -1,9 +1,11 @@
 #!/bin/sh
 # Openshift EAP launch script
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 CONFIG_FILE=$JBOSS_HOME/standalone/configuration/standalone-openshift.xml
@@ -68,11 +70,11 @@ add_cache_container
 source /opt/run-java/proxy-options
 JAVA_PROXY_ARGS="$(proxy_options)"
 
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
 # TERM signal handler
 function clean_shutdown() {
-  echo "*** JBossAS wrapper process ($$) received TERM signal ***"
+  log_error "*** JBossAS wrapper process ($$) received TERM signal ***"
   $JBOSS_HOME/bin/jboss-cli.sh -c ":shutdown(timeout=60)"
   wait $!
 }

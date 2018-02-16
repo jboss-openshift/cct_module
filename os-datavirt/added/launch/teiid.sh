@@ -2,6 +2,7 @@
 
 source $JBOSS_HOME/bin/launch/launch-common.sh
 source $JBOSS_HOME/bin/launch/files.sh
+source $JBOSS_HOME/bin/launch/logging.sh 
 
 function prepareEnv() {
   unset TEIID_PASSWORD
@@ -41,7 +42,7 @@ function update_users(){
     fi
     $JBOSS_HOME/bin/add-user.sh -u "$teiiduser" -p "$TEIID_PASSWORD" -a -g user
   else
-    echo "WARNING! No password specified for TEIID_PASSWORD. Using insecure default"
+    log_warning "No password specified for TEIID_PASSWORD. Using insecure default"
   fi
 
   modeshapeuser="modeshapeUser"
@@ -60,7 +61,7 @@ function update_users(){
     sed -i "s|##MODESHAPE_USERNAME##|${modeshapeuser}|" "${CONFIG_FILE}"
     sed -i "s|##MODESHAPE_PASSWORD##|${password}|" "${CONFIG_FILE}"
   else
-    echo "ERROR! No password was provided for '${modeshapeuser}' in the MODESHAPE_PASSWORD environment variable. JBoss Red Hat JBoss Data Virtualization will not work properly."
+    log_error "No password was provided for '${modeshapeuser}' in the MODESHAPE_PASSWORD environment variable. JBoss Red Hat JBoss Data Virtualization will not work properly."
   fi
   
 }
@@ -86,7 +87,7 @@ function add_secure_transport(){
   if [ -n "$auth_mode" ]; then
     if [ "$auth_mode" != "anonymous" ]; then
       if [ -z "$key_alias" ] || [ -z "$keystore_pwd" ] || [ -z "$keystore" ] || [ -z "$keystore_dir" ]; then
-        echo "WARNING - Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '$auth_mode'. Will not be enabled"
+        log_warning "Secure JDBC transport missing alias, keystore, key password, and/or keystore directory for authentication mode '$auth_mode'. Will not be enabled"
         return
       fi
     fi

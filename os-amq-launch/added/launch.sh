@@ -1,8 +1,10 @@
 #!/bin/sh
 
+source $AMQ_HOME/bin/launch/logging.sh
+
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
+    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
 source $AMQ_HOME/bin/configure.sh
@@ -32,7 +34,7 @@ cat <<EOF > $AMQ_HOME/bin/env
 ACTIVEMQ_OPTS="${ACTIVEMQ_OPTS} ${JAVA_OPTS_APPEND}"
 EOF
 
-echo "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
+log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
 # Parameters are
 # - instance directory

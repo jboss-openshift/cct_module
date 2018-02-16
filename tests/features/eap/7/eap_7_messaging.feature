@@ -15,3 +15,24 @@ Feature: Openshift EAP Messaging Tests
       | cpu_period | 100000   |
     Then container log should contain -Dactivemq.artemis.client.global.thread.pool.max.size=8
     Then container log should contain -Dactivemq.artemis.client.global.scheduled.thread.pool.core.size=5
+
+  Scenario: Check if thread pool size with CONTAINER_CORE_LIMIT (CLOUD-2052)
+    When container is started with env
+      | variable              | value    |
+      | CONTAINER_CORE_LIMIT  | 4        |
+    Then container log should contain activemq.artemis.client.global.thread.pool.max.size = 32
+
+  Scenario: Check if thread pool size with CONTAINER_CORE_LIMIT > JAVA_CORE_LIMIT (CLOUD-2052)
+    When container is started with env
+      | variable              | value    |
+      | CONTAINER_CORE_LIMIT  | 4        |
+      | JAVA_CORE_LIMIT       | 3        |
+    Then container log should contain activemq.artemis.client.global.thread.pool.max.size = 24
+
+  Scenario: Check if thread pool size with CONTAINER_CORE_LIMIT < JAVA_CORE_LIMIT (CLOUD-2052)
+    When container is started with env
+      | variable              | value    |
+      | CONTAINER_CORE_LIMIT  | 3        |
+      | JAVA_CORE_LIMIT       | 4        |
+    Then container log should contain activemq.artemis.client.global.thread.pool.max.size = 24
+

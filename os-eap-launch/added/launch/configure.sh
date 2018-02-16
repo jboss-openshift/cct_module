@@ -47,6 +47,8 @@
 # type entries, which should only be processed once.
 #
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 # clear functions from any previous module
 function prepareModule() {
   unset -f preConfigure
@@ -97,7 +99,7 @@ function processEnvFiles() {
               executeModules configureEnv
               executeModules postConfigureEnv
             else
-              echo "Could not process environment for $prop_file.  File does not exist."
+              log_warning "Could not process environment for $prop_file.  File does not exist."
             fi
           )
         done

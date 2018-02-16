@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source "${JBOSS_HOME}/bin/launch/launch-common.sh"
+source $JBOSS_HOME/bin/launch/logging.sh 
 
 function prepareEnv() {
     unset MAVEN_REPO_HOST
@@ -81,7 +82,7 @@ function configure_maven_repos {
         multi_repo_prefix=${multi_repo_prefix//-/_}
         local multi_repo_url=$(find_env "${multi_repo_prefix}_MAVEN_REPO_URL")
         if [ -z "${multi_repo_url}" ]; then
-            echo "WARNING: Variable \"${multi_repo_prefix}_MAVEN_REPO_URL\" not set. Skipping maven repo setup for the prefix \"${multi_repo_prefix}\"."
+            log_warning "Variable \"${multi_repo_prefix}_MAVEN_REPO_URL\" not set. Skipping maven repo setup for the prefix \"${multi_repo_prefix}\"."
         else
             local multi_repo_id=$(find_env "${multi_repo_prefix}_MAVEN_REPO_ID" "repo${multi_repo_counter}-$(generate_random_id)")
             local multi_repo_username=$(find_env "${multi_repo_prefix}_MAVEN_REPO_USERNAME")

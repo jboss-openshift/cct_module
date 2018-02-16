@@ -30,6 +30,8 @@
 #
 # This script will be executed during container startup
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function configure() {
   configure_access_log_valve
   configure_access_log_handler
@@ -43,7 +45,7 @@ function configure_access_log_valve() {
     EAP7x_VALVE="<access-log use-server-log=\"true\" pattern=\"%h %l %u %t %{i,X-Forwarded-Host} \&quot;%r\&quot; %s %b\"/>"
 
     if [ "${ENABLE_ACCESS_LOG^^}" == "TRUE" ]; then
-        echo "Configuring Access Log Valve."
+        log_info "Configuring Access Log Valve."
         if [[ "$JBOSS_EAP_VERSION" == "6.4"* ]]; then
             sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP6_VALVE}|" $CONFIG_FILE
         fi
@@ -54,7 +56,7 @@ function configure_access_log_valve() {
             sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${EAP7x_VALVE}|" $CONFIG_FILE
         fi
     else
-        echo "Access log is disabled, ignoring configuration."
+        log_info "Access log is disabled, ignoring configuration."
     fi
 }
 

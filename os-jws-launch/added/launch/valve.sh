@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $JWS_HOME/bin/launch/logging.sh
+
 function prepareEnv() {
   unset DEBUG
   unset DISABLE_REMOTE_IP_VALVE
@@ -52,9 +54,9 @@ function configure_access_log_valve() {
     pattern=\"%h %l %u %t %{X-Forwarded-Host}i \&quot;%r\&quot; %s %b\" />"
 
     if [ "${ENABLE_ACCESS_LOG^^}" == "TRUE" ]; then
-        echo "Configuring Access Log Valve."
+        log_info "Configuring Access Log Valve."
         sed -i "s|<!-- ##ACCESS_LOG_VALVE## -->|${JWS7_8_VALVE}|" $JWS_HOME/conf/server.xml
     else
-        echo "Access log is disabled, ignoring configuration."
+        log_info "Access log is disabled, ignoring configuration."
     fi
 }

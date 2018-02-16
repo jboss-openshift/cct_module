@@ -1,7 +1,8 @@
 #!/bin/sh
 # if using vim, do ':set ft=zsh' for easier reading
 
-. /opt/rh/rh-maven33/enable
+source /usr/local/s2i/scl-enable-maven
+source $JBOSS_HOME/bin/launch/logging.sh
 
 LOCAL_SOURCE_DIR=/tmp/src
 
@@ -34,11 +35,11 @@ if [ -d ${DEPLOY_DIR} ]; then
 
             # verify if the current jar is a kjar
             if [ -e "${TEMP_JARS_DIR}/${JAR}/META-INF/kmodule.xml" ]; then
-                echo echo "${DEPLOY_DIR}/${JAR} is a kjar."
+                log_info "${DEPLOY_DIR}/${JAR} is a kjar."
                 KJAR=${JAR}
             fi
 
-            echo "${DEPLOY_DIR}/${JAR} has a pom: Attempting to install"
+            log_info "${DEPLOY_DIR}/${JAR} has a pom: Attempting to install"
             if [ -d ${DEPLOY_DIR}/${JAR} ]; then
                 # jar is an exploded directory; replace with zipped file (for mvn install:install-file below to work)
                 zip -r ${DEPLOY_DIR}/${JAR}.zip ${DEPLOY_DIR}/${JAR}/*
@@ -49,14 +50,14 @@ if [ -d ${DEPLOY_DIR} ]; then
             export MAVEN_OPTS="${MAVEN_OPTS:-$(/opt/run-java/java-default-options)}"
             # Use maven batch mode (CLOUD-579)
             MAVEN_ARGS_INSTALL="-e -DskipTests install:install-file -Dfile=${DEPLOY_DIR}/${JAR} -DpomFile=${POM} -Dpackaging=jar --batch-mode -Djava.net.preferIPv4Stack=true -Popenshift -Dcom.redhat.xpaas.repo.redhatga ${MAVEN_ARGS_APPEND}"
-            echo "Attempting to install jar with 'mvn ${MAVEN_ARGS_INSTALL}'"
-            echo "Using MAVEN_OPTS '${MAVEN_OPTS}'"
-            echo "Using $(mvn --version)"
+            log_info "Attempting to install jar with 'mvn ${MAVEN_ARGS_INSTALL}'"
+            log_info "Using MAVEN_OPTS '${MAVEN_OPTS}'"
+            log_info "Using $(mvn --version)"
             # Execute the maven install of jar and kjar
             mvn $MAVEN_ARGS_INSTALL
             ERR=$?
             if [ $ERR -ne 0 ]; then
-                echo "Aborting due to error code $ERR from Maven build"
+                log_error "Aborting due to error code $ERR from Maven build"
                 # cleanup
                 rm -rf ${TEMP_JARS_DIR}
                 exit $ERR
@@ -66,7 +67,7 @@ if [ -d ${DEPLOY_DIR} ]; then
             if [ "${KJAR}" != "" ]; then
                 pushd $(dirname ${POM}) &> /dev/null
                     # first trigger download of help:evaluate dependencies
-                    echo "Inspecting kjar ${DEPLOY_DIR}/${JAR} for artifact information..."
+                    log_info "Inspecting kjar ${DEPLOY_DIR}/${JAR} for artifact information..."
                     # Add JVM default options
                     export MAVEN_OPTS="${MAVEN_OPTS:-$(/opt/run-java/java-default-options)}"
                     # Use maven batch mode (CLOUD-579)
@@ -74,7 +75,7 @@ if [ -d ${DEPLOY_DIR} ]; then
                     mvn help:evaluate -Dexpression=project.artifact ${MAVEN_ARGS_EVALUATE}
                     ERR=$?
                     if [ $ERR -ne 0 ]; then
-                        echo "Aborting due to error code $ERR from Maven artifact discovery"
+                        log_error "Aborting due to error code $ERR from Maven artifact discovery"
                         exit $ERR
                     fi
                     # next use help:evaluate to record the kjar as a kie server container deployment
@@ -83,7 +84,7 @@ if [ -d ${DEPLOY_DIR} ]; then
                     kjarArtifactId="$(mvn help:evaluate -Dexpression=project.artifact.artifactId ${MAVEN_ARGS_EVALUATE} | egrep -v '(^\[.*\])|(Download.*: )')"
                     kjarVersion="$(mvn help:evaluate -Dexpression=project.artifact.version ${MAVEN_ARGS_EVALUATE} | egrep -v '(^\[.*\])|(Download.*: )')"
                     kieServerContainerDeployment="${kjarArtifactId}=${kjarGroupId}:${kjarArtifactId}:${kjarVersion}"
-                    echo "Adding ${kieServerContainerDeployment} to ${kieServerContainerDeploymentsFile}"
+                    log_info "Adding ${kieServerContainerDeployment} to ${kieServerContainerDeploymentsFile}"
                     echo "${kieServerContainerDeployment}" >> ${kieServerContainerDeploymentsFile}
                     chmod --quiet a+rw ${kieServerContainerDeploymentsFile}
                 popd &> /dev/null
