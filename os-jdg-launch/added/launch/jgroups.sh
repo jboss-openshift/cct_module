@@ -1,5 +1,7 @@
 # only processes a single environment as the placeholder is not preserved
 
+source $JBOSS_HOME/bin/launch/logging.sh
+
 function prepareEnv() {
   unset JGROUPS_ENCRYPT_SECRET
   unset JGROUPS_ENCRYPT_PASSWORD
@@ -22,16 +24,13 @@ function configure_jgroups_encryption() {
   if [ -n "${JGROUPS_ENCRYPT_SECRET}" ]; then
     if [ -n "${JGROUPS_ENCRYPT_NAME}" -a -n "${JGROUPS_ENCRYPT_PASSWORD}" ] ; then
       jgroups_encrypt="\
-        <protocol type=\"SYM_ENCRYPT\">\
-          <property name=\"provider\">SunJCE</property>\
-          <property name=\"sym_algorithm\">AES</property>\
-          <property name=\"encrypt_entire_message\">true</property>\
-          <property name=\"keystore_name\">${JGROUPS_ENCRYPT_KEYSTORE_DIR}/${JGROUPS_ENCRYPT_KEYSTORE}</property>\
+        <protocol type=\"ENCRYPT\">\
+          <property name=\"key_store_name\">${JGROUPS_ENCRYPT_KEYSTORE_DIR}/${JGROUPS_ENCRYPT_KEYSTORE}</property>\
           <property name=\"store_password\">${JGROUPS_ENCRYPT_PASSWORD}</property>\
           <property name=\"alias\">${JGROUPS_ENCRYPT_NAME}</property>\
         </protocol>"
     else
-      echo "WARNING! Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted."
+      log_warning "Partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted."
     fi
   fi
 
