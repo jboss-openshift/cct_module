@@ -19,3 +19,5 @@ cp -p ${ADDED_DIR}/launch/backward-compatibility.sh $JBOSS_HOME/bin/launch
 
 # Add common start script
 cp -p ${ADDED_DIR}/launch/openshift-common.sh $JBOSS_HOME/bin/launch
+
+cp ${ADDED_DIR}/launch/jgroups.sh $JBOSS_HOME/bin/launch
