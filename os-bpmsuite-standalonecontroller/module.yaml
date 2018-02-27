@@ -1,6 +1,0 @@
-schema_version: 1
-name: os-bpmsuite-standalonecontroller
-version: '1.0'
-description: Legacy os-bpmsuite-standalonecontroller script package.
-execute:
-- script: configure.sh
