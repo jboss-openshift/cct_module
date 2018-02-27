@@ -1,7 +1,0 @@
-schema_version: 1
-name: os-kieserver-webapp
-version: '1.0'
-description: Legacy os-kieserver-webapp script package.
-execute:
-- script: configure.sh
-  user: '185'
