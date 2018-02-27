@@ -8,15 +8,21 @@ ADDED_METAINF_DIR="${ADDED_DIR}/META-INF"
 ADDED_WEBINF_DIR="${ADDED_DIR}/WEB-INF"
 SOURCES_DIR="/tmp/artifacts"
 
-BPMSUITE_BASE_DIR="jboss-eap-6.4"
+if [[ "$JBOSS_EAP_VERSION" == "6."* ]]; then
+    BPMSUITE_BASE_DIR="jboss-eap-6.4"
+    BPMSUITE_DEPLOYABLE_VERSION="eap6.x"
+    else
+        BPMSUITE_BASE_DIR="jboss-eap-7.0"
+        BPMSUITE_DEPLOYABLE_VERSION="eap7.x"
+fi
 KIE_SERVER_WAR_DIR="${BPMSUITE_BASE_DIR}/standalone/deployments/kie-server.war"
 # asterix in WAR_PATH includes kie-server.war/ and kie-server.war.dodeploy
 KIE_SERVER_WAR_PATH="${KIE_SERVER_WAR_DIR}*"
 KIE_SERVER_METAINF_DIR="${KIE_SERVER_WAR_DIR}/META-INF"
 KIE_SERVER_WEBINF_DIR="${KIE_SERVER_WAR_DIR}/WEB-INF"
 
-if [ -e "${SOURCES_DIR}/jboss-bpmsuite-${BPMSUITE_BASE_VERSION}-deployable-eap6.x.zip" ]; then
-    unzip -q ${SOURCES_DIR}/jboss-bpmsuite-${BPMSUITE_BASE_VERSION}-deployable-eap6.x.zip ${KIE_SERVER_WAR_PATH}
+if [ -e "${SOURCES_DIR}/jboss-bpmsuite-${BPMSUITE_BASE_VERSION}-deployable-${BPMSUITE_DEPLOYABLE_VERSION}.zip" ]; then
+    unzip -q ${SOURCES_DIR}/jboss-bpmsuite-${BPMSUITE_BASE_VERSION}-deployable-${BPMSUITE_DEPLOYABLE_VERSION}.zip ${KIE_SERVER_WAR_PATH}
     # only install patch over this version
     BPMSUITE_PATCH_DIR="jboss-bpmsuite-${BPMSUITE_PATCH_VERSION}-patch"
     BPMSUITE_PATCH_ZIP="${SOURCES_DIR}/${BPMSUITE_PATCH_DIR}.zip"
@@ -40,18 +46,24 @@ chmod 664 "${KIE_SERVER_WEBINF_DIR}/lib/openshift-kieserver-jms-${OPENSHIFT_KIES
 chmod 664 "${KIE_SERVER_WEBINF_DIR}/lib/openshift-kieserver-web-${OPENSHIFT_KIESERVER_VERSION}.jar"
 
 cp -f -p ${ADDED_WEBINF_DIR}/ejb-jar.xml ${KIE_SERVER_WEBINF_DIR}/ejb-jar.xml
-cp -f -p ${ADDED_WEBINF_DIR}/jboss-deployment-structure.xml ${KIE_SERVER_WEBINF_DIR}/jboss-deployment-structure.xml
 cp -f -p ${ADDED_WEBINF_DIR}/security-filter-rules.properties ${KIE_SERVER_WEBINF_DIR}/security-filter-rules.properties
 cp -f -p ${ADDED_WEBINF_DIR}/web.xml ${KIE_SERVER_WEBINF_DIR}/web.xml
 # needs to be overwritten by kieserver-launch.sh
 chmod 666 "${KIE_SERVER_WEBINF_DIR}/ejb-jar.xml"
-chmod 664 "${KIE_SERVER_WEBINF_DIR}/jboss-deployment-structure.xml"
+
 chmod 664 "${KIE_SERVER_WEBINF_DIR}/security-filter-rules.properties"
 chmod 664 "${KIE_SERVER_WEBINF_DIR}/web.xml"
 
-cp -f -p ${ADDED_METAINF_DIR}/kie-server-jms.xml ${KIE_SERVER_METAINF_DIR}/kie-server-jms.xml
+if [[ "$JBOSS_EAP_VERSION" == "6."* ]]; then
+    cp -f -p ${ADDED_METAINF_DIR}/kie-server-jms-eap6x.xml ${KIE_SERVER_METAINF_DIR}/kie-server-jms.xml
+    cp -f -p ${ADDED_WEBINF_DIR}/jboss-deployment-structure-eap6x.xml ${KIE_SERVER_WEBINF_DIR}/jboss-deployment-structure.xml
+    else
+        cp -f -p ${ADDED_METAINF_DIR}/kie-server-jms-eap7x.xml ${KIE_SERVER_METAINF_DIR}/kie-server-jms.xml
+        cp -f -p ${ADDED_WEBINF_DIR}/jboss-deployment-structure-eap7x.xml ${KIE_SERVER_WEBINF_DIR}/jboss-deployment-structure.xml
+fi
 # needs to be overwritten by kieserver-launch.sh
 chmod 666 "${KIE_SERVER_METAINF_DIR}/kie-server-jms.xml"
+chmod 664 "${KIE_SERVER_WEBINF_DIR}/jboss-deployment-structure.xml"
 
 # temp files need to be created by kieserver-launch.sh
 chmod 777 "${KIE_SERVER_WEBINF_DIR}"

@@ -70,7 +70,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then run /opt/eap/bin/readinessProbe.sh in container once
     Then run /opt/eap/bin/livenessProbe.sh in container once
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @redhat-sso-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7
   # https://issues.jboss.org/browse/CLOUD-204
   Scenario: Check if kube ping protocol is used by default
     When container is ready
@@ -78,7 +78,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @redhat-sso-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7
   # https://issues.jboss.org/browse/CLOUD-1958
   Scenario: Check if kube ping protocol is used when specified
     When container is started with env
@@ -88,7 +88,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @redhat-sso-7
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7
   # https://issues.jboss.org/browse/CLOUD-1958
   Scenario: Check if dns ping protocol is used when specified
     When container is started with env
@@ -98,7 +98,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6
+  @jboss-eap-6/eap64-openshift @jboss-eap-7
   Scenario: Check if jolokia is configured correctly
     When container is ready
     Then container log should contain -javaagent:/opt/jolokia/jolokia.jar=config=/opt/jolokia/etc/jolokia.properties

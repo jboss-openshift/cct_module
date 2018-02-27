@@ -13,7 +13,7 @@ Feature: OpenShift Decision Server 6.4 basic tests
 
   Scenario: Checks if the kie-server webapp is deployed.
     When container is ready
-    Then container log should contain JBAS015859: Deployed "kie-server.war"
+    Then container log should contain Deployed "kie-server.war"
 
   Scenario: Test REST API is secure
     When container is ready
@@ -51,5 +51,5 @@ Feature: OpenShift Decision Server 6.4 basic tests
     Then file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/web.xml should contain org.openshift.kieserver
     And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/security-filter-rules.properties should exist
     And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/kie-api-6.5.0.Final-redhat-2.jar should not exist
-    And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/kie-api-6.5.0.Final-redhat-7.jar should exist
+    And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/kie-api-6.5.0.Final-redhat-19.jar should exist
     And file /opt/eap/standalone/deployments/kie-server.war/WEB-INF/lib/openshift-kieserver-common-1.2.0.Final-redhat-1.jar should exist
