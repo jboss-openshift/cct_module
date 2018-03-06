@@ -114,6 +114,9 @@ function inject_internal_datasources() {
     defaultDatasource=""
   fi
 
+  # new format replacement : datasource="##DEFAULT_DATASOURCE##"
+  sed -i "s|datasource=\"##DEFAULT_DATASOURCE##\"|${defaultDatasource}|" $CONFIG_FILE
+  # old format (for compat)
   sed -i "s|<!-- ##DEFAULT_DATASOURCE## -->|${defaultDatasource}|" $CONFIG_FILE
 }
 

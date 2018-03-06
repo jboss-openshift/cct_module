@@ -333,6 +333,9 @@ function inject_brokers() {
   fi
 
   sed -i "s|<!-- ##RESOURCE_ADAPTERS## -->|${ras%$'\n'}<!-- ##RESOURCE_ADAPTERS## -->|" $CONFIG_FILE
+  # new format
+  sed -i "s|jms-connection-factory=\"##DEFAULT_JMS##\"|${defaultJms}|" $CONFIG_FILE
+  # legacy format, bare ##DEFAULT_JMS##
   sed -i "s|##DEFAULT_JMS##|${defaultJms}|" $CONFIG_FILE
 }
 
