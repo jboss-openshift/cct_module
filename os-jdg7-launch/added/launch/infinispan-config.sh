@@ -4,6 +4,13 @@ source $JBOSS_HOME/bin/launch/logging.sh
 
 CACHE_CONTAINER_FILE=$JBOSS_HOME/bin/launch/cache-container.xml
 
+function sanitize_cache_name() {
+  local cache_name=$1
+  cache_name=${cache_name^^}
+  cache_name=${cache_name//-/_}
+  echo $cache_name
+}
+
 function clear_prefix() {
   local prefix="$1"
   unset ${prefix}_CACHE_MODE
@@ -66,12 +73,16 @@ function prepareEnv() {
 
   IFS=',' read -a cachenames <<< "$CACHE_NAMES"
   for cachename in ${cachenames[@]}; do
+    cachename=$(sanitize_cache_name $cachename)
+
     clear_prefix $cachename
   done
   unset CACHE_NAMES
 
   IFS=',' read -a cachenames <<< "$DATAVIRT_CACHE_NAMES"
   for cachename in ${cachenames[@]}; do
+    cachename=$(sanitize_cache_name $cachename)
+
     clear_prefix ${cachename}
     clear_prefix ST_${cachename}
   done
@@ -229,7 +240,7 @@ function process_cache_names() {
 
 function configure_cache() {
   local CACHE_NAME=$1
-  local prefix=${1^^}
+  local prefix=$(sanitize_cache_name $CACHE_NAME)
   local CACHE_MODE=$(find_env "${prefix}_CACHE_MODE" "SYNC")
 
   local CACHE_TYPE=$(find_env "${prefix}_CACHE_TYPE" "${CACHE_TYPE_DEFAULT:-distributed}")
@@ -383,7 +394,7 @@ function configure_cache() {
 function define_datavirt_cache_variables() {
   local cache_name=$1
   local configureIndexing=$2
-  local prefix=${cache_name^^}
+  local prefix=$(sanitize_cache_name $cache_name)
 
   if [ -z "$(eval echo \$${prefix}_CACHE_START)" ]; then
     eval ${prefix}_CACHE_START=EAGER
@@ -427,7 +438,7 @@ function define_datavirt_caches(){
 }
 
 function configure_jdbc_store() {
-  local prefix=${1^^}
+  local prefix=$(sanitize_cache_name $1)
   if [ -n "$(find_env "${prefix}_JDBC_STORE_TYPE")" ]; then
     local JDBC_STORE_TYPE="$(find_env "${prefix}_JDBC_STORE_TYPE")"
     if [ -n "$(find_env "${prefix}_KEYED_TABLE_PREFIX")" ]; then
