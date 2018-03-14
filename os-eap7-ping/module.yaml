@@ -31,3 +31,5 @@ artifacts:
   md5: fbd94724882e9ad41d1c4db52875b8d4
 - path: openshift-ping-kube-1.2.1.Final-redhat-1.jar
   md5: adb78556f8d3b0f22da6d6e5d446d059
+- path: oauth-20100527.jar
+  md5: 91c7c70579f95b7ddee95b2143a49b41

@@ -5,3 +5,11 @@ description: Legacy os-jws-logging script package.
 execute:
 - script: run
   user: '185'
+
+artifacts:
+- path: json-smart-1.1.1.jar
+  md5: c382c9109020d001b96329c2057ba933
+- path: commons-lang-2.6.0.redhat-4.jar
+  md5: 0da0fbfb0ff2160df3a4832d28003361
+- path: jsonevent-layout-1.7-redhat-1.jar
+  md5: 08f9aa037ac91c4aaa0d5dabf143a60e
