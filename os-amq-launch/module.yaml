@@ -4,3 +4,7 @@ version: '1.0'
 description: Legacy os-amq-launch script package.
 execute:
 - script: install.sh
+
+artifacts:
+- path: ce-amq-drain-1.0.0.Final-redhat-1.jar
+  md5: 65b9aba8e5a0b7d7b259a6028f85595e

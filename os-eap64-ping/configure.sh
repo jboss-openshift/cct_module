@@ -20,4 +20,5 @@ sed -i "s/##VERSION##/$VERSION/g" ${DEST}/module.xml
 
 DEST="$JBOSS_HOME/modules/system/layers/openshift/net/oauth/core/main/"
 mkdir -p "$DEST"
-cp -p ${SOURCES_DIR}/oauth-20100527.jar "$DEST"
+cp -p ${ADDED_DIR}/modules/system/layers/openshift/net/oauth/core/main/module.xml \
+      ${SOURCES_DIR}/oauth-20100527.jar "$DEST"

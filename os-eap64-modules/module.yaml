@@ -5,3 +5,7 @@ description: Legacy os-eap64-modules script package.
 execute:
 - script: configure.sh
   user: '185'
+
+artifacts:
+- path: tomcat-7-valves-1.0.3.Final-redhat-1.jar
+  md5: f286f6748e6d134ed0a9dadd8320ecd2
