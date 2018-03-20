@@ -5,3 +5,11 @@ description: Legacy os-eap70-sso script package.
 execute:
 - script: configure.sh
   user: '185'
+
+artifacts:
+- path: rh-sso-7.1.0-eap7-adapter.zip
+  description: "Artifact is available on Customer Portal: https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=44831&product=core.service.rhsso&version=7.0&downloadType=distributions"
+  sha256: 3d12e310a9b15f79cd46255819a0198acd569921797204c0936772e71dec8d23
+- path: rh-sso-7.1.2-saml-eap7-adapter.zip
+  description: "Artifact is available on Customer Portal: https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=44801&product=core.service.rhsso&version=7.0&downloadType=distributions"
+  sha256: f48b2b15ccfd17589f5a424c689697b8cfefbe95a553ba589c14eaba4978a823
