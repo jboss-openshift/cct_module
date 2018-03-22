@@ -4,4 +4,3 @@ version: '1.0'
 description: os-logging script package.
 execute:
 - script: configure.sh
-  user: '185'

@@ -12,8 +12,10 @@ else
   BIN_HOME="$JBOSS_HOME"
 fi
 
-mkdir -p ${BIN_HOME}/bin/launch
-cp -r ${ADDED_DIR}/launch/logging.sh ${BIN_HOME}/bin/launch
+LAUNCH_DIR=${LAUNCH_DIR:-$BIN_HOME/bin/launch}
 
-chown -R jboss:root ${BIN_HOME}/bin/launch/logging.sh
-chmod -R g+rwX ${BIN_HOME}/bin/launch/logging.sh
+mkdir -p ${LAUNCH_DIR}
+cp -r ${ADDED_DIR}/launch/logging.sh ${LAUNCH_DIR}
+
+chown -R jboss:root ${LAUNCH_DIR}/logging.sh
+chmod -R g+rwX ${LAUNCH_DIR}/logging.sh
