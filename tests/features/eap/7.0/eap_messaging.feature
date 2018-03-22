@@ -1,8 +1,8 @@
-@jboss-eap-6/eap64-openshift
-Feature: Openshift EAP64 Messaging Tests
+@jboss-eap-7/eap70-openshift @jboss-eap-7/eap71-openshift
+Feature: Openshift EAP7 Messaging Tests
 
   Scenario: Check that queues are generated properly for A-MQ resource adapter
-    Given XML namespace ra:urn:jboss:domain:resource-adapters:1.1
+    Given XML namespace ra:urn:jboss:domain:resource-adapters:4.0
     When container is started with env
        | variable                    | value                          |
        | MQ_SERVICE_PREFIX_MAPPING   | test-amq=MQ                    |
@@ -17,7 +17,7 @@ Feature: Openshift EAP64 Messaging Tests
     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value org.apache.activemq.command.ActiveMQQueue on XPath //ra:resource-adapter[@id="activemq-rar.rar"]//ra:admin-object[@jndi-name="java:/queue/two"]/@class-name
 
   Scenario: Check that topics are generated properly for A-MQ resource adapter
-    Given XML namespace ra:urn:jboss:domain:resource-adapters:1.1
+    Given XML namespace ra:urn:jboss:domain:resource-adapters:4.0
     When container is started with env
        | variable                    | value                          |
        | MQ_SERVICE_PREFIX_MAPPING   | test-amq=MQ                    |
