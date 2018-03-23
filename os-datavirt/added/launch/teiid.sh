@@ -61,7 +61,7 @@ function update_users(){
     sed -i "s|##MODESHAPE_USERNAME##|${modeshapeuser}|" "${CONFIG_FILE}"
     sed -i "s|##MODESHAPE_PASSWORD##|${password}|" "${CONFIG_FILE}"
   else
-    log_error "No password was provided for '${modeshapeuser}' in the MODESHAPE_PASSWORD environment variable. JBoss Red Hat JBoss Data Virtualization will not work properly."
+    log_warning "No password was provided for '${modeshapeuser}' in the MODESHAPE_PASSWORD environment variable. Access to the ModeShape repository will not be available."
   fi
   
 }
