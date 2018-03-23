@@ -19,6 +19,7 @@ function prepareEnv() {
   unset HORNETQ_CLUSTER_PASSWORD
   unset MQ_CLUSTER_PASSWORD
   unset DEFAULT_JMS_CONNECTION_FACTORY
+  unset JBOSS_MESSAGING_HOST
 
   # A-MQ configuration
   IFS=',' read -a brokers <<< $MQ_SERVICE_PREFIX_MAPPING
@@ -61,9 +62,15 @@ function prepareEnv() {
 }
 
 function configure() {
+  configure_artemis_address
   inject_brokers
   configure_mq
   configure_thread_pool
+}
+
+function configure_artemis_address() {
+    IP_ADDR=${JBOSS_MESSAGING_HOST:-`hostname -i`}
+    JBOSS_MESSAGING_ARGS="${JBOSS_MESSAGING_ARGS} -Djboss.messaging.host=${IP_ADDR}"
 }
 
 function configure_mq_destinations() {
