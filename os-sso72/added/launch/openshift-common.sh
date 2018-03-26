@@ -31,6 +31,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/resource-adapter.sh
   $JBOSS_HOME/bin/launch/admin.sh
   $JBOSS_HOME/bin/launch/ha.sh
+  $JBOSS_HOME/bin/launch/openshift-x509.sh
   $JBOSS_HOME/bin/launch/jgroups.sh
   $JBOSS_HOME/bin/launch/https.sh
   $JBOSS_HOME/bin/launch/json_logging.sh
