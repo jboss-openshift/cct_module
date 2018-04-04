@@ -1,5 +1,4 @@
     <server name="default">
-        <cluster password="${jboss.messaging.cluster.password:CHANGE ME!!}"/>
         <security-setting name="#">
             <role name="guest" send="true" consume="true" create-non-durable-queue="true" delete-non-durable-queue="true"/>
         </security-setting>
@@ -15,13 +14,10 @@
             <param name="direct-deliver" value="false"/>
         </http-acceptor>
         <in-vm-acceptor name="in-vm" server-id="0"/>
-        <broadcast-group name="bg-group1" connectors="http-connector" jgroups-channel="ee"/>
-        <discovery-group name="dg-group1" jgroups-channel="ee"/>
-        <cluster-connection name="my-cluster" address="jms" connector-name="http-connector" discovery-group="dg-group1"/>
         <jms-queue name="ExpiryQueue" entries="java:/jms/queue/ExpiryQueue"/>
         <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>
         <!-- ##DESTINATIONS## -->
         <connection-factory name="InVmConnectionFactory" connectors="in-vm" entries="java:/ConnectionFactory"/>
-        <connection-factory name="RemoteConnectionFactory" ha="true" block-on-acknowledge="true" reconnect-attempts="-1" connectors="http-connector" entries="java:jboss/exported/jms/RemoteConnectionFactory"/>
+        <connection-factory name="RemoteConnectionFactory" connectors="http-connector" entries="java:jboss/exported/jms/RemoteConnectionFactory" reconnect-attempts="-1" />
         <pooled-connection-factory name="activemq-ra" transaction="xa" connectors="in-vm" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory"/>
     </server>
