@@ -65,6 +65,10 @@ function inject_datasources_common() {
 }
 
 function inject_internal_datasources() {
+
+  # keep this from polluting other scripts
+  local jndi
+
   # Find all databases in the $DB_SERVICE_PREFIX_MAPPING separated by ","
   IFS=',' read -a db_backends <<< $DB_SERVICE_PREFIX_MAPPING
 
@@ -103,6 +107,8 @@ function inject_internal_datasources() {
       inject_datasource $prefix $service $service_name
 
       if [ -z "$defaultDatasourceJndi" ]; then
+        # make sure we re-read $jndi, messaging uses it too
+        jndi=$(get_jndi_name "$prefix" "$service")
         defaultDatasourceJndi="$jndi"
       fi
     done
