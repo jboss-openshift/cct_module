@@ -15,6 +15,12 @@ function autogenerate_keystores() {
   # Keystore infix notation as used in templates to keystore name mapping
   declare -A KEYSTORES=( ["https"]="HTTPS" ["jgroups"]="JGroups" )
 
+  # CLOUD-2436 Don't generate the JGroups keystore if custom
+  # JGROUPS_ENCRYPT_SECRET was provided
+  if [ -n "${JGROUPS_ENCRYPT_SECRET}" ]; then
+    unset KEYSTORES["jgroups"]
+  fi
+
   local KEYSTORES_STORAGE="${JBOSS_HOME}/keystores"
   if [ ! -d "${KEYSTORES_STORAGE}" ]; then
     mkdir -p "${KEYSTORES_STORAGE}"
