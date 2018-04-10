@@ -156,6 +156,7 @@ function generate_object_config() {
 # $10 - driver
 # $11 - queue names
 # $12 - topic names
+# $13 - ra tracking
 function generate_resource_adapter() {
   log_info "Generating resource adapter configuration for service: $1 (${10})" >&2
   IFS=',' read -a queues <<< ${11}
@@ -172,6 +173,7 @@ function generate_resource_adapter() {
                     <config-property name=\"ServerUrl\">tcp://$6:$7?jms.rmIdFromConnectionId=true</config-property>
                     <connection-definitions>
                         <connection-definition
+                              "${13}"
                               class-name=\"org.apache.activemq.ra.ActiveMQManagedConnectionFactory\"
                               jndi-name=\"$2\"
                               enabled=\"true\"
@@ -313,6 +315,11 @@ function inject_brokers() {
       # topics environment variable name format: [NAME]_[BROKER_TYPE]_TOPICS
       topics=$(find_env "${prefix}_TOPICS")
 
+      tracking=$(find_env "${prefix}_TRACKING")
+      if [ -n "${tracking}" ]; then
+         ra_tracking="tracking=\"${tracking}\""
+      fi
+
       case "$type" in
         "AMQ")
           driver="amq"
@@ -320,7 +327,7 @@ function inject_brokers() {
           ;;
       esac
 
-      ra=$(generate_resource_adapter $service_name $jndi $username $password $protocol $host $port $prefix $archive $driver "$queues" "$topics")
+      ra=$(generate_resource_adapter $service_name $jndi $username $password $protocol $host $port $prefix $archive $driver "$queues" "$topics" $ra_tracking)
       ras="$ras$ra\n"
 
       if [ -z "$defaultJmsConnectionFactoryJndi" ]; then

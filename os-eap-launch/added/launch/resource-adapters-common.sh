@@ -18,6 +18,7 @@ function clearResourceAdapterEnv() {
   unset ${prefix}_RECOVERY_USERNAME
   unset ${prefix}_RECOVERY_PASSWORD
   unset ${prefix}_ADMIN_OBJECTS
+  unset ${prefix}_TRACKING
 
   for xa_prop in $(compgen -v | grep -s "${prefix}_PROPERTY_"); do
     unset ${xa_prop}
@@ -106,7 +107,14 @@ function inject_resource_adapters_common() {
       resource_adapter="${resource_adapter}<transaction-support>$transaction_support</transaction-support>"
     fi
 
-    resource_adapter="${resource_adapter}<connection-definitions><connection-definition class-name=\"${ra_class}\" jndi-name=\"${ra_jndi}\" enabled=\"true\" use-java-context=\"true\">"
+    resource_adapter="${resource_adapter}<connection-definitions><connection-definition"
+
+    tracking=$(find_env "${ra_prefix}_TRACKING")
+    if [ -n "${tracking}" ]; then
+      # monitor applications, look for unclosed resources.
+      resource_adapter="${resource_adapter} tracking=\"${tracking}\""
+    fi
+    resource_adapter="${resource_adapter} class-name=\"${ra_class}\" jndi-name=\"${ra_jndi}\" enabled=\"true\" use-java-context=\"true\">"
 
     ra_props=$(compgen -v | grep -s "${ra_prefix}_PROPERTY_")
     if [ -n "$ra_props" ]; then
