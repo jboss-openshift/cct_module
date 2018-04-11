@@ -4,3 +4,10 @@ version: '1.0'
 description: Legacy os-java-run script package.
 execute:
 - script: install_as_root
+envs:
+    - name: JAVA_MAX_INITIAL_MEM
+      description: The maximum size of the initial heap memory, if the calculated default initial heap is larger then it will be capped at this value.  The default is 4096 MB.
+      example: "4096"
+    - name: JAVA_CORE_LIMIT
+      description: Core limit as described in https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt.  Used to configure the number of GC threads and parallelism for ForkJoinPool.  Defaults to container core limit.
+      example: "2"
