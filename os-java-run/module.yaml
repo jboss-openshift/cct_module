@@ -11,3 +11,6 @@ envs:
     - name: JAVA_CORE_LIMIT
       description: Core limit as described in https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt.  Used to configure the number of GC threads and parallelism for ForkJoinPool.  Defaults to container core limit.
       example: "2"
+    - name: JAVA_DIAGNOSTICS
+      description: Set this to get some diagnostics information to standard output when things are happening. **Disabled by default.**
+      example: "true"
