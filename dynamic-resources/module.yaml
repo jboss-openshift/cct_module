@@ -5,6 +5,9 @@ description: Legacy dynamic-resources script package.
 execute:
 - script: install.sh
 envs:
+    - name: "INITIAL_HEAP_PERCENT"
+      example: 0.5
+      description: Deprecated.  See JAVA_INITIAL_MEM_RATIO.
     - name: "CONTAINER_HEAP_PERCENT"
       example: 0.5
       description: Deprecated.  See JAVA_MAX_MEM_RATIO.
