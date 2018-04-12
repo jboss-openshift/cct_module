@@ -6,3 +6,7 @@ execute:
 - script: prepare.sh
 - script: configure.sh
   user: '185'
+envs:
+    - name: GC_MAX_METASPACE_SIZE
+      description: The maximum metaspace size.
+      example: "256"
