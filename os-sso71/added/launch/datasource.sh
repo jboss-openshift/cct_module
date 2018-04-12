@@ -82,3 +82,10 @@ function inject_job_repository() {
 
   sed -i "s|<!-- ##JOB_REPOSITORY## -->|${jobrepo%$'\n'}|" $CONFIG_FILE
 }
+
+function generate_datastore_extensions() {
+  local refreshInterval=${TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL}
+  if [ -n "${refreshInterval}" ] ; then
+    echo "refresh-interval=\"${refreshInterval}\""
+  fi
+}

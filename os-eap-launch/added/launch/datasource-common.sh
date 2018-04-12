@@ -348,7 +348,8 @@ function inject_datastore() {
   local jndi_name="${2}"
   local databasename="${3}"
 
-  local datastore="<database-data-store name=\"${servicename}_ds\" datasource-jndi-name=\"${jndi_name}\" database=\"${databasename}\" partition=\"${servicename}_part\"/>\
+  local extensions=$(generate_datastore_extensions)
+  local datastore="<database-data-store name=\"${servicename}_ds\" datasource-jndi-name=\"${jndi_name}\" database=\"${databasename}\" partition=\"${servicename}_part\" ${extensions}/>\
         <!-- ##DATASTORES## -->"
   sed -i "s|<!-- ##DATASTORES## -->|${datastore}|" $CONFIG_FILE
 }

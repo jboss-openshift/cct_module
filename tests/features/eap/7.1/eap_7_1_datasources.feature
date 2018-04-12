@@ -363,3 +363,28 @@ Feature: EAP Openshift datasources
        | MAREK_PASSWORD                | hardtoguess                        |
     Then container log should contain WARN Missing configuration for datasource MAREK. TEST_POSTGRESQL_SERVICE_HOST, TEST_POSTGRESQL_SERVICE_PORT, and/or MAREK_DATABASE is missing. Datasource will not be configured.
     And container log should contain In order to configure mysql datasource for DB service you need to provide following environment variables: DB_USERNAME and DB_PASSWORD.   
+
+  Scenario: check refresh interval is set on the EAP 7.1 datasource when environment variable specified
+    When container is started with env
+       | variable                                  | value            |
+       | DB_SERVICE_PREFIX_MAPPING                 | test-mysql=TEST |
+       | TEST_DATABASE                             | kitchensink      |
+       | TEST_USERNAME                             | marek            |
+       | TEST_PASSWORD                             | hardtoguess      |
+       | TEST_MYSQL_SERVICE_HOST                   | 10.1.1.1         |
+       | TEST_MYSQL_SERVICE_PORT                   | 3306             |
+       | TIMER_SERVICE_DATA_STORE                  | test-mysql       |
+       | TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL | 9999             |
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 9999 on XPath //*[local-name()='database-data-store']/@refresh-interval
+
+  Scenario: check refresh interval is not set on the EAP 7.1 datasource when environment variable is not specified
+    When container is started with env
+       | variable                                  | value            |
+       | DB_SERVICE_PREFIX_MAPPING                 | test-mysql=TEST |
+       | TEST_DATABASE                             | kitchensink      |
+       | TEST_USERNAME                             | marek            |
+       | TEST_PASSWORD                             | hardtoguess      |
+       | TEST_MYSQL_SERVICE_HOST                   | 10.1.1.1         |
+       | TEST_MYSQL_SERVICE_PORT                   | 3306             |
+       | TIMER_SERVICE_DATA_STORE                  | test-mysql       |
+    Then file /opt/eap/standalone/configuration/standalone-openshift.xml should not contain refresh-interval

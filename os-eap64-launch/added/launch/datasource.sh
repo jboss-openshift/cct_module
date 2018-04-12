@@ -26,3 +26,7 @@ function inject_datasources() {
 function generate_datasource() {
   generate_datasource_common "${1}" "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}" "${10}" "${11}" "${12}" "${13}" "${14}"
 }
+
+function generate_datastore_extensions() {
+  // No content within this function
+}
