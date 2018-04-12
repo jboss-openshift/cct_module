@@ -16,3 +16,8 @@ envs:
       example: "false"
       description: "For backwards compatability, set to true to use 'MyQueue' and 'MyTopic' as physical destination name defaults instead of 'queue/MyQueue' and 'topic/MyTopic'."
 
+packages:
+      repositories:
+          - jboss-os
+      install:
+          - hostname
