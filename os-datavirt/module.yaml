@@ -16,3 +16,8 @@ packages:
           - jboss-os
       install:
           - hostname
+
+run:
+      user: 185
+      cmd:
+          - "/opt/eap/bin/openshift-launch.sh"

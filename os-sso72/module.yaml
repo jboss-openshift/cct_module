@@ -15,3 +15,8 @@ packages:
 
 execute:
 - script: configure.sh
+
+run:
+      user: 185
+      cmd:
+          - "/opt/eap/bin/openshift-launch.sh"
