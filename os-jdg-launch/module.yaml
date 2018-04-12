@@ -10,3 +10,8 @@ modules:
 execute:
 - script: configure.sh
   user: '185'
+
+run:
+      user: 185
+      cmd:
+          - "/opt/datagrid/bin/openshift-launch.sh"
