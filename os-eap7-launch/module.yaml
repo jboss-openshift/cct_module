@@ -11,3 +11,8 @@ modules:
 execute:
 - script: configure.sh
   user: '185'
+envs:
+    - name: "MQ_SIMPLE_DEFAULT_PHYSICAL_DESTINATION"
+      example: "false"
+      description: "For backwards compatability, set to true to use 'MyQueue' and 'MyTopic' as physical destination name defaults instead of 'queue/MyQueue' and 'topic/MyTopic'."
+
