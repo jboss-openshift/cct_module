@@ -169,3 +169,12 @@ clear_maven_repository() {
         rm -rf ${HOME}/.m2/repository/*
     fi
 }
+
+# set local repository path for maven to the provided path
+function set_local_repo_path() {
+    local settings="${1}"
+    local local_path="${2}"
+    local xml="\n\
+    <localRepository>${local_path}</localRepository>"
+    sed -i "s|<!-- ### configured local repository ### -->|${xml}|" "${settings}"    
+}

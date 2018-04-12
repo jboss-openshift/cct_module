@@ -7,6 +7,7 @@ function prepareEnv() {
     unset MAVEN_REPO_HOST
     unset MAVEN_REPO_ID
     unset MAVEN_REPO_LAYOUT
+    unset MAVEN_REPO_LOCAL
     unset MAVEN_REPO_PASSPHRASE
     unset MAVEN_REPO_PASSWORD
     unset MAVEN_REPO_PATH
@@ -32,6 +33,10 @@ function configure() {
 
 function configure_maven_repos {
     local settings="${1-$HOME/.m2/settings.xml}"
+    local local_repo_path="${MAVEN_REPO_LOCAL}"
+    if [ "${local_repo_path}" != "" ]; then
+        set_local_repo_path "${settings}" "${local_repo_path}"
+    fi
     # single repo scenario: respect fully qualified url if specified, otherwise find and use service
     local single_repo_url="${MAVEN_REPO_URL}"
     if [ "${single_repo_url}" = "" ]; then
@@ -177,3 +182,10 @@ function generate_random_id() {
     cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1
 }
 
+function set_local_repo_path() {
+    local settings="${1}"
+    local local_path="${2}"
+    local xml="\n\
+    <localRepository>${local_path}</localRepository>"
+    sed -i "s|<!-- ### configured local repository ### -->|${xml}|" "${settings}"    
+}
