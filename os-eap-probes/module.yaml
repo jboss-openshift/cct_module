@@ -5,3 +5,9 @@ description: Legacy os-eap-probes script package.
 execute:
 - script: configure.sh
   user: '185'
+packages:
+      repositories:
+          - jboss-os
+      install:
+          - python-enum34
+          - python-requests
