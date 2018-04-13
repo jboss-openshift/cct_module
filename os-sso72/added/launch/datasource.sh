@@ -60,6 +60,11 @@ function generate_datasource() {
 
 }
 
+# $1 - refresh-interval
+function refresh_interval() {
+    echo "refresh-interval=\"$1\""
+}
+
 function inject_default_job_repositories() {
   defaultjobrepo="     <default-job-repository name=\"in-memory\"/>"
 

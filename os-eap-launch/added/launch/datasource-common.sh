@@ -197,10 +197,18 @@ function generate_datasource_common() {
 
   if [ -n "$TIMER_SERVICE_DATA_STORE" -a "$TIMER_SERVICE_DATA_STORE" = "${service_name}" ]; then
     inject_timer_service ${pool_name}_ds
-    inject_datastore $pool_name $jndi_name $driver
+    local refresh_interval=$(refresh_interval ${TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL:--1})
+    inject_datastore $pool_name $jndi_name $driver $refresh_interval
   fi
 
   echo $ds | sed ':a;N;$!ba;s|\n|\\n|g'
+}
+
+# Global function to configure refresh-interval, this function needs to be overridden in the datasource.sh script
+# i.e. os-eap7-launch/.../datasource.sh
+function refresh_interval() {
+    # do nothing on default state
+    echo ""
 }
 
 function generate_external_datasource() {
@@ -343,12 +351,14 @@ function inject_timer_service() {
 # $1 - service name
 # $2 - datasource jndi name
 # $3 - datasource databasename
+# $4 - datastore refresh-interval (only applicable on eap7.x)
 function inject_datastore() {
   local servicename="${1}"
   local jndi_name="${2}"
   local databasename="${3}"
+  local refresh_interval="${4}"
 
-  local datastore="<database-data-store name=\"${servicename}_ds\" datasource-jndi-name=\"${jndi_name}\" database=\"${databasename}\" partition=\"${servicename}_part\"/>\
+  local datastore="<database-data-store name=\"${servicename}_ds\" datasource-jndi-name=\"${jndi_name}\" database=\"${databasename}\" partition=\"${servicename}_part\" ${refresh_interval}/>\
         <!-- ##DATASTORES## -->"
   sed -i "s|<!-- ##DATASTORES## -->|${datastore}|" $CONFIG_FILE
 }
