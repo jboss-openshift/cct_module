@@ -10,3 +10,6 @@ envs:
     - name: GC_MAX_METASPACE_SIZE
       description: The maximum metaspace size.
       example: "256"
+    - name: "JAVA_OPTS_APPEND"
+      example: "-Dfoo=bar"
+      description: "Server startup options."
