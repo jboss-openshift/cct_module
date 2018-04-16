@@ -13,3 +13,6 @@ packages:
 envs:
     - name: "DEFAULT_ADMIN_USERNAME"
       value: "eapadmin"
+    - name: "ENABLE_ACCESS_LOG"
+      example: "true"
+      description: Enable the Access Log.
