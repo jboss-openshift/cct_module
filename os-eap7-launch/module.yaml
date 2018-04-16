@@ -23,6 +23,9 @@ envs:
     - name: "DEFAULT_JMS_CONNECTION_FACTORY"
       example: "java:jboss/DefaultJMSConnectionFactory"
       description: "Specify the default JNDI binding for the JMS connection factory (jms-connection-factory='java:jboss/DefaultJMSConnectionFactory')."
+    - name: "CLI_GRACEFUL_SHUTDOWN"
+      example: "true"
+      description: "If set to any non zero length value then the image will prevent shutdown with the TERM signal and will require execution of the shutdown command through jboss-cli."
 
 packages:
       repositories:
