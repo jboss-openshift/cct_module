@@ -4,3 +4,7 @@ version: '1.0'
 description: Legacy os-eap-s2i script package.
 execute:
 - script: prepare.sh
+envs:
+- name: CUSTOM_INSTALL_DIRECTORIES
+  description: A list of comma-separated directories used for installation and configuration of artifacts for the image during the S2I process.
+  example: "custom,shared"
