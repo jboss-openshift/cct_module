@@ -11,3 +11,7 @@ packages:
       install:
           - python-enum34
           - python-requests
+envs:
+    - name: "PROBE_DISABLE_BOOT_ERRORS_CHECK"
+      example: "true"
+      description: Disable the boot errors check in the probes.
