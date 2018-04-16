@@ -20,6 +20,9 @@ envs:
       description: "Comma-separated list of package names that will be appended to the JBOSS_MODULES_SYSTEM_PKGS environment variable."
     - name: "JBOSS_MODULES_SYSTEM_PKGS"
       value: "org.jboss.logmanager,jdk.nashorn.api"
+    - name: "ENABLE_JSON_LOGGING"
+      example: "true"
+      description: Enable JSON-formatted logging
 
 packages:
       repositories:

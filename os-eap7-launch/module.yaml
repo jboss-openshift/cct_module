@@ -26,6 +26,9 @@ envs:
     - name: "CLI_GRACEFUL_SHUTDOWN"
       example: "true"
       description: "If set to any non zero length value then the image will prevent shutdown with the TERM signal and will require execution of the shutdown command through jboss-cli."
+    - name: "ENABLE_JSON_LOGGING"
+      example: "true"
+      description: Enable JSON-formatted logging
 
 packages:
       repositories:
