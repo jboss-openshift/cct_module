@@ -15,6 +15,9 @@ envs:
     - name: "MQ_SIMPLE_DEFAULT_PHYSICAL_DESTINATION"
       example: "false"
       description: "For backwards compatability, set to true to use 'MyQueue' and 'MyTopic' as physical destination name defaults instead of 'queue/MyQueue' and 'topic/MyTopic'."
+    - name: "JBOSS_MODULES_SYSTEM_PKGS_APPEND"
+      example: "org.jboss.byteman"
+      description: "Comma-separated list of package names that will be appended to the JBOSS_MODULES_SYSTEM_PKGS environment variable."
 
 packages:
       repositories:
