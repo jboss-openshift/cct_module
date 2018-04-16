@@ -18,6 +18,8 @@ envs:
     - name: "JBOSS_MODULES_SYSTEM_PKGS_APPEND"
       example: "org.jboss.byteman"
       description: "Comma-separated list of package names that will be appended to the JBOSS_MODULES_SYSTEM_PKGS environment variable."
+    - name: "JBOSS_MODULES_SYSTEM_PKGS"
+      value: "org.jboss.logmanager,jdk.nashorn.api"
 
 packages:
       repositories:
