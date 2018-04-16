@@ -20,3 +20,7 @@ run:
       user: 185
       cmd:
           - "/opt/eap/bin/openshift-launch.sh"
+
+envs:
+    - name: "DEFAULT_ADMIN_USERNAME"
+      value: "eapadmin"

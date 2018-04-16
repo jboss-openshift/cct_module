@@ -10,3 +10,6 @@ packages:
           - jboss-os
       install:
           - hostname
+envs:
+    - name: "DEFAULT_ADMIN_USERNAME"
+      value: "eapadmin"
