@@ -7,9 +7,6 @@ source /opt/partition/partitionPV.sh
 
 function runMigration() {
   local instanceDir=$1
-  local count=$2
-
-  export NODE_NAME="${NODE_NAME:-node}-${count}"
   cp -f ${STANDALONE_XML_COPY} ${STANDALONE_XML}
 
   source $JBOSS_HOME/bin/launch/configure.sh
@@ -29,8 +26,15 @@ function runMigration() {
   local success=false
   local message="Finished, migration pod has been terminated"
   ${JBOSS_HOME}/bin/readinessProbe.sh
+  local probeStatus=$?
 
-  if [ $? -eq 0 ] ; then
+  if [ $probeStatus -eq 0 ] && [ "$(type -t probePodLog)" = 'function' ]; then
+    # -- checking if server.log is clean from errors (only if function of the particular name exists)
+    probePodLog # calling function from partitionPV.sh
+    probeStatus=$?
+  fi
+
+  if [ $probeStatus -eq 0 ] ; then
     echo "$(date): Server started, checking for transactions"
     local startTime=$(date +'%s')
     local endTime=$((startTime + ${RECOVERY_TIMEOUT} + 1))
@@ -66,7 +70,7 @@ function runMigration() {
     if [ "${success}" = "true" ] ; then
       message="Finished, recovery terminated successfully"
     else
-      message="Finished, Recovery DID NOT complete, check log for details.  Recovery will be reattempted."
+      message="Finished, Recovery DID NOT complete, check log for details. Recovery will be reattempted."
     fi
   fi
 

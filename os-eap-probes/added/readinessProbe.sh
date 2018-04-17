@@ -8,7 +8,7 @@ LOG=/tmp/readiness-log
 
 COUNT=30
 SLEEP=5
-DEBUG=false
+DEBUG=${SCRIPT_DEBUG:-false}
 PROBE_IMPL=probe.eap.dmr.EapProbe
 
 if [ $# -gt 0 ] ; then

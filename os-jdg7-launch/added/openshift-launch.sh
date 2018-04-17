@@ -5,9 +5,6 @@ source $JBOSS_HOME/bin/launch/logging.sh
 
 function runServer() {
   local instanceDir=$1
-  local count=$2
-
-  export NODE_NAME="${NODE_NAME:-node}-${count}"
 
   source $JBOSS_HOME/bin/launch/configure.sh
 
@@ -24,14 +21,13 @@ function init_data_dir() {
 }
 
 SPLIT_DATA=${SPLIT_DATA:-$DATAGRID_SPLIT}
-SPLIT_LOCK_TIMEOUT=${SPLIT_LOCK_TIMEOUT:-$DATAGRID_LOCK_TIMEOUT}
 
 if [ "${SPLIT_DATA^^}" = "TRUE" ]; then
   source /opt/partition/partitionPV.sh
 
   DATA_DIR="${JBOSS_HOME}/standalone/partitioned_data"
 
-  partitionPV "${DATA_DIR}" "${SPLIT_LOCK_TIMEOUT:-30}"
+  partitionPV "${DATA_DIR}"
 else
   source $JBOSS_HOME/bin/launch/configure.sh
 
