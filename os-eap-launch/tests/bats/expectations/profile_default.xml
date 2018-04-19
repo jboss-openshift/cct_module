@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<profile>
+  <id>my_id-profile</id>
+  <repositories>
+    <repository>
+      <id>my_id</id>
+      <url>http://my_url:8080</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+</profile>
