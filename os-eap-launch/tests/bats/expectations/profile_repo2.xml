@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<profile>
+  <id>id-repo-2-profile</id>
+  <repositories>
+    <repository>
+      <id>id-repo-2</id>
+      <url>http://repo-2:5050/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+</profile>
