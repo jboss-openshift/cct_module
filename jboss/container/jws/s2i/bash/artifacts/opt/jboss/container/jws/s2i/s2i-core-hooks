@@ -1,0 +1,29 @@
+
+source "${JBOSS_CONTAINER_UTIL_LOGGING_MODULE}/logging.sh"
+
+function s2i_core_env_init_hook() {
+  S2I_TARGET_CONFIGURATION_DIR="${S2I_TARGET_CONFIGURATION_DIR:-${JWS_HOME}/conf}"
+  S2I_TARGET_DATA_DIR="${S2I_TARGET_DATA_DIR:-${DATA_DIR:-${JWS_HOME}/data}}"
+
+  JWS_S2I_SOURCE_LIB_DIR="${JWS_S2I_SOURCE_LIB_DIR:-lib}"
+  JWS_S2I_TARGET_LIB_DIR="${JWS_S2I_TARGET_LIB_DIR:-${JWS_HOME}/lib}"
+}
+
+function s2i_core_copy_artifacts_hook() {
+  jws_s2i_copy_lib $*
+}
+
+function jws_s2i_copy_lib() {
+  if [ -d "${1}/${JWS_S2I_SOURCE_LIB_DIR}" ]; then
+    if [ -z "${JWS_S2I_TARGET_LIB_DIR}" ]; then
+      log_warning "Unable to copy lib files.  No target directory specified for JWS_S2I_TARGET_LIB_DIR"
+    else
+      if [ ! -d "${JWS_S2I_TARGET_LIB_DIR}" ]; then
+        log_info "JWS_S2I_TARGET_LIB_DIR does not exist, creating ${JWS_S2I_TARGET_LIB_DIR}"
+        mkdir -pm 775 "${JWS_S2I_TARGET_LIB_DIR}"
+      fi
+      log_info "Copying lib files from $(realpath --relative-to ${S2I_SOURCE_DIR} ${1}/${JWS_S2I_SOURCE_LIB_DIR}) to ${JWS_S2I_TARGET_LIB_DIR}..."
+      rsync -rl --out-format='%n' "${1}/${JWS_S2I_SOURCE_LIB_DIR}"/ "${JWS_S2I_TARGET_LIB_DIR}"
+    fi
+  fi 
+}

@@ -1,0 +1,23 @@
+schema_version: 1
+
+name: jboss.container.hawkular.bash
+version: '1.0'
+description: ^
+  Provides support for configuring Hawkular.  Basic usage is
+  opts=$(source $JBOSS_CONTAINER_HAWKULAR_MODULE/hawkular-opts; get_hawkular_opts)
+
+envs:
+- name: JBOSS_CONTAINER_HAWKULAR_MODULE
+  value: /opt/jboss/container/hawkular
+
+execute:
+- script: configure.sh
+- script: backward_compatibility.sh
+
+artifacts:
+- path: hawkular-javaagent-1.0.1.Final-redhat-2-shaded.jar
+  md5: f97f623e5b614a7b6d1eb5ff7158027b
+
+modules:
+  install:
+  - name: jboss.container.hawkular.api

@@ -14,8 +14,7 @@ Feature: Openshift EAP s2i tests
         | path     | /jboss-helloworld/HelloWorld |
         | port     | 8080                         |
     Given s2i build https://github.com/jboss-openshift/openshift-examples from helloworld with env and incremental
-    Then s2i build log should contain Expanding artifacts from incremental build...
-     And s2i build log should not contain Downloading:
+    Then s2i build log should not contain Downloading:
 
   # handles binary deployment
   Scenario: deploys the spring-eap6-quickstart example, then checks if it's deployed.

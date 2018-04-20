@@ -1,0 +1,40 @@
+schema_version: 1
+
+name: jboss.container.jolokia.bash
+version: '1.0'
+description: ^
+  Provides support for configuring Jolokia.  Basic usage is
+  opts="$JBOSS_CONTAINER_JOLOKIA_MODULE/jolokia-opts"
+
+labels:
+- name: io.fabric8.s2i.version.jolokia
+  value: "1.5.0-redhat-1"
+
+envs:
+- name: JBOSS_CONTAINER_JOLOKIA_MODULE
+  value: /opt/jboss/container/jolokia
+# variable overrides/defaults
+- name: JOLOKIA_VERSION
+  value: "1.5.0"
+- name: AB_JOLOKIA_PASSWORD_RANDOM
+  value: "true"
+- name: AB_JOLOKIA_AUTH_OPENSHIFT
+  value: "true"
+- name: AB_JOLOKIA_HTTPS
+  value: "true"
+
+ports:
+- value: 8778
+
+execute:
+- script: configure.sh
+- script: backward_compatibility.sh
+
+artifacts:
+#- name: jolokia-jvm-agent.jar
+- url: https://maven.repository.redhat.com/ga/org/jolokia/jolokia-jvm/1.5.0.redhat-1/jolokia-jvm-1.5.0.redhat-1-agent.jar
+  md5: d31c6b1525e6d2d24062ef26a9f639a8
+
+modules:
+  install:
+  - name: jboss.container.jolokia.api

@@ -5,6 +5,7 @@ description: Legacy os-eap64-launch script package.
 
 modules:
   install:
+  - name: jboss.container.maven.default.bash
   - name: os-eap-launch
   - name: os-eap-node-name
   - name: os-partition-txnrecovery

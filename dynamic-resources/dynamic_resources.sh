@@ -33,6 +33,10 @@ get_initial_heap_size() {
 # deprecated, left for backward compatibility
 adjust_java_heap_settings() {
     local java_scripts_dir="/opt/run-java"
+    
+    # nuke any hard-coded memory settings.  java-default-options won't add these
+    # if they're already specified
+    JAVA_OPTS="$(echo $JAVA_OPTS| sed -re 's/(-Xmx[^ ]*|-Xms[^ ]*)//g')"
     local java_options=$(source "${java_scripts_dir}/java-default-options")
     local max_heap=$(echo "${java_options}" | grep -Eo "\-Xmx[^ ]* ")
     local initial_heap=$(echo "${java_options}" | grep -Eo "\-Xms[^ ]* ")
@@ -66,6 +70,9 @@ adjust_java_options() {
     local options="$@"
     local remove_xms
     local java_scripts_dir="/opt/run-java"
+    # nuke any hard-coded memory settings.  java-default-options won't add these
+    # if they're already specified
+    JAVA_OPTS="$(echo $JAVA_OPTS| sed -re 's/(-Xmx[^ ]*|-Xms[^ ]*)//g')"
     local java_options=$(source "${java_scripts_dir}/java-default-options")
     local unsupported="$(unsupported_options)"
     for option in $java_options; do

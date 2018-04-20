@@ -3,4 +3,5 @@
 set -e
 
 # https://issues.jboss.org/browse/CLOUD-128
-mv $JWS_HOME/webapps "/deployments"
+mv $JWS_HOME/webapps/* "/deployments"
+rmdir $JWS_HOME/webapps

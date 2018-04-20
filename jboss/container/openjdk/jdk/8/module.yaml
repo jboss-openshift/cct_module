@@ -1,0 +1,29 @@
+schema_version: 1
+
+name: "jboss.container.openjdk.jdk"
+description: "Installs the JDK for OpenJDK 8."
+version: "8"
+
+labels:
+- name: "org.jboss.container.product"
+  value: "openjdk"
+- name: "org.jboss.container.product.version"
+  value: "1.8.0"
+- name: "org.jboss.container.product.openjdk.version"
+  value: "1.8.0"
+
+envs:
+- name: "JAVA_HOME"
+  value: "/usr/lib/jvm/java-1.8.0"
+- name: "JAVA_VENDOR"
+  value: "openjdk"
+- name: "JAVA_VERSION"
+  value: "1.8.0"
+
+packages:
+  install:
+  - java-1.8.0-openjdk-devel
+
+modules:
+  install:
+  - name: jboss.container.openjdk.base

@@ -1,0 +1,41 @@
+
+source "${JBOSS_CONTAINER_UTIL_LOGGING_MODULE}/logging.sh"
+
+# override core variables
+function s2i_core_env_init_hook() {
+  eap_s2i_env_init
+}
+
+# add support for copying modules
+function s2i_core_copy_artifacts_hook() {
+  eap_s2i_copy_modules $*
+}
+
+# Overrides are done in the script vs image configuration so $JBOSS_HOME can be
+#   used, simplifying configuration for layered products
+# Override target configuration directory
+# Override target data directory
+# Initialize variables for source/target directories for modules
+function eap_s2i_env_init() {
+  S2I_TARGET_CONFIGURATION_DIR="${S2I_TARGET_CONFIGURATION_DIR:-${JBOSS_HOME}/standalone/configuration}"
+  S2I_TARGET_DATA_DIR="${S2I_TARGET_DATA_DIR:-${DATA_DIR:-${JBOSS_HOME}/standalone/data}}"
+
+  EAP_S2I_SOURCE_MODULES_DIR="${EAP_S2I_SOURCE_MODULES_DIR:-modules}"
+  EAP_S2I_TARGET_MODULES_DIR="${EAP_S2I_TARGET_MODULES_DIR:-${JBOSS_HOME}/modules}"
+}
+
+# copy modules
+function eap_s2i_copy_modules() {
+  if [ -d "${1}/${EAP_S2I_SOURCE_MODULES_DIR}" ]; then
+    if [ -z "${EAP_S2I_TARGET_MODULES_DIR}" ]; then
+      log_warning "Unable to copy modules files.  No target directory specified for EAP_S2I_TARGET_MODULES_DIR"
+    else
+      if [ ! -d "${EAP_S2I_TARGET_MODULES_DIR}" ]; then
+        log_info "EAP_S2I_TARGET_MODULES_DIR does not exist, creating ${EAP_S2I_TARGET_MODULES_DIR}"
+        mkdir -pm 775 "${EAP_S2I_TARGET_MODULES_DIR}"
+      fi
+      log_info "Copying modules from $(realpath --relative-to ${S2I_SOURCE_DIR} ${1}/${EAP_S2I_SOURCE_MODULES_DIR}) to ${EAP_S2I_TARGET_MODULES_DIR}..."
+      rsync -rl --out-format='%n' "${1}/${EAP_S2I_SOURCE_MODULES_DIR}"/ "${EAP_S2I_TARGET_MODULES_DIR}"
+    fi
+  fi 
+}

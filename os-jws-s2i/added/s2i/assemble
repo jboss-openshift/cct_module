@@ -5,8 +5,8 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     echo "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
-. $(dirname $0)/common.sh
-source /usr/local/s2i/scl-enable-maven
+source "$JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE"/maven.sh
+source "$JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE"/scl-enable-maven
 
 LOCAL_SOURCE_DIR=/tmp/src
 mkdir -p $LOCAL_SOURCE_DIR
@@ -22,8 +22,7 @@ if [ -f $LOCAL_SOURCE_DIR/configuration/settings.xml ]; then
   mv $LOCAL_SOURCE_DIR/configuration/settings.xml $HOME/.m2
 fi
 
-configure_proxy
-configure_mirrors
+process_maven_settings_xml
 
 manage_incremental_build
 

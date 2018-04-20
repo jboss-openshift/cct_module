@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+source "${JBOSS_CONTAINER_UTIL_LOGGING_MODULE}/logging.sh"
+source "${JBOSS_CONTAINER_MAVEN_S2I_MODULE}/maven-s2i"
+
+# include our overrides/extensions
+source "${JBOSS_CONTAINER_EAP_S2I_MODULE}/s2i-core-hooks"
+
+# invoke the build
+maven_s2i_build
+

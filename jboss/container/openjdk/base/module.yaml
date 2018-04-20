@@ -1,0 +1,13 @@
+schema_version: 1
+name: jboss.container.openjdk.base
+version: '1.0'
+description: "Provides image configuration common to all JBoss Java based images."
+
+# This module should eventually replace everything in jboss-container-images/jboss-openjdk-image.
+
+execute:
+- script: configure.sh
+
+modules:
+  install:
+  - name: jboss.container.user

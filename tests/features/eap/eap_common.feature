@@ -101,7 +101,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-eap-7-tech-preview
   Scenario: Check if jolokia is configured correctly
     When container is ready
-    Then container log should contain -javaagent:/opt/jolokia/jolokia.jar=config=/opt/jolokia/etc/jolokia.properties
+    Then container log should contain -javaagent:/opt/jboss/container/jolokia/jolokia.jar=config=/opt/jboss/container/jolokia/etc/jolokia.properties
 
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7 @jboss-eap-7-tech-preview
   # CLOUD-295

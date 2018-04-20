@@ -1,0 +1,23 @@
+schema_version: 1
+name: jboss.container.user
+version: '1.0'
+description: "Configures the jboss user and permissions.  This module should be included by all images."
+
+envs:
+- name: "HOME"
+  value: "/home/jboss"
+
+packages:
+  install:
+  - yum-utils
+  - unzip
+  - tar
+  - rsync
+
+execute:
+- script: configure.sh
+
+run:
+  user: 185
+  workdir: "/home/jboss"
+

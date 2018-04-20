@@ -1,0 +1,29 @@
+schema_version: 1
+
+name: "jboss.container.openjdk.jdk"
+description: "Installs the JDK for OpenJDK 10."
+version: "10"
+
+labels:
+- name: "org.jboss.container.product"
+  value: "openjdk"
+- name: "org.jboss.container.product.version"
+  value: "10"
+- name: "org.jboss.container.product.openjdk.version"
+  value: "10"
+
+envs:
+- name: "JAVA_HOME"
+  value: "/usr/lib/jvm/java-10"
+- name: "JAVA_VENDOR"
+  value: "openjdk"
+- name: "JAVA_VERSION"
+  value: "10"
+
+packages:
+  install:
+  - java-openjdk-devel-10.0.*
+
+modules:
+  install:
+  - name: jboss.container.openjdk.base

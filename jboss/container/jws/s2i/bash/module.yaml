@@ -1,0 +1,18 @@
+schema_version: 1
+name: jboss.container.jws.s2i.bash
+version: '1.0'
+description: Customization of common Maven S2I for JWS S2I images.
+
+envs:
+- name: JBOSS_CONTAINER_JWS_S2I_MODULE
+  value: /opt/jboss/container/jws/s2i
+- name: S2I_SOURCE_DEPLOYMENTS_FILTER
+  value: "*.war"
+
+execute:
+- script: configure.sh
+
+modules:
+  install:
+  - name: jboss.container.maven.s2i.bash
+  - name: jboss.container.util.logging.bash

@@ -1,0 +1,19 @@
+schema_version: 1
+name: jboss.container.java.jvm.bash
+version: '1.0'
+description: ^
+  Provides support for configuring Java JVM, e.g. GC settings, etc.  Basic usage
+  is opts=$($JBOSS_CONTAINER_JAVA_JVM_MODULE/java-default-options)
+
+envs:
+- name: JBOSS_CONTAINER_JAVA_JVM_MODULE
+  value: /opt/jboss/container/java/jvm
+
+execute:
+- script: configure.sh
+- script: backward_compatibility.sh
+
+modules:
+  install:
+  - name: jboss.container.java.jvm.api
+  - name: jboss.container.java.proxy.bash

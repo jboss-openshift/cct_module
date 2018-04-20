@@ -2,5 +2,9 @@ schema_version: 1
 name: os-java-misc
 version: '1.0'
 description: Legacy os-java-misc script package.
-execute:
-- script: install_as_root
+
+modules:
+  install:
+  - name: jboss.container.user # jboss user and root group
+  - name: jboss.container.openjdk.base # secure random
+  - name: jboss.container.s2i.core.bash # /deployments directory creation

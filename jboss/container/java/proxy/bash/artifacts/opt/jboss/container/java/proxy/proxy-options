@@ -1,0 +1,50 @@
+#!/bin/sh
+
+preConfigure() {
+    unset JAVA_PROXY_OPTIONS
+}
+configure() {
+    JAVA_PROXY_OPTIONS="$(proxy_options)"
+}
+
+
+# parse the URL
+function parse_url() {
+  #[scheme://][user[:password]@]host[:port][/path][?params]
+  echo "$1" | sed -e "s+^\(\([^:]*\)://\)\?\(\([^:@]*\)\(:\([^@]*\)\)\?@\)\?\([^:/?]*\)\(:\([^/?]*\)\)\?.*$+ local scheme='\2' username='\4' password='\6' hostname='\7' port='\9'+"
+}
+
+# Check for proxy options and echo if enabled.
+function proxy_options() {
+  local ret=""
+  ret="$(java_proxy_options "${https_proxy:-${HTTPS_PROXY}}" https)"
+  ret="$ret $(java_proxy_options "${http_proxy:-${HTTP_PROXY}}" http)"
+
+  source "$JBOSS_CONTAINER_JAVA_PROXY_MODULE"/translate-no-proxy.sh
+  if [ -n "$JAVA_PROXY_NONPROXYHOSTS" ] ; then
+    ret="$ret -Dhttp.nonProxyHosts=$JAVA_PROXY_NONPROXYHOSTS"
+  fi
+  echo "$ret"
+}
+
+# internal usage only
+function java_proxy_options() {
+  local url="$1"
+  local transport="$2"
+  local ret=""
+
+  if [ -n "$url" ] ; then
+    source "$JBOSS_CONTAINER_JAVA_PROXY_MODULE"/parse-proxy-url.sh "$url"
+    if [ -n "$JAVA_PROXY_HOST" ] ; then
+      ret="-D${transport}.proxyHost=${JAVA_PROXY_HOST}"
+    fi
+    if [ -n "$JAVA_PROXY_PORT" ] ; then
+      ret="$ret -D${transport}.proxyPort=${JAVA_PROXY_PORT}"
+    fi
+    if [ -n "$JAVA_PROXY_USERNAME" -o -n "$JAVA_PROXY_PASSWORD" ] ; then
+      echo "WARNING: Proxy URL for ${transport} contains authentication credentials, these are not supported by java" >&2
+    fi
+  fi
+  echo "$ret"
+}
+

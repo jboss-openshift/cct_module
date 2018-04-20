@@ -2,5 +2,7 @@ schema_version: 1
 name: s2i-common
 version: '1.0'
 description: Legacy s2i-common script package.
-execute:
-- script: install.sh
+
+modules:
+  install:
+  - name: jboss.container.maven.default.bash

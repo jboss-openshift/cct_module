@@ -1,0 +1,19 @@
+schema_version: 1
+
+name: "jboss.container.java.proxy.bash"
+version: "2.0"
+description: ^
+  Provides support configuring proxy settings in Java.  Basic usage is
+  opts=$(source $JBOSS_CONTAINER_JAVA_PROXY_MODULE; proxy_options)
+
+envs:
+- name: JBOSS_CONTAINER_JAVA_PROXY_MODULE
+  value: /opt/jboss/container/java/proxy
+
+execute:
+- script: configure.sh
+- script: backward_compatibility.sh
+
+modules:
+  install:
+  - name: jboss.container.proxy.api

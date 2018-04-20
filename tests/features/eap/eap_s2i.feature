@@ -11,7 +11,7 @@ Feature: Openshift EAP s2i tests
     Then s2i build log should contain -Djava.net.preferIPv4Stack=true
     Then s2i build log should contain -Dfoo=bar
     Then s2i build log should contain -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90
-    Then run sh -c 'test -d /home/jboss/.m2/repository/org && echo all good' in container and immediately check its output for all good
+    Then run sh -c 'test -d /tmp/artifacts/m2/org && echo all good' in container and immediately check its output for all good
 
   # CLOUD-458
   Scenario: Test s2i build with environment only
@@ -37,9 +37,10 @@ Feature: Openshift EAP s2i tests
   # Allow the user to clear down the maven repository after running s2i (CLOUD-413)
   Scenario: Test to ensure that maven is run with -Djava.net.preferIPv4Stack=true and user-supplied arguments, and clears the local repository after the build
     Given s2i build https://github.com/jboss-openshift/openshift-examples from helloworld
-       | variable          | value     |
-       | MAVEN_ARGS_APPEND | -Dfoo=bar |
-       | MAVEN_CLEAR_REPO  | true      |
+       | variable          | value                      |
+       | MAVEN_ARGS_APPEND | -Dfoo=bar                  |
+       | MAVEN_LOCAL_REPO  | /home/jboss/.m2/repository |
+       | MAVEN_CLEAR_REPO  | true                       |
     Then s2i build log should contain -Djava.net.preferIPv4Stack=true
     Then s2i build log should contain -Dfoo=bar
     Then run sh -c 'test -d /home/jboss/.m2/repository/org && echo oops || echo all good' in container and immediately check its output for all good
@@ -86,4 +87,4 @@ Feature: Openshift EAP s2i tests
       | variable     | value       |
       | APP_DATADIR  | deployments |
       | SCRIPT_DEBUG | true        |
-    Then s2i build log should contain + echo 'Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed'
+    Then s2i build log should contain + log_info 'Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed'

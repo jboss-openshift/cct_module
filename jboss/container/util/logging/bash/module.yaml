@@ -1,0 +1,16 @@
+schema_version: 1
+name: jboss.container.util.logging.bash
+version: '1.0'
+description: "Provides support for script logging, e.g. colorization of levels, redirection to stderr, etc."
+
+envs:
+- name: JBOSS_CONTAINER_UTIL_LOGGING_MODULE
+  value: /opt/jboss/container/util/logging/
+- name: LOGGING_SCRIPT_DEBUG
+  description: Set to true to enable script debugging.  Deprecates SCRIPT_DEBUG.
+  example: true
+
+execute:
+- script: configure.sh
+- script: backward_compatibility.sh
+

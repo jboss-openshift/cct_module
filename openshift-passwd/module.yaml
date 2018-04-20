@@ -2,5 +2,7 @@ schema_version: 1
 name: openshift-passwd
 version: '1.0'
 description: Legacy openshift-passwd script package.
-execute:
-- script: configure_passwd.sh
+
+modules:
+  install:
+  - name: jboss.container.user

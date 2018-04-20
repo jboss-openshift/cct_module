@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Command line arguments given to this script
+args="$*"
+
+source "${JBOSS_CONTAINER_UTIL_LOGGING_MODULE}/logging.sh"
+source "${JBOSS_CONTAINER_S2I_CORE_MODULE}/s2i-core"
+# include our s2i_core_*() overrides/extensions
+source "${JBOSS_CONTAINER_JAVA_S2I_MODULE}/s2i-core-hooks"
+
+# Global S2I variable setup
+s2i_core_env_init
+
+# XXX: Not sure why we need to setup maven, but this was part of the old s2i-setup script, so...
+source "${JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE}/scl-enable-maven"
+
+# Always include jolokia-opts, which can be empty if switched off via env
+export JAVA_OPTS="${JAVA_OPTS:-${JAVA_OPTIONS}} $(${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia-opts) $(source ${JBOSS_CONTAINER_HAWKULAR_MODULE}/hawkular-opts && get_hawkular_opts)"
+export JAVA_OPTIONS="$JAVA_OPTS"
+
+if [ -f "${S2I_TARGET_DEPLOYMENTS_DIR}/bin/run.sh" ]; then
+    echo "Starting the application using the bundled ${S2I_TARGET_DEPLOYMENTS_DIR}/bin/run.sh ..."
+    exec ${DEPLOYMENTS_DIR}/bin/run.sh $args ${JAVA_ARGS}
+else
+    echo "Starting the Java application using ${JBOSS_CONTAINER_JAVA_RUN_MODULE}/run-java.sh $args..."
+    exec "${JBOSS_CONTAINER_JAVA_RUN_MODULE}/run-java.sh" $args ${JAVA_ARGS}
+fi
