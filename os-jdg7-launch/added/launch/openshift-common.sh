@@ -20,6 +20,7 @@ CONFIGURE_SCRIPTS=(
   $JBOSS_HOME/bin/launch/https.sh
   $JBOSS_HOME/bin/launch/json_logging.sh
   $JBOSS_HOME/bin/launch/security-domains.sh
+  $JBOSS_HOME/bin/launch/jboss_modules_system_pkgs.sh
   $JBOSS_HOME/bin/launch/infinispan-config.sh
   $JBOSS_HOME/bin/launch/management-realm.sh
   $JBOSS_HOME/bin/launch/access_log_valve.sh
