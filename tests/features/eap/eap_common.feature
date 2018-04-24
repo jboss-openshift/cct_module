@@ -128,7 +128,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
   Scenario: jboss.modules.system.pkgs is set to defaults when JBOSS_MODULES_SYSTEM_PKGS_APPEND env var is not set
     When container is ready
     Then container log should contain VM Arguments:
-     And available container log should contain -Djboss.modules.system.pkgs=org.jboss.logmanager,jdk.nashorn.api
+     And available container log should contain -Djboss.modules.system.pkgs=org.jboss.logmanager,jdk.nashorn.api,com.sun.crypto.provider
 
   @jboss-eap-7 @jboss-eap-6/eap64-openshift
   Scenario: jboss.modules.system.pkgs will contain default value and the value of JBOSS_MODULES_SYSTEM_PKGS_APPEND env var, when it is set
@@ -136,7 +136,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
       | variable                             | value           |
       | JBOSS_MODULES_SYSTEM_PKGS_APPEND     | org.foo.bar     |
     Then container log should contain VM Arguments:
-     And available container log should contain -Djboss.modules.system.pkgs=org.jboss.logmanager,jdk.nashorn.api,org.foo.bar
+     And available container log should contain -Djboss.modules.system.pkgs=org.jboss.logmanager,jdk.nashorn.api,com.sun.crypto.provider,org.foo.bar
 
   @jboss-eap-7 @jboss-eap-6/eap64-openshift @redhat-sso-7 @jboss-datavirt-6
   Scenario: check ownership when started as alternative UID
