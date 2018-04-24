@@ -1,4 +1,4 @@
-@jboss-eap-6/eap64-openshift @jboss-eap-7
+@jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-eap-7-tech-preview
 Feature: OpenShift EAP SSO tests
 
    Scenario: Check default keycloak config

@@ -1,4 +1,4 @@
-@jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7/sso71-openshift
+@jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7/sso71-openshift @jboss-eap-7-tech-preview
 @wip
 Feature: EAP Openshift resource adapters
 
