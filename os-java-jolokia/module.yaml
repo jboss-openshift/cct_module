@@ -55,6 +55,5 @@ execute:
 - script: install_as_root
 
 artifacts:
-#- name: jolokia-jvm-agent.jar
-- url: https://maven.repository.redhat.com/ga/org/jolokia/jolokia-jvm/1.5.0.redhat-1/jolokia-jvm-1.5.0.redhat-1-agent.jar
+- name: jolokia-jvm-1.5.0.redhat-1-agent.jar
   md5: d31c6b1525e6d2d24062ef26a9f639a8
