@@ -13,7 +13,7 @@ Feature: Openshift EAP basic tests
 
   Scenario: Check that the labels are correctly set
     Given image is built
-     Then the image should contain label com.redhat.component with value jboss-eap-6-eap64-openshift-docker
+     Then the image should contain label com.redhat.component with value jboss-eap-6-eap64-openshift-container
       And the image should contain label name with value jboss-eap-6/eap64-openshift
       And the image should contain label io.openshift.expose-services with value 8080:http
       And the image should contain label io.openshift.tags with value builder,javaee,eap,eap6
