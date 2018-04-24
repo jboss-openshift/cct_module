@@ -47,6 +47,31 @@ class Status(Enum):
     def __str__(self):
         return self.name
 
+    def __cmp__(self, other):
+        if type(other) is self.__class__:
+            return self.value - other.value
+        return NotImplemented
+
+    def __le__(self, other):
+        if type(other) is self.__class__:
+            return self.value <= other.value
+        return NotImplemented
+
+    def __lt__(self, other):
+        if type(other) is self.__class__:
+            return self.value < other.value
+        return NotImplemented
+
+    def __ge__(self, other):
+        if type(other) is self.__class__:
+            return self.value >= other.value
+        return NotImplemented
+
+    def __gt__(self, other):
+        if type(other) is self.__class__:
+            return self.value > other.value
+        return NotImplemented
+
 class Test(object):
     """
     An object which provides a query and evaluates the response.  A Probe may
