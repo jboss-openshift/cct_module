@@ -5,6 +5,6 @@ description: Legacy os-sso script package.
 execute:
 - script: configure.sh
 
-envs:
-    - name: "DEFAULT_ADMIN_USERNAME"
-      value: "eapadmin"
+modules:
+  install:
+  - name: os-eap-launch
