@@ -10,3 +10,6 @@ packages:
     install:
         - python-enum34
         - python-requests
+artifacts:
+    - path: txn-recovery-marker-jdbc-hibernate5-1.0.7.Final-redhat-00001.jar
+      md5: 0c28e70decec0900cf483f73d09edf25
