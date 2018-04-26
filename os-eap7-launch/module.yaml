@@ -29,9 +29,3 @@ envs:
     - name: "ENABLE_JSON_LOGGING"
       example: "true"
       description: Enable JSON-formatted logging
-
-packages:
-      repositories:
-          - jboss-os
-      install:
-          - hostname

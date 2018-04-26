@@ -5,8 +5,3 @@ description: Legacy os-eap-sso script package.
 execute:
 - script: configure.sh
   user: '185'
-packages:
-      repositories:
-          - jboss-os
-      install:
-          - hostname
