@@ -5,6 +5,7 @@ description: Legacy os-sso71 script package.
 
 modules:
   install:
+  - name: os-eap-launch
   - name: os-eap-migration
 
 execute:
@@ -16,8 +17,6 @@ run:
           - "/opt/eap/bin/openshift-launch.sh"
 
 envs:
-    - name: "DEFAULT_ADMIN_USERNAME"
-      value: "eapadmin"
     - name: "CLI_GRACEFUL_SHUTDOWN"
       example: "true"
       description: "If set to any non zero length value then the image will prevent shutdown with the TERM signal and will require execution of the shutdown command through jboss-cli."
