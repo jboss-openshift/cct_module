@@ -24,12 +24,6 @@ envs:
       example: "true"
       description: Enable JSON-formatted logging
 
-packages:
-      repositories:
-          - jboss-os
-      install:
-          - hostname
-
 run:
       user: 185
       cmd:
