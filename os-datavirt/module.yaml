@@ -11,12 +11,6 @@ execute:
 - script: configure.sh
   user: '185'
 
-packages:
-      repositories:
-          - jboss-os
-      install:
-          - hostname
-
 run:
       user: 185
       cmd:
