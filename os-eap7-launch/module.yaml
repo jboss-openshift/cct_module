@@ -5,6 +5,7 @@ description: Legacy os-eap7-launch script package.
 
 modules:
   install:
+  - name: os-eap-launch
   - name: os-eap-node-name
   - name: os-eap-migration
 

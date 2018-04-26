@@ -5,6 +5,7 @@ description: Legacy os-datavirt script package.
 
 modules:
   install:
+  - name: os-eap-launch
   - name: os-eap-migration
 
 execute:
