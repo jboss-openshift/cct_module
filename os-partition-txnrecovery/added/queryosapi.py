@@ -27,6 +27,7 @@ class QueryType(Enum):
     """
     Represents what could be queried.
     PODS: list of pods
+    PODS_LIVING: list of living pods
     LOG: log from particular pod
     """
 
@@ -79,9 +80,10 @@ class OpenShiftQuery():
         return OpenShiftQuery.__readFile(OpenShiftQuery.NAMESPACE_FILE_PATH)
 
     @staticmethod
-    def queryApi(urlSuffix):
-        request = urllib2.Request(OpenShiftQuery.API_URL + urlSuffix,
-            headers = {'Authorization': 'Bearer ' + OpenShiftQuery.getToken(), "Accept": 'application/json'})
+    def queryApi(urlSuffix, isPretty = False):
+        prettyPrintParam = '?pretty=true' if isPretty else ''
+        request = urllib2.Request(OpenShiftQuery.API_URL + urlSuffix + prettyPrintParam,
+            headers = {'Authorization': 'Bearer ' + OpenShiftQuery.getToken(), 'Accept': 'application/json'})
         logger.debug('query for: "%s"', request.get_full_url())
         try:
             return urllib2.urlopen(request, cafile = OpenShiftQuery.CERT_FILE_PATH).read()
