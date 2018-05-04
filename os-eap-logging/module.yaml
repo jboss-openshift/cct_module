@@ -9,5 +9,5 @@ execute:
 artifacts:
 - path: javax.json-1.0.4.jar
   md5: 569870f975deeeb6691fcb9bc02a9555
-- path: jboss-logmanager-ext-1.0.0.Alpha2-redhat-1.jar
-  md5: 7c743e35463db5f55f415dd666d705c5
+- url: jboss-logmanager-ext-1.0.0.Alpha5-redhat-1.jar
+  md5: 3c84f54725ea5657913cf6d1610798b0
