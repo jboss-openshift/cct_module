@@ -16,3 +16,6 @@ envs:
     - name: "ENABLE_ACCESS_LOG"
       example: "true"
       description: Enable the Access Log.
+    - name: "JGROUPS_ENCRYPT_PROTOCOL"
+      description: The JGroups protocol to use for encryption of the cluster traffic. Can be one of `SYM_ENCRYPT` (the default), or `ASYM_ENCRYPT`. If set to `SYM_ENCRYPT`, the definition of the JGroups `AUTH` protocol is optional, and can be performed by setting the **JGROUPS_CLUSTER_PASSWORD** environment variable. If set to `ASYM_ENCRYPT`, the definition of the JGroups `AUTH` protocol is **required**, and must be performed by setting the **JGROUPS_CLUSTER_PASSWORD** variable. The definition of the JGroups JCEKS keystore is **not** **expected**, when using the `ASYM_ENCRYPT` encryption protocol. A warning will be issued in this case, if such a keystore is defined.
+      example: "SYM_ENCRYPT"
