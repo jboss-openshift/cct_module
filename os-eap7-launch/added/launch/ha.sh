@@ -71,9 +71,9 @@ function configure_ha() {
 
   JBOSS_HA_ARGS="${JBOSS_HA_ARGS} -Djboss.node.name=${JBOSS_NODE_NAME}"
 
-  if [ -z "${JGROUPS_CLUSTER_PASSWORD}" ]; then
-      log_warning "No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD."
-      JGROUPS_AUTH="<!--WARNING: No password defined for JGroups cluster. AUTH protocol has been disabled. Please define JGROUPS_CLUSTER_PASSWORD. -->"
+  if [ -z "${JGROUPS_CLUSTER_PASSWORD}" -a "${JGROUPS_ENCRYPT_PROTOCOL}" == "SYM_ENCRYPT"]; then
+    log_warning "No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD."
+    JGROUPS_AUTH="<!--WARNING: No password defined for JGroups cluster. AUTH protocol has been disabled. Please define JGROUPS_CLUSTER_PASSWORD. -->"
   else
     JGROUPS_AUTH="\n\
                 <protocol type=\"AUTH\">\n\
