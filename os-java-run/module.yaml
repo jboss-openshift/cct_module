@@ -20,6 +20,9 @@ envs:
     - name: JAVA_INITIAL_MEM_RATIO
       description: This is used to calculate a default initial heap memory based the maximumal heap memory. The default is `100` which means 100% of the maximal heap is used for the initial heap size. You can skip this mechanism by setting this value to `0` in which case no `-Xms` option is added.
       example: "100"
+    - name: JAVA_OPTS_APPEND
+      description: Server startup options.
+      example: "-Dfoo=bar"
     - name: GC_MIN_HEAP_FREE_RATIO
       description: Minimum percentage of heap free after GC to avoid expansion.
       example: "20"

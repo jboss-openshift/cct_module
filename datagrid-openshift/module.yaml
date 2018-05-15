@@ -2,13 +2,9 @@ schema_version: 1
 name: datagrid-openshift
 version: '1.0'
 description: Legacy datagrid-openshift script package.
+modules:
+  install:
+  - name: os-java-run
 execute:
 - script: configure.sh
   user: '185'
-envs:
-    - name: GC_MAX_METASPACE_SIZE
-      description: The maximum metaspace size.
-      example: "256"
-    - name: "JAVA_OPTS_APPEND"
-      example: "-Dfoo=bar"
-      description: "Server startup options."
