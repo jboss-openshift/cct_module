@@ -2,14 +2,10 @@ schema_version: 1
 name: os-eap7-openshift
 version: '1.0'
 description: Legacy os-eap7-openshift script package.
+modules:
+  install:
+  - name: os-java-run
 execute:
 - script: prepare.sh
 - script: configure.sh
   user: '185'
-envs:
-    - name: GC_MAX_METASPACE_SIZE
-      description: The maximum metaspace size.
-      example: "256"
-    - name: "JAVA_OPTS_APPEND"
-      example: "-Dfoo=bar"
-      description: "Server startup options."

@@ -2,6 +2,9 @@ schema_version: 1
 name: dynamic-resources
 version: '1.0'
 description: Legacy dynamic-resources script package.
+modules:
+  install:
+  - name: os-java-run
 execute:
 - script: install.sh
 envs:
@@ -11,9 +14,3 @@ envs:
     - name: "CONTAINER_HEAP_PERCENT"
       example: 0.5
       description: Deprecated. See JAVA_MAX_MEM_RATIO.
-    - name: JAVA_MAX_MEM_RATIO
-      description: This is used to calculate a default maximal heap memory based on a containers restriction. If used in a container without any memory constraints for the container then this option has no effect. If there is a memory constraint then `-Xmx` is set to a ratio of the container available memory as set here. The default is `50` which means 50% of the available memory is used as an upper boundary. You can skip this mechanism by setting this value to `0` in which case no `-Xmx` option is added.
-      example: "50"
-    - name: JAVA_INITIAL_MEM_RATIO
-      description: This is used to calculate a default initial heap memory based the maximumal heap memory. The default is `100` which means 100% of the maximal heap is used for the initial heap size. You can skip this mechanism by setting this value to `0` in which case no `-Xms` option is added.
-      example: "100"
