@@ -60,8 +60,18 @@ function configure_access_log_valve() {
     fi
 }
 
+function version_compare () {
+    [ "$1" = "`echo -e \"$1\n$2\" | sort -V | head -n1`" ] && echo "older" || echo "newer"
+}
+
 function configure_access_log_handler() {
   if [ "${ENABLE_ACCESS_LOG^^}" == "TRUE" ]; then
-    sed -i "s|<!-- ##ACCESS_LOG_HANDLER## -->|<logger category=\"org.infinispan.rest.logging.RestAccessLoggingHandler\"><level name=\"TRACE\"/></logger>|" $CONFIG_FILE
+    IS_NEWER_OR_EQUAL_TO_7_2=$(version_compare "$JBOSS_DATAGRID_VERSION" "7.2")
+    # In this piece we check whether this is JDG and whether the version is >= 7.2
+    if [ ! -z $JBOSS_DATAGRID_VERSION ] && [ $IS_NEWER_OR_EQUAL_TO_7_2 = "newer" ]; then
+      sed -i "s|<!-- ##ACCESS_LOG_HANDLER## -->|<logger category=\"org.infinispan.REST_ACCESS_LOG\"><level name=\"TRACE\"/></logger>|" $CONFIG_FILE
+    else
+      sed -i "s|<!-- ##ACCESS_LOG_HANDLER## -->|<logger category=\"org.infinispan.rest.logging.RestAccessLoggingHandler\"><level name=\"TRACE\"/></logger>|" $CONFIG_FILE
+    fi
   fi
 }
