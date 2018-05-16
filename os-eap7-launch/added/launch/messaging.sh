@@ -157,15 +157,30 @@ function generate_object_config() {
 # $11 - queue names
 # $12 - topic names
 # $13 - ra tracking
+# $14 - resource counter, incremented for each broker, starting at 0
 function generate_resource_adapter() {
   log_info "Generating resource adapter configuration for service: $1 (${10})" >&2
   IFS=',' read -a queues <<< ${11}
   IFS=',' read -a topics <<< ${12}
+
+  local ra_id=""
+  # this preserves the expected behavior of the first RA, and doesn't append a number. Any additional RAs will have -count appended.
+  if [ "${14}" -eq "0" ]; then
+    ra_id="${9}"
+  else
+    ra_id="${9}-${14}"
+  fi
+
+  # if we don't declare a EJB_RESOURCE_ADAPTER_NAME, then just use the first one
+  if [ -z "${EJB_RESOURCE_ADAPTER_NAME}" ]; then
+    export EJB_RESOURCE_ADAPTER_NAME="${ra_id}"
+  fi
+
   case "${10}" in
     "amq")
       prefix=$8
       ra="
-                <resource-adapter id=\"$9\">
+                <resource-adapter id=\"${ra_id}\">
                     <archive>$9</archive>
                     <transaction-support>XATransaction</transaction-support>
                     <config-property name=\"UserName\">$3</config-property>
@@ -247,18 +262,16 @@ function inject_brokers() {
   IFS=',' read -a brokers <<< $MQ_SERVICE_PREFIX_MAPPING
 
   defaultJmsConnectionFactoryJndi="$DEFAULT_JMS_CONNECTION_FACTORY"
-
+  local ras=""
   AMQ=false
   if [ "${#brokers[@]}" -eq "0" ]; then
-    ras=""
     if [ -z "$defaultJmsConnectionFactoryJndi" ]; then
         defaultJmsConnectionFactoryJndi="java:jboss/DefaultJMSConnectionFactory"
     fi
   else
+    local counter=0
     for broker in ${brokers[@]}; do
-
-      log_info "Processing broker: $broker"
-
+      log_info "Processing broker($counter): $broker"
       service_name=${broker%=*}
       service=${service_name^^}
       service=${service//-/_}
@@ -327,17 +340,18 @@ function inject_brokers() {
           ;;
       esac
 
-      ra=$(generate_resource_adapter $service_name $jndi $username $password $protocol $host $port $prefix $archive $driver "$queues" "$topics" $ra_tracking)
+      ra=$(generate_resource_adapter ${service_name} ${jndi} ${username} ${password} ${protocol} ${host} ${port} ${prefix} ${archive} ${driver} "${queues}" "${topics}" "${ra_tracking}" ${counter})
       ras="$ras$ra\n"
 
       if [ -z "$defaultJmsConnectionFactoryJndi" ]; then
         defaultJmsConnectionFactoryJndi="$jndi"
       fi
-
+      # increment RA counter
+      counter=$((counter+1))
     done
     if [ -n "$ras" ] ; then
       AMQ=true
-      JBOSS_MESSAGING_ARGS="${JBOSS_MESSAGING_ARGS} -Dejb.resource-adapter-name=activemq-rar.rar"
+      JBOSS_MESSAGING_ARGS="${JBOSS_MESSAGING_ARGS} -Dejb.resource-adapter-name=${EJB_RESOURCE_ADAPTER_NAME:-activemq-rar.rar}"
     fi
   fi
 
