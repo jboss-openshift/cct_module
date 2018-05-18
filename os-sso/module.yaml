@@ -4,3 +4,7 @@ version: '1.0'
 description: Legacy os-sso script package.
 execute:
 - script: configure.sh
+
+modules:
+  install:
+  - name: os-eap-launch

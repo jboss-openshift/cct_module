@@ -5,3 +5,14 @@ description: Legacy os-eap-launch script package.
 execute:
 - script: configure.sh
   user: '185'
+packages:
+      repositories:
+          - jboss-os
+      install:
+          - hostname
+envs:
+    - name: "DEFAULT_ADMIN_USERNAME"
+      value: "eapadmin"
+    - name: "ENABLE_ACCESS_LOG"
+      example: "true"
+      description: Enable the Access Log.

@@ -5,3 +5,6 @@ description: Legacy os-eap-sso script package.
 execute:
 - script: configure.sh
   user: '185'
+modules:
+  install:
+  - name: os-eap-launch

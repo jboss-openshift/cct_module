@@ -5,3 +5,13 @@ description: Legacy os-eap-probes script package.
 execute:
 - script: configure.sh
   user: '185'
+packages:
+      repositories:
+          - jboss-os
+      install:
+          - python-enum34
+          - python-requests
+envs:
+    - name: "PROBE_DISABLE_BOOT_ERRORS_CHECK"
+      example: "true"
+      description: Disable the boot errors check in the probes.
