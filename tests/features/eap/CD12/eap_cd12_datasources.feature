@@ -1,4 +1,4 @@
-@jboss-eap-7-tech-preview/eap-cd-openshift
+@jboss-eap-7/eap-cd-openshift
 Feature: EAP Openshift datasources
   Scenario: check mysql datasource
     Given XML namespaces
@@ -248,7 +248,7 @@ Feature: EAP Openshift datasources
       | DB_PASSWORD                   | password           |
       | EAP_APP_MONGODB_SERVICE_HOST  | 10.1.1.1           |
       | EAP_APP_MONGODB_SERVICE_PORT  | 27017              |
-    Then container log should contain Running jboss-eap-7-tech-preview/eap-cd-openshift
+    Then container log should contain Running jboss-eap-7/eap-cd-openshift
      And available container log should not contain There is a problem with the DB_SERVICE_PREFIX_MAPPING environment variable
 
   Scenario: Test database type is extracted properly even when name contains a dash (e.g. "eap-app")

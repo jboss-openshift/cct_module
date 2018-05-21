@@ -9,14 +9,6 @@ Feature: Openshift common tests
        | path                    | value       |
        | /Config/ExposedPorts    | 8778/tcp    |
 
-  # CLOUD-1017: Option to enable script debugging
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
-  Scenario: Check that script debugging (set -x) can be enabled
-    When container is started with env
-       | variable     | value |
-       | SCRIPT_DEBUG | true  |
-    Then container log should contain + echo 'Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed'
-
   # CLOUD-427: we need to ensure jboss.node.name doesn't go beyond 23 chars
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check that long node names are truncated to 23 characters
@@ -31,6 +23,16 @@ Feature: Openshift common tests
        | variable  | value                      |
        | NODE_NAME | abcdefghijk                |
     Then container log should contain jboss.node.name = abcdefghijk
+
+    # CLOUD-1017: Option to enable script debugging
+# XXX fixme, commented out to test jenkins
+#  @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @redhat-sso-7
+#  Scenario: Check that script debugging (set -x) can be enabled
+#    When container is started with env
+#       | variable     | value |
+#       | SCRIPT_DEBUG | true  |
+#    Then container log should contain + echo 'Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed'
+
 
   # https://issues.jboss.org/browse/CLOUD-912
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6
