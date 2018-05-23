@@ -5,7 +5,7 @@
 #  1) rewrite those tests for JDG 7.1 only
 #  2) remove them completely
 
-#@jboss-datagrid-6 @jboss-datagrid-7 @wip
+#@jboss-datagrid-6 @jboss-datagrid-7
 #Feature: Check correct variable expansion used
 #
 #  Scenario: Set HTTPS_NAME to null
