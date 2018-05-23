@@ -45,7 +45,7 @@ proxy_options() {
     noProxy="${noProxy//,/|}" # replace separator
     noProxy="${noProxy//|./|*.}" # replace domain with leading . with *.
     noProxy="${noProxy/#./*.}" # same as previous, but first domain in list (i.e. no preceding separator)
-    ret="$ret -Dhttp.nonProxyHosts=\"$noProxy\""
+    ret="$ret -Dhttp.nonProxyHosts=$noProxy"
   fi
   echo "$ret"
 }
