@@ -38,7 +38,7 @@ function configure_https() {
                     </ssl>\n\
                 </server-identities>"
 
-    https_connector="<https-listener name=\"https\" socket-binding=\"https\" security-realm=\"ApplicationRealm\"/>"
+    https_connector="<https-listener name=\"https\" socket-binding=\"https\" security-realm=\"ApplicationRealm\" proxy-address-forwarding=\"true\"/>"
   elif [ -n "${HTTPS_PASSWORD}" -o -n "${HTTPS_KEYSTORE_DIR}" -o -n "${HTTPS_KEYSTORE}" ]; then
     log_warning "Partial HTTPS configuration, the https connector WILL NOT be configured."
   fi

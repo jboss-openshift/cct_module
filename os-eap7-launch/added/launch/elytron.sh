@@ -51,7 +51,7 @@ function configure_https() {
         </server-ssl-contexts>\n\
     </tls>"
 
-    https_connector="<https-listener name=\"https\" socket-binding=\"https\" ssl-context=\"LocalhostSslContext\"/>"
+    https_connector="<https-listener name=\"https\" socket-binding=\"https\" ssl-context=\"LocalhostSslContext\" proxy-address-forwarding=\"true\"/>"
   elif [ -n "${HTTPS_PASSWORD}" -o -n "${HTTPS_KEYSTORE_DIR}" -o -n "${HTTPS_KEYSTORE}" -o -n "${HTTPS_KEYSTORE_TYPE}" ]; then
     echo "WARNING! Partial HTTPS configuration, the https connector WILL NOT be configured."
   fi
