@@ -1,241 +1,204 @@
+source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
+[ "${SCRIPT_DEBUG}" = "true" ] && DEBUG_QUERY_API_PARAM="-l debug"
+
+# parameters
+# - needle to search in array
+# - array passed as: "${ARRAY_VAR[@]}"
+function arrContains() {
+  local element match="$1"
+  shift
+  for element; do
+    [[ "$element" == "$match" ]] && return 0
+  done
+  return 1
+}
+
 # parameters
 # - base directory
-# - lock timeout
 function partitionPV() {
-  LOCK_DIR="$1"
-  LOCK_TIMEOUT="${2:-30}"
+  local podsDir="$1"
+  local applicationPodDir
 
-  mkdir -p "${LOCK_DIR}"
+  mkdir -p "${podsDir}"
 
-  LOCK_FD=200
-  WAITING_FD=201
+  init_pod_name
+  local applicationPodDir="${podsDir}/${POD_NAME}"
 
-  COUNT=1
+  local waitCounter=0
+  # 2) while any file matching, sleep
+  while true; do
+    local isRecoveryInProgress=false
+    # is there an existing RECOVERY descriptor that means a recovery is in progress
+    find "${podsDir}" -maxdepth 1 -type f -name "${POD_NAME}-RECOVERY-*" 2>/dev/null | grep -q .
+    [ $? -eq 0 ] && isRecoveryInProgress=true
 
-  while : ; do
-    INSTANCE_DIR="${LOCK_DIR}/split-$COUNT"
-    mkdir -p "${INSTANCE_DIR}"
+    # we are free to start the app container
+    if ! $isRecoveryInProgress; then
+      break
+    fi
 
-    echo "Attempting to obtain lock for directory: ($INSTANCE_DIR)"
+    if $isRecoveryInProgress; then
+      echo "Waiting to start pod ${POD_NAME} as recovery process '$(echo ${podsDir}/${POD_NAME}-RECOVERY-*)' is currently cleaning data directory."
+    fi
 
-    TERMINATING_FILE="${INSTANCE_DIR}/terminating"
-    RUNNING_FILE="${INSTANCE_DIR}/running"
-    (
-      flock -n $WAITING_FD
-      if [ $? -eq 0 ]; then
-        # Nobody waiting, try to grab the lock
+    sleep 1
+    echo "`date`: waiting for recovery process to clean the environment for the pod to start"
+  done
 
-        flock -n $LOCK_FD
-        LOCK_STATUS=$?
-        if [ $LOCK_STATUS -ne 0 ] ; then
-          # Second attempt with a potential wait period
-          TERMINATING=$(cat "${TERMINATING_FILE}" 2>/dev/null)
-          if [ -z "$TERMINATING" ] ; then
-            # Not terminating, grab the lock without waiting
-            flock -n $LOCK_FD
-          else
-            # Terminating, grab the lock with timeout
-            echo "Existing server instance is terminating, waiting to acquire the lock"
-            flock -w $LOCK_TIMEOUT $LOCK_FD
-          fi
-          LOCK_STATUS=$?
-        fi
-        if [ $LOCK_STATUS -eq 0 ] ; then
-          echo "Successfully locked directory: ($INSTANCE_DIR)"
+  # 3) create /pods/<applicationPodName>
+  SERVER_DATA_DIR="${applicationPodDir}/serverData"
+  mkdir -p "${SERVER_DATA_DIR}"
 
-          > "$TERMINATING_FILE"
-          echo "$HOSTNAME" > "$RUNNING_FILE"
-          flock -u $WAITING_FD
+  if [ ! -f "${SERVER_DATA_DIR}/../data_initialized" ]; then
+    init_data_dir ${SERVER_DATA_DIR}
+    touch "${SERVER_DATA_DIR}/../data_initialized"
+  fi
 
-          SERVER_DATA_DIR="${INSTANCE_DIR}/serverData"
-          mkdir -p "${SERVER_DATA_DIR}"
+  # 4) launch EAP with node name as pod name
+  NODE_NAME="${POD_NAME}" runServer "${SERVER_DATA_DIR}" &
 
-          if [ ! -f "${SERVER_DATA_DIR}/../data_initialized" ]; then
-            init_data_dir ${SERVER_DATA_DIR}
-            touch "${SERVER_DATA_DIR}/../data_initialized"
-          fi
+  PID=$!
 
-          runServer "${SERVER_DATA_DIR}" "${COUNT}" &
+  trap "echo Received TERM of pid ${PID} of pod name ${POD_NAME}; kill -TERM $PID" TERM
+
+  wait $PID 2>/dev/null
+  STATUS=$?
+  trap - TERM
+  wait $PID 2>/dev/null
+
+  echo "Server terminated with status $STATUS ($(kill -l $STATUS 2>/dev/null))"
+
+  if [ "$STATUS" -eq 255 ] ; then
+    echo "Server returned 255, changing to 254"
+    STATUS=254
+  fi
+
+  exit $STATUS
+}
+
+
+# parameters
+# - base directory
+# - migration pause between cycles
+function migratePV() {
+  local podsDir="$1"
+  local applicationPodDir
+  MIGRATION_PAUSE="${2:-30}"
+  MIGRATED=false
+
+  init_pod_name
+  local recoveryPodName="${POD_NAME}"
+
+  while true ; do
+
+    # 1) Periodically, for each /pods/<applicationPodName>
+    for applicationPodDir in "${podsDir}"/*; do
+      # check if the found file is type of directory, if not directory move to the next item
+      [ ! -d "$applicationPodDir" ] && continue
+
+      # 1.a) create /pods/<applicationPodName>-RECOVERY-<recoveryPodName>
+      local applicationPodName="$(basename ${applicationPodDir})"
+      touch "${podsDir}/${applicationPodName}-RECOVERY-${recoveryPodName}"
+      STATUS=42 # expecting there could be  error on getting living pods
+
+      # 1.a.i) if <applicationPodName> is not in the cluster
+      echo "examining existence of living pod for directory: '${applicationPodDir}'"
+      unset LIVING_PODS
+      LIVING_PODS=($(python ${JBOSS_HOME}/bin/queryapi/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
+      [ $? -ne 0 ] && echo "ERROR: Can't get list of living pods" && continue
+      STATUS=-1 # here we have data about living pods and the recovery marker can be removed if the pod is living
+      if ! arrContains ${applicationPodName} "${LIVING_PODS[@]}"; then
+
+        (
+          # 1.a.ii) run recovery until empty (including orphan checks and empty object store hierarchy deletion)
+          SERVER_DATA_DIR="${applicationPodDir}/serverData"
+          JBOSS_NODE_NAME="$applicationPodName" runMigration "${SERVER_DATA_DIR}" &
 
           PID=$!
 
-          trap "echo Received TERM ; echo \"$HOSTNAME\" > \"$TERMINATING_FILE\" ; kill -TERM $PID" TERM
+          trap "echo Received TERM ; kill -TERM $PID" TERM
 
           wait $PID 2>/dev/null
           STATUS=$?
           trap - TERM
           wait $PID 2>/dev/null
 
-          > "${RUNNING_FILE}"
-
-          echo "Server terminated with status $STATUS ($(kill -l $STATUS 2>/dev/null))"
+          echo "Migration terminated with status $STATUS ($(kill -l $STATUS))"
 
           if [ "$STATUS" -eq 255 ] ; then
             echo "Server returned 255, changing to 254"
             STATUS=254
           fi
-
-          # If not TERM then update the terminating file to force a check
-          if [ "$STATUS" -ne 143 ] ; then
-            echo "$HOSTNAME" > "$TERMINATING_FILE"
-          fi
-
-          echo "Releasing lock: ($INSTANCE_DIR)"
           exit $STATUS
-        fi
-      else
-        echo "Failed to obtain lock for directory: ($INSTANCE_DIR)"
-      fi
-
-      exit 255
-    ) 200> "${INSTANCE_DIR}/lock" 201> "${INSTANCE_DIR}/waiting" &
-
-    PID=$!
-
-    trap "kill -TERM $PID" TERM
-
-    wait $PID 2>/dev/null
-    STATUS=$?
-    trap - TERM
-    wait $PID 2>/dev/null
-
-    if [ $STATUS -ne 255 ] ; then
-      break;
-    fi
-    COUNT=$(expr $COUNT + 1)
-  done
-}
-
-
-# parameters
-# - base directory
-# - migration timeout
-# - migration pause between cycles
-function migratePV() {
-  LOCK_DIR="$1"
-  MIGRATION_TIMEOUT="${2:-30}"
-  MIGRATION_PAUSE="${3:-30}"
-  MIGRATED=false
-
-  mkdir -p "${LOCK_DIR}"
-
-  LOCK_FD=200
-  MIGRATING_FD=201
-
-  COUNT=1
-
-  while : ; do
-    INSTANCE_DIR="${LOCK_DIR}/split-$COUNT"
-    if [ -d "$INSTANCE_DIR" ] ; then
-      mkdir -p "${INSTANCE_DIR}"
-
-      TERMINATING_FILE="${INSTANCE_DIR}/terminating"
-      RUNNING_FILE="${INSTANCE_DIR}/running"
-
-      RUNNING=$(cat "${RUNNING_FILE}" 2>/dev/null)
-      if [ -n "$RUNNING" ] ; then
-        (
-          flock -n $LOCK_FD
-          if [ $? -eq 0 ] ; then
-            RUNNING=$(cat "${RUNNING_FILE}" 2>/dev/null)
-            if [ -n "$RUNNING" ] ; then
-              echo "Process has terminated abnorminally, forcing a termination check"
-              echo "FORCED" > "${TERMINATING_FILE}"
-              > "${RUNNING_FILE}"
-            fi
-          fi
-        ) 200> "${INSTANCE_DIR}/lock"
-      fi
-
-      TERMINATING=$(cat "${TERMINATING_FILE}" 2>/dev/null)
-      if [ -n "$TERMINATING" ] ; then
-        echo "Attempting to migrate directory: ($INSTANCE_DIR)"
-
-        (
-          flock -n $MIGRATING_FD
-          if [ $? -eq 0 ]; then
-            TERMINATING_TIME=$(stat -c "%Y" "${TERMINATING_FILE}")
-            CURRENT_TIME=$(date +"%s")
-            TIMEOUT=$(expr $MIGRATION_TIMEOUT + $TERMINATING_TIME - $CURRENT_TIME)
-            echo "Waiting for grace period to expire, remaining timeout is ${TIMEOUT} seconds"
-            while : ; do
-              TERMINATING=$(cat "${TERMINATING_FILE}" 2>/dev/null)
-              if [ -z "$TERMINATING" ] ; then
-                echo "Migration cancelled, no longer terminating in directory: ($INSTANCE_DIR)"
-                break
-              else
-                TIMEOUT=$(expr $TIMEOUT - 1)
-                if [ "$TIMEOUT" -gt 0 ] ; then
-                  sleep 1
-                else
-                  break
-                fi
-              fi
-            done
-
-            if [ "$TIMEOUT" -le 0 ] ; then
-              echo "Attempting to obtain lock for directory: ($INSTANCE_DIR)"
-
-              flock -n $LOCK_FD
-              LOCK_STATUS=$?
-
-              if [ $LOCK_STATUS -eq 0 ] ; then
-                echo "Successfully locked directory: ($INSTANCE_DIR)"
-                MIGRATED=true
-
-                flock -u $MIGRATING_FD
-
-                SERVER_DATA_DIR="${INSTANCE_DIR}/serverData"
-                MIGRATION_DIR="${SERVER_DATA_DIR}/migration"
-                mkdir -p "${MIGRATION_DIR}"
-                cd "${MIGRATION_DIR}"
-
-                runMigration "${SERVER_DATA_DIR}" "${COUNT}" &
-
-                PID=$!
-
-                trap "echo Received TERM ; echo \"$HOSTNAME\" > \"$TERMINATING_FILE\" ; kill -TERM $PID" TERM
-
-                wait $PID 2>/dev/null
-                STATUS=$?
-                trap - TERM
-                wait $PID 2>/dev/null
-
-                echo "Migration terminated with status $STATUS ($(kill -l $STATUS))"
-
-                if [ "$STATUS" -eq 0 ] ; then
-                  > "$TERMINATING_FILE"
-                elif [ "$STATUS" -eq 255 ] ; then
-                  echo "Server returned 255, changing to 254"
-                  STATUS=254
-                fi
-
-                echo "Releasing lock: ($INSTANCE_DIR)"
-                exit $STATUS
-              fi
-            fi
-          fi
-
-          exit 255
-        ) 200> "${INSTANCE_DIR}/lock" 201> "${INSTANCE_DIR}/migrating" &
+        ) &
 
         PID=$!
 
         trap "kill -TERM $PID" TERM
 
         wait $PID 2>/dev/null
+        STATUS=$?
         trap - TERM
         wait $PID 2>/dev/null
+
+        if [ $STATUS -eq 0 ]; then
+          # 1.a.iii) Delete /pods/<applicationPodName> when recovery was succesful
+          echo "`date`: Migration succesfully finished for application directory ${applicationPodDir} thus removing it by recovery pod ${recoveryPodName}"
+          rm -rf "${applicationPodDir}"
+        fi
       fi
-      COUNT=$(expr $COUNT + 1)
-    else
-      if [ "$MIGRATED" = "false" ] ; then
-        echo "Finished Migration Check cycle, pausing for ${MIGRATION_PAUSE} seconds before resuming"
-        COUNT=1
-        sleep "${MIGRATION_PAUSE}"
-      else
-        MIGRATED=false
+
+      # 1.b.) Deleting the recovery marker
+      if [ $STATUS -eq 0 ] || [ $STATUS -eq -1 ]; then
+        # STATUS is 0: we are free from in-doubt transactions, -1: there is a running pod of the same name (do the recovery on his own if needed)
+        rm -f "${podsDir}/${applicationPodName}-RECOVERY-${recoveryPodName}"
       fi
-    fi
+
+      # 2) Periodically, for files /pods/<applicationPodName>-RECOVERY-<recoveryPodName>, for failed recovery pods
+      for recoveryPodFilePathToCheck in "${podsDir}/"*-RECOVERY-*; do
+        local recoveryPodFileToCheck="$(basename ${recoveryPodFilePathToCheck})"
+        local recoveryPodNameToCheck=${recoveryPodFileToCheck#*RECOVERY-}
+
+        unset LIVING_PODS
+        LIVING_PODS=($(python ${JBOSS_HOME}/bin/queryapi/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
+        [ $? -ne 0 ] && echo "ERROR: Can't get list of living pods" && continue
+
+        if ! arrContains ${recoveryPodNameToCheck} "${LIVING_PODS[@]}"; then
+          # recovery pod is dead, garbage collecting
+          rm -f "${recoveryPodFilePathToCheck}"
+        fi
+      done
+
+    done
+
+    echo "`date`: Finished Migration Check cycle, pausing for ${MIGRATION_PAUSE} seconds before resuming"
+    sleep "${MIGRATION_PAUSE}"
   done
+}
+
+# parameters
+# - pod name (optional)
+function probePodLog() {
+  init_pod_name
+  local podNameToProbe=${1:-$POD_NAME}
+
+  local logOutput=$(python ${JBOSS_HOME}/bin/queryapi/query.py -q log ${podNameToProbe})
+  local probeStatus=$?
+
+  if [ $probeStatus -ne 0 ]; then
+    echo "Cannot contact OpenShift API to get log for pod ${POD_NAME}"
+    return 1
+  fi
+
+  local isPeriodicRecoveryError=false
+  local patternToCheck="ERROR.*Periodic Recovery"
+  while read line; do
+    [[ $line =~ $patternToCheck ]] && isPeriodicRecoveryError=true && break
+  done <<< "$logOutput"
+  if $isPeriodicRecoveryError; then # ERROR string was found in the log output
+    echo "Server at ${NAMESPACE}/${POD_NAME} started with errors"
+    return 1
+  fi
+
+  return 0
 }

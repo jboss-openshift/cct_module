@@ -13,8 +13,6 @@ function clean_shutdown() {
 
 function runServer() {
   local instanceDir=$1
-  local count=$2
-  export NODE_NAME="${NODE_NAME:-node}-${count}"
 
   source $JBOSS_HOME/bin/launch/configure.sh
 
@@ -45,7 +43,7 @@ if [ "${SPLIT_DATA^^}" = "TRUE" ]; then
 
   DATA_DIR="${JBOSS_HOME}/standalone/partitioned_data"
 
-  partitionPV "${DATA_DIR}" "${SPLIT_LOCK_TIMEOUT:-30}"
+  partitionPV "${DATA_DIR}"
 else
   source $JBOSS_HOME/bin/launch/configure.sh
 
