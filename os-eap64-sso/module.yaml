@@ -7,9 +7,9 @@ execute:
   user: '185'
 
 artifacts:
-- path: rh-sso-7.1.0-eap6-adapter.zip
-  description: "Artifact is available on Customer Portal: https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=44841&product=core.service.rhsso&version=7.0&downloadType=distributions"
-  sha256: 27507943c1e43b630d68b725f5adb62a02292add95b31f4ce46507a7f7c21ee8
-- path: rh-sso-7.1.2-saml-eap6-adapter.zip
-  description: "Artifact is available on Customer Portal: https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=44811&product=core.service.rhsso&version=7.0&downloadType=distributions"
-  sha256: 65002ff52457d15faa7c38008e886e43c0a40bfbef3b0875b9e2098f4140355d
+- path: rh-sso-7.2.2-eap6-adapter.zip
+  description: "The artifact is available on the Customer Portal: https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=57851&product=core.service.rhsso&version=7.2&downloadType=securityPatches"
+  sha256: 739f2e92615bfd874c4b2c7fd8da2d5d4d8560bd853d459f9b9fcb131becb8f9
+- path: rh-sso-7.2.2-saml-eap6-adapter.zip
+  description: "The artifact is available on the Customer Portal: https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=57811&product=core.service.rhsso&version=7.2&downloadType=securityPatches"
+  sha256: 27ace37d175ef3023cd5aa0dcdff8e54c86fc803fc8ef38d1ab7240cb006628a
