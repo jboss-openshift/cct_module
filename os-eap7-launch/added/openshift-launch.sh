@@ -22,6 +22,7 @@ function runServer() {
   log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
   trap "clean_shutdown" TERM
+  trap "clean_shutdown" INT
 
   if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
     trap "" TERM
@@ -54,6 +55,7 @@ else
   log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
   trap "clean_shutdown" TERM
+  trap "clean_shutdown" INT
 
   if [ -n "$CLI_GRACEFUL_SHUTDOWN" ] ; then
     trap "" TERM
