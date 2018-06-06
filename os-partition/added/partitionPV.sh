@@ -114,7 +114,7 @@ function migratePV() {
       # 1.a.i) if <applicationPodName> is not in the cluster
       echo "examining existence of living pod for directory: '${applicationPodDir}'"
       unset LIVING_PODS
-      LIVING_PODS=($(${BASH_SOURCE[0]}/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
+      LIVING_PODS=($($(dirname ${BASH_SOURCE[0]})/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
       [ $? -ne 0 ] && echo "ERROR: Can't get list of living pods" && continue
       STATUS=-1 # here we have data about living pods and the recovery marker can be removed if the pod is living
       if ! arrContains ${applicationPodName} "${LIVING_PODS[@]}"; then
@@ -174,7 +174,7 @@ function migratePV() {
         local recoveryPodNameToCheck=${recoveryPodFileToCheck#*RECOVERY-}
 
         unset LIVING_PODS
-        LIVING_PODS=($(${BASH_SOURCE[0]}/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
+        LIVING_PODS=($($(dirname ${BASH_SOURCE[0]})/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
         [ $? -ne 0 ] && echo "ERROR: Can't get list of living pods" && continue
 
         if ! arrContains ${recoveryPodNameToCheck} "${LIVING_PODS[@]}"; then
@@ -196,7 +196,7 @@ function probePodLog() {
   init_pod_name
   local podNameToProbe=${1:-$POD_NAME}
 
-  local logOutput=$(${BASH_SOURCE[0]}/query.py -q log ${podNameToProbe})
+  local logOutput=$($(dirname ${BASH_SOURCE[0]})/query.py -q log ${podNameToProbe})
   local probeStatus=$?
 
   if [ $probeStatus -ne 0 ]; then
