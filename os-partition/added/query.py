@@ -1,3 +1,4 @@
+#!/bin/python
 """
 Copyright 2018 Red Hat, Inc.
 

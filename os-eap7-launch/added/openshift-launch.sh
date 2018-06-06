@@ -7,7 +7,7 @@ source $JBOSS_HOME/bin/launch/logging.sh
 # TERM signal handler
 function clean_shutdown() {
   log_error "*** JBossAS wrapper process ($$) received TERM signal ***"
-  $JBOSS_HOME/bin/jboss-cli.sh -c ":shutdown(timeout=60)"
+  $JBOSS_HOME/bin/jboss-cli.sh -c "shutdown --timeout=60"
   wait $!
 }
 

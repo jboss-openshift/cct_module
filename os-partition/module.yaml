@@ -3,6 +3,4 @@ name: os-partition
 version: '1.0'
 description: Lock-free os-partition script package.
 execute:
-- script: configure.sh
-  user: '185'
 - script: install_as_root.sh

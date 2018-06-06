@@ -1,4 +1,3 @@
-source ${JBOSS_HOME}/bin/launch/openshift-node-name.sh
 [ "${SCRIPT_DEBUG}" = "true" ] && DEBUG_QUERY_API_PARAM="-l debug"
 
 # parameters
@@ -55,7 +54,9 @@ function partitionPV() {
   fi
 
   # 4) launch EAP with node name as pod name
-  NODE_NAME="${POD_NAME}" runServer "${SERVER_DATA_DIR}" &
+  #NODE_NAME="${POD_NAME}" runServer "${SERVER_DATA_DIR}" &
+  # node name cannot be longer than 23 chars
+  runServer "${SERVER_DATA_DIR}" &
 
   PID=$!
 
@@ -76,6 +77,15 @@ function partitionPV() {
   exit $STATUS
 }
 
+function init_pod_name() {
+  # when POD_NAME is non-zero length using that given name
+
+  # docker sets up container_uuid
+  [ -z "${POD_NAME}" ] && POD_NAME="${container_uuid}"
+  # openshift sets up the node id as host name
+  [ -z "${POD_NAME}" ] && POD_NAME="${HOSTNAME}"
+  # TODO: fail when pod name is not set here?
+}
 
 # parameters
 # - base directory
@@ -104,7 +114,7 @@ function migratePV() {
       # 1.a.i) if <applicationPodName> is not in the cluster
       echo "examining existence of living pod for directory: '${applicationPodDir}'"
       unset LIVING_PODS
-      LIVING_PODS=($(python ${JBOSS_HOME}/bin/queryapi/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
+      LIVING_PODS=($(${BASH_SOURCE[0]}/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
       [ $? -ne 0 ] && echo "ERROR: Can't get list of living pods" && continue
       STATUS=-1 # here we have data about living pods and the recovery marker can be removed if the pod is living
       if ! arrContains ${applicationPodName} "${LIVING_PODS[@]}"; then
@@ -112,7 +122,11 @@ function migratePV() {
         (
           # 1.a.ii) run recovery until empty (including orphan checks and empty object store hierarchy deletion)
           SERVER_DATA_DIR="${applicationPodDir}/serverData"
-          JBOSS_NODE_NAME="$applicationPodName" runMigration "${SERVER_DATA_DIR}" &
+          JBOSS_NODE_NAME="$applicationPodName"
+          if [ ${#JBOSS_NODE_NAME} -gt 23 ]; then
+            JBOSS_NODE_NAME=${JBOSS_NODE_NAME: -23}
+          fi
+          runMigration "${SERVER_DATA_DIR}" &
 
           PID=$!
 
@@ -160,7 +174,7 @@ function migratePV() {
         local recoveryPodNameToCheck=${recoveryPodFileToCheck#*RECOVERY-}
 
         unset LIVING_PODS
-        LIVING_PODS=($(python ${JBOSS_HOME}/bin/queryapi/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
+        LIVING_PODS=($(${BASH_SOURCE[0]}/query.py -q pods_living -f list_space ${DEBUG_QUERY_API_PARAM}))
         [ $? -ne 0 ] && echo "ERROR: Can't get list of living pods" && continue
 
         if ! arrContains ${recoveryPodNameToCheck} "${LIVING_PODS[@]}"; then
@@ -182,7 +196,7 @@ function probePodLog() {
   init_pod_name
   local podNameToProbe=${1:-$POD_NAME}
 
-  local logOutput=$(python ${JBOSS_HOME}/bin/queryapi/query.py -q log ${podNameToProbe})
+  local logOutput=$(${BASH_SOURCE[0]}/query.py -q log ${podNameToProbe})
   local probeStatus=$?
 
   if [ $probeStatus -ne 0 ]; then
