@@ -131,7 +131,7 @@ function configure_server_identities() {
     log_info "Using SSL_KEYSTORE_PASSWORD for the HotRod SSL keystore"
     keystore_password="$SSL_KEYSTORE_PASSWORD"
   elif [ -n "$HTTPS_PASSWORD" ] ; then
-    lof_info "Using HTTPS_PASSWORD for the HotRod SSL keystore"
+    log_info "Using HTTPS_PASSWORD for the HotRod SSL keystore"
     keystore_password="$HTTPS_PASSWORD"
   fi
 
