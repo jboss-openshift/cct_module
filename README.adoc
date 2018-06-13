@@ -1,4 +1,4 @@
-= Cloud Enablement CCT module
+= Cloud Enablement module
 
 This repository serves as a temporary public link:https://github.com/concrt/concreate[Concreate] module for building JBoss Openshift container images. This repository is an enhanced copy of shell scripts used to build JBoss images for OpenShift.
 
@@ -6,7 +6,7 @@ This repository serves as a temporary public link:https://github.com/concrt/conc
 
 === Why the name?
 
-*cct* (container configuration tool) was the name of a precursor tool to *concreate*. This module bundle was originally created for use with *cct* but has outlived it.
+*cct* (container configuration tool) was the name of a precursor tool to *concreate*. This module bundle was originally created for use with *cct*, hence *cct_module*, but has outlived it.
 
 === Temporary?
 
