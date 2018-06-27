@@ -208,6 +208,12 @@ function configure_infinispan_core() {
     fi
   fi
 
+  # If a cache with the name "default" exists, it must be the DEFAULT_CACHE, hence make sure it's first in the list
+  local filtered_cache_names=$(echo $CACHE_NAMES | sed -e 's/\bdefault\b/,/g' -e 's/,,//g')
+  if [ "$CACHE_NAMES" != "$filtered_cache_names" ]; then
+    CACHE_NAMES="default,$filtered_cache_names"
+  fi
+
   # this will configure variables for each of the specified datavirt caches
   define_datavirt_caches
 
