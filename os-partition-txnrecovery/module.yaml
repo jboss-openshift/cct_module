@@ -1,0 +1,12 @@
+schema_version: 1
+name: os-partition-txnrecovery
+version: '1.0'
+description: Lock-free os-partition script package.
+execute:
+- script: install_as_root.sh
+packages:
+    repositories:
+        - jboss-os
+    install:
+        - python-enum34
+        - python-requests

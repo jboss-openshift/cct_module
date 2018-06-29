@@ -7,9 +7,6 @@ source ${JBOSS_HOME}/bin/launch/openshift-common.sh
 
 function runServer() {
   local instanceDir=$1
-  local count=$2
-
-  export NODE_NAME="${NODE_NAME:-node}-${count}"
 
   source $JBOSS_HOME/bin/launch/configure.sh
 

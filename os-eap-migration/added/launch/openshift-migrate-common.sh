@@ -7,9 +7,11 @@ source /opt/partition/partitionPV.sh
 
 function runMigration() {
   local instanceDir=$1
-  local count=$2
 
-  export NODE_NAME="${NODE_NAME:-node}-${count}"
+  # if count provided the node_name should be constructed
+  local count=$2
+  [ "x$count" != "x" ] && export NODE_NAME="${NODE_NAME:-node}-${count}"
+
   cp -f ${STANDALONE_XML_COPY} ${STANDALONE_XML}
 
   source $JBOSS_HOME/bin/launch/configure.sh
@@ -29,9 +31,11 @@ function runMigration() {
   local success=false
   local message="Finished, migration pod has been terminated"
   ${JBOSS_HOME}/bin/readinessProbe.sh
+  local probeStatus=$?
 
-  if [ $? -eq 0 ] ; then
+  if [ $probeStatus -eq 0 ] ; then
     echo "$(date): Server started, checking for transactions"
+
     local startTime=$(date +'%s')
     local endTime=$((startTime + ${RECOVERY_TIMEOUT} + 1))
 
@@ -43,13 +47,23 @@ function runMigration() {
       local recoveryClass="com.arjuna.ats.arjuna.tools.RecoveryMonitor"
       recoveryJar=$(find "${JBOSS_HOME}" -name \*.jar | xargs grep -l "${recoveryClass}")
       if [ -n "${recoveryJar}" ] ; then
-        echo "$(date): Executing synchronous recovery scan"
+        echo "$(date): Executing synchronous recovery scan for a first time"
         java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}"
         echo "$(date): Executing synchronous recovery scan for a second time"
         java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}"
+        echo "$(date): Synchronous recovery scans finished for the first and the second time"
       fi
     fi
+  fi
 
+  # -- checking if the pod log is clean from errors (only if function of the particular name exists, provided by the os-partition module)
+  if [ $probeStatus -eq 0 ] && [ "$(type -t probePodLogForRecoveryErrors)" = 'function' ]; then
+    probePodLogForRecoveryErrors
+    probeStatus=$?
+    [ $probeStatus -ne 0 ] && echo "The migration container log contains periodic recovery errors, check it for details."
+  fi
+
+  if [ $probeStatus -eq 0 ] ; then
     while [ $(date +'%s') -lt $endTime -a ! -f "${terminatingFile}" ] ; do
       run_cli_cmd '/subsystem=transactions/log-store=log-store/:probe' > /dev/null 2>&1
       local transactions="$(run_cli_cmd 'ls /subsystem=transactions/log-store=log-store/transactions')"
@@ -66,7 +80,7 @@ function runMigration() {
     if [ "${success}" = "true" ] ; then
       message="Finished, recovery terminated successfully"
     else
-      message="Finished, Recovery DID NOT complete, check log for details.  Recovery will be reattempted."
+      message="Finished, Recovery DID NOT complete, check log for details. Recovery will be reattempted."
     fi
   fi
 
