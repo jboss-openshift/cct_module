@@ -34,9 +34,24 @@ function partitionPV() {
             # Not terminating, grab the lock without waiting
             flock -n $LOCK_FD
           else
-            # Terminating, grab the lock with timeout
-            echo "Existing server instance is terminating, waiting to acquire the lock"
-            flock -w $LOCK_TIMEOUT $LOCK_FD
+            REMAINING_LOCKING_TIME=$LOCK_TIMEOUT
+            echo "Existing server instance is terminating, attempting lock per second for $LOCK_TIMEOUT seconds"
+
+            while : ; do
+              flock -n $LOCK_FD
+              if [$? -eq 0 ]; then
+                # Grabbed the lock successfully
+                break
+              fi
+              $REMAINING_LOCKING_TIME=$(expr $REMAINING_LOCKING_TIME - 1)
+              if [ "$REMAINING_LOCKING_TIME" -le 0 ] ; then
+                # No more time to wait for the lock
+                break
+              fi
+              # Didn't get the lock but still have time to wait
+              echo "Failed to get the lock, waiting a second and trying again for $REMAINING_LOCKING_TIME more seconds"
+              sleep 1
+            done
           fi
           LOCK_STATUS=$?
         fi
