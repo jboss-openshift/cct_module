@@ -6,6 +6,7 @@ description: Legacy os-jdg-launch script package.
 modules:
   install:
   - name: os-eap-launch
+  - name: os-partition
   - name: os-eap-migration
 
 execute:
