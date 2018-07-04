@@ -7,6 +7,7 @@ modules:
   install:
   - name: os-eap-launch
   - name: os-eap7-launch
+  - name: os-partition
   - name: os-eap-migration
 
 packages:

@@ -3,10 +3,6 @@ name: os-eap-migration
 version: '1.0'
 description: EAP common migration scripts
 
-modules:
-  install:
-  - name: os-partition
-
 envs:
   - name: "RECOVERY_TIMEOUT"
     example: "360"
