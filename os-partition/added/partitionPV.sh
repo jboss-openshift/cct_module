@@ -33,12 +33,14 @@ function partitionPV() {
           if [ -z "$TERMINATING" ] ; then
             # Not terminating, grab the lock without waiting
             flock -n $LOCK_FD
+            LOCK_STATUS=$?
           else
             REMAINING_LOCKING_TIME=$LOCK_TIMEOUT
             echo "Existing server instance is terminating, attempting lock per second for $LOCK_TIMEOUT seconds"
 
             while : ; do
               flock -n $LOCK_FD
+              LOCK_STATUS=$?
               if [ $? -eq 0 ]; then
                 # Grabbed the lock successfully
                 break
@@ -53,7 +55,6 @@ function partitionPV() {
               sleep 1
             done
           fi
-          LOCK_STATUS=$?
         fi
         if [ $LOCK_STATUS -eq 0 ] ; then
           echo "Successfully locked directory: ($INSTANCE_DIR)"
