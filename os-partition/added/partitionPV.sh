@@ -39,11 +39,11 @@ function partitionPV() {
 
             while : ; do
               flock -n $LOCK_FD
-              if [$? -eq 0 ]; then
+              if [ $? -eq 0 ]; then
                 # Grabbed the lock successfully
                 break
               fi
-              $REMAINING_LOCKING_TIME=$(expr $REMAINING_LOCKING_TIME - 1)
+              REMAINING_LOCKING_TIME=$(expr $REMAINING_LOCKING_TIME - 1)
               if [ "$REMAINING_LOCKING_TIME" -le 0 ] ; then
                 # No more time to wait for the lock
                 break
