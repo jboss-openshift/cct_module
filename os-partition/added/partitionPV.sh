@@ -41,7 +41,7 @@ function partitionPV() {
             while : ; do
               flock -n $LOCK_FD
               LOCK_STATUS=$?
-              if [ $? -eq 0 ]; then
+              if [ $LOCK_STATUS -eq 0 ]; then
                 # Grabbed the lock successfully
                 break
               fi
