@@ -57,7 +57,7 @@ if [ "$AMQ_SPLIT" = "true" ]; then
   DATA_DIR="${AMQ_HOME}/data"
   mkdir -p "${DATA_DIR}"
 
-  partitionPV "${DATA_DIR}" "${AMQ_LOCK_TIMEOUT:-30}"
+  partitionPV "${DATA_DIR}"
 else
     exec $AMQ_HOME/bin/activemq console
 fi
