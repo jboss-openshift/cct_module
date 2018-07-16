@@ -40,3 +40,11 @@ Feature: Openshift OpenJDK GC tests
        | GC_MAX_METASPACE_SIZE    | 120    |
     Then s2i build log should contain Setting MAVEN_OPTS to -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:MaxMetaspaceSize=120m
     And container log should contain -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:MaxMetaspaceSize=120m
+
+  Scenario: Check GC_CONTAINER_OPTIONS configuration
+    Given s2i build https://github.com/jboss-openshift/openshift-quickstarts from undertow-servlet
+       | variable             | value        |
+       | GC_CONTAINER_OPTIONS | -XX:+UseG1GC |
+    Then s2i build log should contain Setting MAVEN_OPTS to -XX:+UseG1GC
+    And container log should contain -XX:+UseG1GC
+    And container log should not contain -XX:+UseParallelOldGC

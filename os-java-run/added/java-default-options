@@ -117,10 +117,11 @@ gc_config() {
   local timeRatio=${GC_TIME_RATIO:-4}
   local adaptiveSizePolicyWeight=${GC_ADAPTIVE_SIZE_POLICY_WEIGHT:-90}
   local maxMetaspaceSize=${GC_MAX_METASPACE_SIZE:-100}
+  local gcOptions="${GC_CONTAINER_OPTIONS:--XX:+UseParallelOldGC}"
 
-  echo "-XX:+UnlockExperimentalVMOptions " \
-       "-XX:+UseCGroupMemoryLimitForHeap " \
-       "-XX:+UseParallelOldGC " \
+  echo "${gcOptions}" \
+       "-XX:+UnlockExperimentalVMOptions "\
+       "-XX:+UseCGroupMemoryLimitForHeap "\
        "-XX:MinHeapFreeRatio=${minHeapFreeRatio} "\
        "-XX:MaxHeapFreeRatio=${maxHeapFreeRatio} "\
        "-XX:GCTimeRatio=${timeRatio} "\
