@@ -1,7 +1,7 @@
 schema_version: 1
 name: os-eap-logging
 version: '1.0'
-description: Legacy os-eap-logging script package.
+description: Legacy os-eap-logging script package. This module is deprecated, see: https://github.com/jboss-container-images/jboss-eap-modules/jboss-eap-logging-ext for the replacement for EAP 7.1 and EAP 6.4 based images, and https://github.com/jboss-container-images/jboss-eap-modules/jboss-eap-cd-logging for all other images.
 execute:
 - script: configure.sh
   user: '185'
