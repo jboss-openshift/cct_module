@@ -11,10 +11,14 @@
                     <indexing index="LOCAL" auto-config="true"/>
                 </distributed-cache-configuration>
                 <distributed-cache-configuration name="memory-bounded">
-                    <eviction strategy="LRU" size="10000000" type="MEMORY"/>
+                    <memory>
+                        <object size="10000"/>
+                    </memory>
                 </distributed-cache-configuration>
                 <distributed-cache-configuration name="persistent-file-store-passivation">
-                    <eviction strategy="LRU" size="10000"/>
+                    <memory>
+                        <object size="10000"/>
+                    </memory>
                     <file-store shared="false" fetch-state="true" passivation="true">
                         <write-behind modification-queue-size="1024" thread-pool-size="1"/>
                     </file-store>
