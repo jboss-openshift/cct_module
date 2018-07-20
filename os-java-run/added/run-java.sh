@@ -147,7 +147,7 @@ get_java_options() {
     proxy_opts="$(proxy_options)"
   fi
   # Normalize spaces with awk (i.e. trim and elimate double spaces)
-  echo "${JAVA_OPTIONS} $(run_java_options) ${debug_opts} ${proxy_opts} ${java_opts}" | awk '$1=$1'
+  echo "${JAVA_OPTIONS} $(run_java_options) ${debug_opts} ${proxy_opts} ${java_opts} ${JAVA_OPTS_APPEND}" | awk '$1=$1'
 }
 
 # Read in a classpath either from a file with a single line, colon separated
