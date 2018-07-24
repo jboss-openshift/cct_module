@@ -7,7 +7,9 @@ function configure_json_logging() {
 
   if [ "${ENABLE_JSON_LOGGING^^}" == "TRUE" ]; then
     sed -i 's|##CONSOLE-FORMATTER##|OPENSHIFT|' $CONFIG_FILE
+    sed -i 's|##CONSOLE-FORMATTER##|OPENSHIFT|' $LOGGING_FILE
   else
     sed -i 's|##CONSOLE-FORMATTER##|COLOR-PATTERN|' $CONFIG_FILE
+    sed -i 's|##CONSOLE-FORMATTER##|COLOR-PATTERN|' $LOGGING_FILE
   fi
 }
