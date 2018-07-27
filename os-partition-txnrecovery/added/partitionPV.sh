@@ -206,7 +206,9 @@ function migratePV() {
 
     echo "`date`: Finished Migration Check cycle, pausing for ${MIGRATION_PAUSE} seconds before resuming"
     MIGRATION_POD_TIMESTAMP=$(getPodLogTimestamp)
-    sleep "${MIGRATION_PAUSE}"
+    trap 'kill $(jobs -p)' EXIT
+    sleep "${MIGRATION_PAUSE}" & wait
+    trap - EXIT
   done
 }
 
