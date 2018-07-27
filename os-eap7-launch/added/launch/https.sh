@@ -5,6 +5,7 @@ source $JBOSS_HOME/bin/launch/logging.sh
 function prepareEnv() {
   unset HTTPS_NAME
   unset HTTPS_PASSWORD
+  unset HTTPS_KEY_PASSWORD
   unset HTTPS_KEYSTORE_DIR
   unset HTTPS_KEYSTORE
   unset HTTPS_KEYSTORE_TYPE
@@ -32,9 +33,16 @@ function configure_https() {
     if [ -n "$HTTPS_KEYSTORE_TYPE" ]; then
       keystore_provider="provider=\"${HTTPS_KEYSTORE_TYPE}\""
     fi
+    if [ -n "$HTTPS_NAME" ]; then
+      keystore_alias="alias=\"${HTTPS_NAME}\""
+    fi
+    if [ -n "$HTTPS_KEY_PASSWORD" ]; then
+      key_password="key-password=\"${HTTPS_KEY_PASSWORD}\""
+    fi
+
     ssl="<server-identities>\n\
                     <ssl>\n\
-                        <keystore ${keystore_provider} path=\"${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}\" keystore-password=\"${HTTPS_PASSWORD}\"/>\n\
+                        <keystore ${keystore_provider} path=\"${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}\" keystore-password=\"${HTTPS_PASSWORD}\" ${keystore_alias} ${key_password} />\n\
                     </ssl>\n\
                 </server-identities>"
 
