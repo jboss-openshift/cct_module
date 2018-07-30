@@ -9,7 +9,7 @@ LOG=/tmp/readiness-log
 COUNT=30
 SLEEP=5
 DEBUG=${SCRIPT_DEBUG:-false}
-PROBE_IMPL=probe.eap.dmr.EapProbe
+PROBE_IMPL="probe.eap.dmr.EapProbe probe.eap.dmr.HealthCheckProbe"
 
 if [ $# -gt 0 ] ; then
     COUNT=$1

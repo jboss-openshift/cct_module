@@ -15,7 +15,7 @@ LOG=/tmp/liveness-log
 COUNT=30
 SLEEP=5
 DEBUG_SCRIPT=false
-PROBE_IMPL=probe.eap.dmr.EapProbe
+PROBE_IMPL="probe.eap.dmr.EapProbe probe.eap.dmr.HealthCheckProbe"
 
 if [ $# -gt 0 ] ; then
     COUNT=$1
