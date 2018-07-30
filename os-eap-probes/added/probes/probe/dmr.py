@@ -89,7 +89,33 @@ class DmrProbe(BatchingProbe):
         self.logger.debug("Probe response: %s", response)
 
         if response.status_code != 200:
-            self.logger.error("Probe request failed.  Status code: %s", response.status_code)
-            raise Exception("Probe request failed, code: " + str(response.status_code) + str(url) + str(request) + str(response.json(object_pairs_hook = OrderedDict)))
+            """
+            See if this non-200 represents an unusable response, or just a failure
+            response because one of the test steps failed, in which case we pass the
+            response to the tests to let them decide how to handle things
+            """
+            self.failUnusableResponse(response)
 
         return response.json(object_pairs_hook = OrderedDict)
+
+    def failUnusableResponse(self, response):
+        respDict = None
+        try:
+            respDict = response.json(object_pairs_hook = OrderedDict)
+        except ValueError:
+            self.logger.debug("Probe request failed with no parseable json response")
+
+        unusable = not respDict or not respDict["outcome"] or respDict["outcome"] != "failed" or not respDict["result"]
+        if not unusable:
+            """
+            An outcome=failed response is usable if the result node has an element for each test
+            """
+            stepResults = respDict["result"].values()
+            for index, test in enumerate(self.tests):
+                if not stepResults[index]:
+                    unusable = True
+                    break;
+
+        if unusable:
+            self.logger.error("Probe request failed.  Status code: %s", response.status_code)
+            raise Exception("Probe request failed, code: " + str(response.status_code) + str(url) + str(request) + str(response.json(object_pairs_hook = OrderedDict)))

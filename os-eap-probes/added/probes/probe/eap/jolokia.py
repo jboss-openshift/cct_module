@@ -15,6 +15,7 @@ permissions and limitations under the License.
 """
 
 import os
+import re
 
 from probe.api import Status, Test
 from probe.jolokia import JolokiaProbe
@@ -31,7 +32,8 @@ class EapProbe(JolokiaProbe):
             [
                 ServerStatusTest(),
                 BootErrorsTest(),
-                DeploymentTest()
+                DeploymentTest(),
+                HealthCheckTest()
             ]
         )
 
@@ -142,4 +144,45 @@ class DeploymentTest(Test):
             else:
                 status.add(Status.FAILURE)
         return (min(status), messages)
+
+class HealthCheckTest(Test):
+    """
+    Checks the state of the Health Check subsystem, if installed.
+    """
+
+    def __init__(self):
+        super(HealthCheckTest, self).__init__(
+            {
+                "type": "exec",
+                "operation": "check",
+                "mbean": "jboss.as:subsystem=microprofile-health-smallrye"
+            }
+        )
+
+    def evaluate(self, results):
+        """
+        Evaluates the test:
+            READY for a 404 as that means no health check configured on the system
+            HARD_FAILURE for any other non-200 as the query failed
+            READY if the result value's outcome field is 'UP'
+            HARD_FAILURE otherwise
+
+        In no case do we return NOT_READY as MicroProfile Health Check is not a readiness check.
+        """
+
+        if results["status"] == 404:
+            return (Status.READY, "Health Check not configured")
+
+        if results["status"] != 200 or not results.get("value"):
+	        return (Status.HARD_FAILURE, "Jolokia query failed " + str(results))
+
+        outcome = results["value"].get("outcome")
+
+        if not outcome:
+            return (Status.HARD_FAILURE, "No outcome")
+
+        if re.compile("\W*UP\W*").match(outcome):
+            return (Status.READY, "Status is UP")
+
+        return (Status.HARD_FAILURE, outcome)
 
