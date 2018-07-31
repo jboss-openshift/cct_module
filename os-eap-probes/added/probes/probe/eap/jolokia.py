@@ -121,6 +121,9 @@ class DeploymentTest(Test):
             FAILURE if the query failed or if any deployments are not OK, but not FAILED
         """
 
+        if results["status"] == 404:
+            return (Status.READY, "No deployments")
+
         if results["status"] != 200:
             return (Status.FAILURE, "Jolokia query failed")
 
