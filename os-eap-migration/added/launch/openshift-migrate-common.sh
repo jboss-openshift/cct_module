@@ -48,9 +48,9 @@ function runMigration() {
       recoveryJar=$(find "${JBOSS_HOME}" -name \*.jar | xargs grep -l "${recoveryClass}")
       if [ -n "${recoveryJar}" ] ; then
         echo "$(date): Executing synchronous recovery scan for a first time"
-        java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}"
+        java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}" -timeout 1800000
         echo "$(date): Executing synchronous recovery scan for a second time"
-        java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}"
+        java -cp "${recoveryJar}" "${recoveryClass}" -host "${recoveryHost}" -port "${recoveryPort}" -timeout 1800000
         echo "$(date): Synchronous recovery scans finished for the first and the second time"
       fi
     fi
