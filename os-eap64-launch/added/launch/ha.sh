@@ -72,9 +72,22 @@ function configure_ha() {
   JBOSS_HA_ARGS="${JBOSS_HA_ARGS} -Djboss.node.name=${JBOSS_NODE_NAME}"
 
   if [ -z "${JGROUPS_CLUSTER_PASSWORD}" ]; then
-      log_warning "No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD."
-      JGROUPS_AUTH="<!--WARNING: No password defined for JGroups cluster. AUTH protocol has been disabled. Please define JGROUPS_CLUSTER_PASSWORD. -->"
+    local NL=$'\n'
+    # CLOUD-2437 AUTH protocol is required when using ASYM_ENCRYPT protocol: https://github.com/belaban/JGroups/blob/master/conf/asym-encrypt.xml#L23
+    # And is optional when using SYM_ENCRYPT protocol. Adjust the AUTH_PROTO_WARNING_MESSAGE below depending on JGroups encryption protocol being used
+    local AUTH_PROTO_WARNING_MESSAGE="No password defined for JGroups cluster. AUTH protocol <AUTH_STATE> Please define JGROUPS_CLUSTER_PASSWORD."
+    if [ "${JGROUPS_ENCRYPT_PROTOCOL}" == "ASYM_ENCRYPT" ]; then
+      AUTH_PROTO_WARNING_MESSAGE=${AUTH_PROTO_WARNING_MESSAGE//<AUTH_STATE>/is required when using JGroups ASYM_ENCRYPT cluster traffic encryption protocol. \
+          ${NL}The communication within the cluster WILL NOT be encrypted.}
+    else
+      # SYM_ENCRYPT case. OK to be disabled
+      AUTH_PROTO_WARNING_MESSAGE=${AUTH_PROTO_WARNING_MESSAGE//<AUTH STATE>/will be disabled.}
+    fi
+    log_warning "${AUTH_PROTO_WARNING_MESSAGE}"
+    JGROUPS_AUTH="<!-- WARNING: ${AUTH_PROTO_WARNING_MESSAGE} -->"
   else
+    # CLOUD-2437 AUTH below is required when using ASYM_ENCRYPT protocol: https://github.com/belaban/JGroups/blob/master/conf/asym-encrypt.xml#L23
+    # And is optional when using SYM_ENCRYPT protocol.
     JGROUPS_AUTH="\n\
                 <protocol type=\"AUTH\">\n\
                     <property name=\"auth_class\">org.jgroups.auth.MD5Token</property>\n\

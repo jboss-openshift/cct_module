@@ -27,7 +27,7 @@ function configure_jgroups_encryption() {
     "SYM_ENCRYPT")
       log_info "Configuring JGroups cluster traffic encryption protocol to SYM_ENCRYPT."
       local JGROUPS_UNENCRYPTED_MESSAGE="Detected <STATE> JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted."
-      local KEYSTORE_ERROR_MESSAGE=""
+      local KEYSTORE_WARNING_MESSAGE=""
       [ -n "${JGROUPS_ENCRYPT_SECRET}"       -a \
         -n "${JGROUPS_ENCRYPT_NAME}"         -a \
         -n "${JGROUPS_ENCRYPT_PASSWORD}"     -a \
@@ -45,13 +45,13 @@ function configure_jgroups_encryption() {
                         <property name=\"alias\">${JGROUPS_ENCRYPT_NAME}</property>\n\
                     </protocol>"
       elif [ -n "${JGROUPS_ENCRYPT_SECRET}" ]; then
-        KEYSTORE_ERROR_MESSAGE="${JGROUPS_UNENCRYPTED_MESSAGE//<STATE>/partial}"
+        KEYSTORE_WARNING_MESSAGE="${JGROUPS_UNENCRYPTED_MESSAGE//<STATE>/partial}"
       else
-        KEYSTORE_ERROR_MESSAGE="${JGROUPS_UNENCRYPTED_MESSAGE//<STATE>/missing}"
+        KEYSTORE_WARNING_MESSAGE="${JGROUPS_UNENCRYPTED_MESSAGE//<STATE>/missing}"
       fi
 
-      if [ -n "${KEYSTORE_ERROR_MESSAGE}" ]; then
-        log_warning "${KEYSTORE_ERROR_MESSAGE}"
+      if [ -n "${KEYSTORE_WARNING_MESSAGE}" ]; then
+        log_warning "${KEYSTORE_WARNING_MESSAGE}"
       fi
       ;;
     "ASYM_ENCRYPT")
@@ -63,15 +63,19 @@ function configure_jgroups_encryption() {
            -n "${JGROUPS_ENCRYPT_KEYSTORE}" ] ; then
         log_warning "The specified JGroups SYM_ENCRYPT JCEKS keystore definition will be ignored when using ASYM_ENCRYPT."
       fi
-      # Asymmetric encryption using public/private encryption to fetch the shared secret key
-      jgroups_encrypt="<protocol type=\"ASYM_ENCRYPT\">\n\
-                      <property name=\"encrypt_entire_message\">true</property>\n\
-                      <property name=\"sym_keylength\">128</property>\n\
-                      <property name=\"sym_algorithm\">AES/ECB/PKCS5Padding</property>\n\
-                      <property name=\"asym_keylength\">512</property>\n\
-                      <property name=\"asym_algorithm\">RSA</property>\n\
-                      <property name=\"change_key_on_leave\">true</property>\n\
-                  </protocol>"
+
+      # CLOUD-2437 AUTH protocol is required when using ASYM_ENCRYPT protocol: https://github.com/belaban/JGroups/blob/master/conf/asym-encrypt.xml#L23
+      if [ -n "${JGROUPS_CLUSTER_PASSWORD}" ]; then
+        # Asymmetric encryption using public/private encryption to fetch the shared secret key
+        jgroups_encrypt="<protocol type=\"ASYM_ENCRYPT\">\n\
+                        <property name=\"encrypt_entire_message\">true</property>\n\
+                        <property name=\"sym_keylength\">128</property>\n\
+                        <property name=\"sym_algorithm\">AES/ECB/PKCS5Padding</property>\n\
+                        <property name=\"asym_keylength\">512</property>\n\
+                        <property name=\"asym_algorithm\">RSA</property>\n\
+                        <property name=\"change_key_on_leave\">true</property>\n\
+                    </protocol>"
+      fi
       ;;
   esac
 
