@@ -3,32 +3,33 @@
 source $JBOSS_HOME/bin/launch/logging.sh
 
 function prepareEnv() {
-  unset SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
+  unset APPLICATION_NAME
+  unset APPLICATION_ROUTES
+  unset HOSTNAME_HTTP
+  unset HOSTNAME_HTTPS
   unset SECURE_DEPLOYMENTS
   unset SECURE_SAML_DEPLOYMENTS
-  unset SSO_URL
-  unset SSO_SERVICE_URL
-  unset SSO_REALM
+  unset SSO_BEARER_ONLY
+  unset SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
+  unset SSO_ENABLE_CORS
+  unset SSO_PASSWORD
+  unset SSO_PRINCIPAL_ATTRIBUTE
   unset SSO_PUBLIC_KEY
-  unset SSO_TRUSTSTORE
-  unset SSO_TRUSTSTORE_DIR
-  unset SSO_TRUSTSTORE_PASSWORD
+  unset SSO_REALM
   unset SSO_SAML_CERTIFICATE_NAME
   unset SSO_SAML_KEYSTORE
   unset SSO_SAML_KEYSTORE_DIR
   unset SSO_SAML_KEYSTORE_PASSWORD
-  unset SSO_USERNAME
-  unset SSO_PASSWORD
-  unset APPLICATION_ROUTES
-  unset APPLICATION_NAME
-  unset SSO_SECRET
-  unset SSO_ENABLE_CORS
-  unset SSO_BEARER_ONLY
   unset SSO_SAML_LOGOUT_PAGE
-  unset HOSTNAME_HTTP
-  unset HOSTNAME_HTTPS
-  unset SSO_TRUSTSTORE_CERTIFICATE_ALIAS
   unset SSO_SAML_VALIDATE_SIGNATURE
+  unset SSO_SECRET
+  unset SSO_SERVICE_URL
+  unset SSO_TRUSTSTORE
+  unset SSO_TRUSTSTORE_CERTIFICATE_ALIAS
+  unset SSO_TRUSTSTORE_DIR
+  unset SSO_TRUSTSTORE_PASSWORD
+  unset SSO_URL
+  unset SSO_USERNAME
 }
 
 function configure() {
@@ -317,6 +318,12 @@ function configure_subsystem() {
             deployments=`echo "${deployments}" | sed "s|##SSO_SAML_LOGOUT_PAGE##|${SSO_SAML_LOGOUT_PAGE}|" `
           else
             deployments=`echo "${deployments}" | sed "s|##SSO_SAML_LOGOUT_PAGE##|/|" `
+          fi
+
+          if [ -n "$SSO_PRINCIPAL_ATTRIBUTE" ]; then
+            deployments=`echo "${deployments}" | sed "s|##KEYCLOAK_PRINCIPAL_ATTRIBUTE##|<principal-attribute>${SSO_PRINCIPAL_ATTRIBUTE}</principal-attribute>|" `
+          else
+            deployments=`echo "${deployments}" | sed "s|##KEYCLOAK_PRINCIPAL_ATTRIBUTE##||" `
           fi
 
           log_info "Configured keycloak subsystem for $protocol module $module_name from $f"
