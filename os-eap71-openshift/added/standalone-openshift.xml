@@ -590,7 +590,6 @@
         <socket-binding name="ajp" interface="bindall" port="${jboss.ajp.port:8009}"/>
         <socket-binding name="http" interface="bindall" port="${jboss.http.port:8080}"/>
         <socket-binding name="https" interface="bindall" port="${jboss.https.port:8443}"/>
-        <socket-binding name="jgroups-mping" interface="private" port="0" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45700"/>
         <socket-binding name="jgroups-tcp" interface="private" port="7600"/>
         <socket-binding name="jgroups-udp" interface="private" port="55200" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45688"/>
         <socket-binding name="modcluster" port="0" multicast-address="${jboss.modcluster.multicast.address:224.0.1.105}" multicast-port="23364"/>
