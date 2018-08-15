@@ -1,0 +1,8 @@
+schema_version: 1
+
+name: disable-zdravo
+description: adds configuration to disable the Zdravomil Dockerfile linter bot
+
+artifacts:
+- path: bot-cfg.yml
+  sha256: 5f0af3f1ef4453033d6a13a054aedcd7c50e826f09394f6382a467d1be547bb1
