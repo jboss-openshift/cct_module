@@ -118,12 +118,13 @@ class DeploymentTest(Test):
     def evaluate(self, results):
         """
         Evaluates the test:
+            READY for a 404 due to InstanceNotFoundException as that means no deployments configured on the system
             READY if all deployments are OK
             HARD_FAILURE if any deployments FAILED
             FAILURE if the query failed or if any deployments are not OK, but not FAILED
         """
 
-        if results["status"] == 404:
+        if results["status"] == 404 and results.get("error_type") and re.compile(".*InstanceNotFoundException.*").match(results.get("error_type")):
             return (Status.READY, "No deployments")
 
         if results["status"] != 200:
@@ -162,7 +163,7 @@ class HealthCheckTest(Test):
     def evaluate(self, results):
         """
         Evaluates the test:
-            READY for a 404 as that means no health check configured on the system
+            READY for a 404 due to InstanceNotFoundException as that means no health check configured on the system
             HARD_FAILURE for any other non-200 as the query failed
             READY if the result value's outcome field is 'UP'
             HARD_FAILURE otherwise
@@ -170,7 +171,7 @@ class HealthCheckTest(Test):
         In no case do we return NOT_READY as MicroProfile Health Check is not a readiness check.
         """
 
-        if results["status"] == 404:
+        if results["status"] == 404 and results.get("error_type") and re.compile(".*InstanceNotFoundException.*").match(results.get("error_type")):
             return (Status.READY, "Health Check not configured")
 
         if results["status"] != 200 or not results.get("value"):
