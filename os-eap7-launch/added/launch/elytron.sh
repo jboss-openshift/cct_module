@@ -27,13 +27,29 @@ function configure_https() {
     return 
   fi
 
-  if [ -n "${HTTPS_PASSWORD}" -a -n "${HTTPS_KEYSTORE_DIR}" -a -n "${HTTPS_KEYSTORE}" -a -n "${HTTPS_KEYSTORE_TYPE}" ]; then
+  if [ -n "${HTTPS_PASSWORD}" -a -n "${HTTPS_KEYSTORE}" -a -n "${HTTPS_KEYSTORE_TYPE}" ]; then
 
     if [ -n "${HTTPS_KEY_PASSWORD}" ]; then
-      key_password="<credential-reference clear-text=\"${HTTPS_KEY_PASSWORD}\"/>"
+      key_password="${HTTPS_KEY_PASSWORD}"
     else
       echo "No HTTPS_KEY_PASSWORD was provided; using HTTPS_PASSWORD for Elytron LocalhostKeyManager."
-      key_password="<credential-reference clear-text=\"${HTTPS_PASSWORD}\"/>"
+      key_password="${HTTPS_PASSWORD}"
+    fi
+
+    if [ -z "${HTTPS_KEYSTORE_DIR}"  ]; then
+      # Documented behavior; HTTPS_KEYSTORE is relative to the config dir
+      # Use case is the user puts their keystore in their source's 'configuration' dir and s2i pulls it in
+      keystore_path="path=\"${HTTPS_KEYSTORE}\""
+      keystore_rel_to="relative-to=\"jboss.server.config.dir\""
+    elif [[ "${HTTPS_KEYSTORE_DIR}" =~ ^/ ]]; then
+      # Assume leading '/' means the value is a FS path
+      # Standard template behavior where the template sets this var to /etc/eap-secret-volume
+      keystore_path="path=\"${HTTPS_KEYSTORE_DIR}/${HTTPS_KEYSTORE}\""
+      keystore_rel_to=""
+    else
+      # Compatibility edge case. Treat no leading '/' as meaning HTTPS_KEYSTORE_DIR is the name of a config model path
+      keystore_path="path=\"${HTTPS_KEYSTORE}\""
+      keystore_rel_to="relative-to=\"${HTTPS_KEYSTORE_DIR}\""
     fi
 
     tls="<tls>\n\
@@ -41,12 +57,12 @@ function configure_https() {
             <key-store name=\"LocalhostKeyStore\">\n\
                 <credential-reference clear-text=\"${HTTPS_PASSWORD}\"/>\n\
                 <implementation type=\"${HTTPS_KEYSTORE_TYPE}\"/>\n\
-                <file path=\"${HTTPS_KEYSTORE}\" relative-to=\"${HTTPS_KEYSTORE_DIR}\"/>\n\
+                <file $keystore_path $keystore_rel_to/>\n\
             </key-store>\n\
         </key-stores>\n\
         <key-managers>\n\
             <key-manager name=\"LocalhostKeyManager\" key-store=\"LocalhostKeyStore\">\n\
-                $key_password\n\
+                <credential-reference clear-text=\"$key_password\"/>\n\
             </key-manager>\n\
         </key-managers>\n\
         <server-ssl-contexts>\n\
@@ -55,7 +71,7 @@ function configure_https() {
     </tls>"
 
     https_connector="<https-listener name=\"https\" socket-binding=\"https\" ssl-context=\"LocalhostSslContext\" proxy-address-forwarding=\"true\"/>"
-  elif [ -n "${HTTPS_PASSWORD}" -o -n "${HTTPS_KEYSTORE_DIR}" -o -n "${HTTPS_KEYSTORE}" -o -n "${HTTPS_KEYSTORE_TYPE}" ]; then
+  elif [ -n "${HTTPS_PASSWORD}" -o -n "${HTTPS_KEYSTORE}" -o -n "${HTTPS_KEYSTORE_TYPE}" ]; then
     echo "WARNING! Partial HTTPS configuration, the https connector WILL NOT be configured."
   fi
 
