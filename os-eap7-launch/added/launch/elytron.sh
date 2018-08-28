@@ -31,6 +31,9 @@ function configure_https() {
 
     if [ -n "${HTTPS_KEY_PASSWORD}" ]; then
       key_password="<credential-reference clear-text=\"${HTTPS_KEY_PASSWORD}\"/>"
+    else
+      echo "No HTTPS_KEY_PASSWORD was provided; using HTTPS_PASSWORD for Elytron LocalhostKeyManager."
+      key_password="<credential-reference clear-text=\"${HTTPS_PASSWORD}\"/>"
     fi
 
     tls="<tls>\n\
