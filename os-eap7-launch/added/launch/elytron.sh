@@ -72,7 +72,17 @@ function configure_https() {
 
     https_connector="<https-listener name=\"https\" socket-binding=\"https\" ssl-context=\"LocalhostSslContext\" proxy-address-forwarding=\"true\"/>"
   elif [ -n "${HTTPS_PASSWORD}" -o -n "${HTTPS_KEYSTORE}" -o -n "${HTTPS_KEYSTORE_TYPE}" ]; then
-    echo "WARNING! Partial HTTPS configuration, the https connector WILL NOT be configured."
+    local missing_msg="WARNING! Partial HTTPS configuration, the https connector WILL NOT be configured. Missing:"
+    if [ -z "${HTTPS_PASSWORD}" ]; then
+      missing_msg="$missing_msg HTTPS_PASSWORD"
+    fi
+    if [ -z "${HTTPS_KEYSTORE}" ]; then
+      missing_msg="$missing_msg HTTPS_KEYSTORE"
+    fi
+    if [ -z "${HTTPS_KEYSTORE_TYPE}" ]; then
+      missing_msg="$missing_msg HTTPS_KEYSTORE_TYPE"
+    fi
+    echo $missing_msg
   fi
 
   sed -i "s|<!-- ##TLS## -->|${tls}|" $CONFIG_FILE
