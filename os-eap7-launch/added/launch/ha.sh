@@ -84,7 +84,7 @@ function configure_ha() {
   fi
 
   local ping_protocol=${JGROUPS_PING_PROTOCOL:-openshift.KUBE_PING}
-  local ping_protocol_element="<protocol type=\"${ping_protocol}\" socket-binding=\"jgroups-mping\"/>"
+  local ping_protocol_element="<protocol type=\"${ping_protocol}\"/>"
   validate_ping_protocol "${ping_protocol}" 
 
   sed -i "s|<!-- ##JGROUPS_AUTH## -->|${JGROUPS_AUTH}|g" $CONFIG_FILE
