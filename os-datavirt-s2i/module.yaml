@@ -1,9 +1,0 @@
-schema_version: 1
-name: os-datavirt-s2i
-version: '1.0'
-description: Legacy os-datavirt-s2i script package.
-modules:
-  install:
-  - name: os-eap-s2i
-execute:
-- script: prepare.sh
