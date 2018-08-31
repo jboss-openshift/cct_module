@@ -8,7 +8,7 @@ Feature: tests for all openshift images
     Then the image should contain label com.redhat.component containing value jboss
     Then the image should contain label com.redhat.component containing value openshift
 
-  @jboss-eap-6/eap64-openshift @jboss-eap-7 @webserver_httpd @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datavirt-6 @brms @bpms @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-datagrid-6 @jboss-datagrid-7 @redhat-openjdk-18
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @webserver_httpd @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datavirt-6 @brms @bpms @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-datagrid-6 @jboss-datagrid-7
   Scenario: Check that labels are correctly set
     Given image is built
     Then the image should contain label release
