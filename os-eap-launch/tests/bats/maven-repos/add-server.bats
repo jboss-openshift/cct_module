@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-load maven-repos-common
+load common
 
 @test "add_maven_server: Should set only the ID." {
   run add_maven_server $SETTINGS "my_id"

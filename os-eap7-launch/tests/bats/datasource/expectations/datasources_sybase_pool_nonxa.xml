@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<datasources>
+    <datasource jta="true" jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true">
+        <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
+        <driver>h2</driver>
+        <security>
+            <user-name>sa</user-name>
+            <password>sa</password>
+        </security>
+    </datasource>
+    <datasource jta="false" jndi-name="java:/jboss/datasources/testds" pool-name="test-TEST" enabled="true" use-java-context="true">
+        <connection-url>jdbc:sybase:Tds:localhost:5000/DATABASE?JCONNECT_VERSION=6</connection-url>
+        <driver>sybase</driver>
+        <pool>
+            <min-pool-size>9</min-pool-size>
+            <max-pool-size>11</max-pool-size>
+        </pool>
+        <security>
+            <user-name>kermit</user-name>
+            <password>thefrog</password>
+        </security>
+    </datasource>
+    <!-- ##DATASOURCES## -->
+    <drivers>
+        <driver name="h2" module="com.h2database.h2">
+            <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
+        </driver>
+        <driver name="mysql" module="com.mysql">
+            <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+        </driver>
+        <driver name="postgresql" module="org.postgresql">
+            <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+        </driver>
+        <!-- ##DRIVERS## -->
+    </drivers>
+</datasources>

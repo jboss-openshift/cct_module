@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-source $BATS_TEST_DIRNAME/../../added/launch/launch-common.sh
+source $BATS_TEST_DIRNAME/../../../added/launch/launch-common.sh
 
 @test "find_env: Should use the default value when the variable is not set" {
   result=$(find_env foo default)

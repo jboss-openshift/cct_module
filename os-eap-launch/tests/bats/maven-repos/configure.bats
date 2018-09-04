@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-load maven-repos-common
+load common
 
 @test "configure_maven_repo: Should use the default parameters." {
   run configure_maven_repo $SETTINGS "http://my_url:8080" "my_id"

@@ -5,7 +5,7 @@ source $JBOSS_HOME/bin/launch/logging.sh
 function clearDatasourceEnv() {
   local prefix=$1
   local service=$2
-  
+
   unset ${service}_HOST
   unset ${service}_PORT
   unset ${prefix}_JNDI
@@ -175,7 +175,7 @@ function generate_datasource_common() {
   local validate="${13}"
   local url="${14}"
 
-  if [ -n "$driver" ]; then 
+  if [ -n "$driver" ]; then
     ds=$(generate_external_datasource)
   else
     jndi_name="java:jboss/datasources/ExampleDS"
@@ -187,7 +187,7 @@ function generate_datasource_common() {
       pool_name="$DB_POOL"
     fi
 
-    ds=$(generate_default_datasource) 
+    ds=$(generate_default_datasource)
   fi
 
   if [ -z "$service_name" ]; then
@@ -219,7 +219,7 @@ function generate_external_datasource() {
           <connection-url>${url}</connection-url>
           <driver>$driver</driver>"
   else
-    ds=" <xa-datasource jndi-name=\"${jndi_name}\" pool-name=\"${pool_name}\" use-java-context=\"true\" enabled=\"true\">"
+    ds=" <xa-datasource jndi-name=\"${jndi_name}\" pool-name=\"${pool_name}\" enabled=\"true\" use-java-context=\"true\">"
     local xa_props=$(compgen -v | grep -s "${prefix}_XA_CONNECTION_PROPERTY_")
     if [ -z "$xa_props" ] && [ "$driver" != "postgresql" ] && [ "$driver" != "mysql" ]; then
       log_warning "At least one ${prefix}_XA_CONNECTION_PROPERTY_property for datasource ${service_name} is required. Datasource will not be configured."
@@ -229,8 +229,9 @@ function generate_external_datasource() {
       for xa_prop in $(echo $xa_props); do
         prop_name=$(echo "${xa_prop}" | sed -e "s/${prefix}_XA_CONNECTION_PROPERTY_//g")
         prop_val=$(find_env $xa_prop)
-
-        ds="$ds <xa-datasource-property name=\"${prop_name}\">${prop_val}</xa-datasource-property>"
+        if [ ! -z ${prop_val} ]; then
+          ds="$ds <xa-datasource-property name=\"${prop_name}\">${prop_val}</xa-datasource-property>"
+        fi
       done
 
       ds="$ds
@@ -238,11 +239,11 @@ function generate_external_datasource() {
     fi
 
     if [ -n "$tx_isolation" ]; then
-      ds="$ds 
+      ds="$ds
              <transaction-isolation>$tx_isolation</transaction-isolation>"
     fi
-  fi       
-  
+  fi
+
   if [ -n "$min_pool_size" ] || [ -n "$max_pool_size" ]; then
     if [ -n "$NON_XA_DATASOURCE" ] && [ "$NON_XA_DATASOURCE" = "true" ]; then
        ds="$ds
@@ -251,7 +252,7 @@ function generate_external_datasource() {
       ds="$ds
              <xa-pool>"
     fi
-          
+
     if [ -n "$min_pool_size" ]; then
       ds="$ds
              <min-pool-size>$min_pool_size</min-pool-size>"
@@ -268,7 +269,7 @@ function generate_external_datasource() {
              </xa-pool>"
     fi
   fi
-   
+
    ds="$ds
          <security>
            <user-name>${username}</user-name>
@@ -396,7 +397,6 @@ function map_properties() {
         else
           log_warning "Missing configuration for XA datasource $prefix. Either ${prefix}_XA_CONNECTION_PROPERTY_URL or $serverNameVar, and $portVar, and $databaseNameVar is required. Datasource will not be configured."
         fi
-        continue
       else
         host="${!serverNameVar}"
         port="${!portVar}"
@@ -405,15 +405,15 @@ function map_properties() {
     fi
   else
     log_warning "Missing configuration for datasource $prefix. ${service}_SERVICE_HOST, ${service}_SERVICE_PORT, and/or ${prefix}_DATABASE is missing. Datasource will not be configured."
-    continue
   fi
+
 }
 
 function inject_datasource() {
   local prefix=$1
   local service=$2
-  local service_name=$3  
-  
+  local service_name=$3
+
   local host
   local port
   local jndi
@@ -464,10 +464,10 @@ function inject_datasource() {
 
   # Transaction isolation level environment variable name format: [NAME]_[DATABASE_TYPE]_TX_ISOLATION
   tx_isolation=$(find_env "${prefix}_TX_ISOLATION")
-    
+
   # min pool size environment variable name format: [NAME]_[DATABASE_TYPE]_MIN_POOL_SIZE
   min_pool_size=$(find_env "${prefix}_MIN_POOL_SIZE")
-    
+
   # max pool size environment variable name format: [NAME]_[DATABASE_TYPE]_MAX_POOL_SIZE
   max_pool_size=$(find_env "${prefix}_MAX_POOL_SIZE")
 
@@ -509,7 +509,7 @@ function inject_datasource() {
       else
         validate="false"
       fi
- 
+
       service_name=$prefix
       ;;
   esac
