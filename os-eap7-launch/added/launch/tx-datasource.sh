@@ -41,7 +41,7 @@ function generate_tx_datasource() {
                       <connection-url>jdbc:${8}://${5}:${6}/${7}</connection-url>
                       <driver>${8}</driver>"
       if [ -n "$tx_isolation" ]; then
-        ds="$ds 
+        ds="$ds
                       <transaction-isolation>$tx_isolation</transaction-isolation>"
       fi
       if [ -n "$min_pool_size" ] || [ -n "$max_pool_size" ]; then
@@ -59,7 +59,7 @@ function generate_tx_datasource() {
                       </pool>"
       fi
       ds="$ds
-                      
+
                       <security>
                           <user-name>${3}</user-name>
                           <password>${4}</password>

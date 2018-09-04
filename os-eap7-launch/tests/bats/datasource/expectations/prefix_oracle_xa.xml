@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<datasources>
+    <xa-datasource jndi-name="java:/jboss/datasources/testds" pool-name="test_oracle-TEST" enabled="true" use-java-context="true">
+        <xa-datasource-property name="URL">jdbc:oracle:thin:@oracleHostName:1521:orcl</xa-datasource-property>
+        <driver>oracle</driver>
+        <security>
+            <user-name>kermit</user-name>
+            <password>thefrog</password>
+        </security>
+        <validation>
+            <validate-on-match>true</validate-on-match>
+            <background-validation>false</background-validation>
+            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+            <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+        </validation>
+    </xa-datasource>
+    <!-- ##DATASOURCES## -->
+    <drivers>
+        <driver name="h2" module="com.h2database.h2">
+            <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
+        </driver>
+        <driver name="mysql" module="com.mysql">
+            <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+        </driver>
+        <driver name="postgresql" module="org.postgresql">
+            <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+        </driver>
+        <!-- ##DRIVERS## -->
+    </drivers>
+</datasources>
