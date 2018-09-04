@@ -26,6 +26,9 @@ function configure_jgroups_encryption() {
   case "${JGROUPS_ENCRYPT_PROTOCOL}" in
     "SYM_ENCRYPT")
       log_info "Configuring JGroups cluster traffic encryption protocol to SYM_ENCRYPT."
+      if [ -z "${JGROUPS_CLUSTER_PASSWORD}" ]; then
+        log_warning "No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD."
+      fi
       local JGROUPS_UNENCRYPTED_MESSAGE="Detected <STATE> JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted."
       local KEYSTORE_WARNING_MESSAGE=""
       [ -n "${JGROUPS_ENCRYPT_SECRET}"       -a \
@@ -49,7 +52,6 @@ function configure_jgroups_encryption() {
       else
         KEYSTORE_WARNING_MESSAGE="${JGROUPS_UNENCRYPTED_MESSAGE//<STATE>/missing}"
       fi
-
       if [ -n "${KEYSTORE_WARNING_MESSAGE}" ]; then
         log_warning "${KEYSTORE_WARNING_MESSAGE}"
       fi
@@ -63,7 +65,6 @@ function configure_jgroups_encryption() {
            -n "${JGROUPS_ENCRYPT_KEYSTORE}" ] ; then
         log_warning "The specified JGroups SYM_ENCRYPT JCEKS keystore definition will be ignored when using ASYM_ENCRYPT."
       fi
-
       # CLOUD-2437 AUTH protocol is required when using ASYM_ENCRYPT protocol: https://github.com/belaban/JGroups/blob/master/conf/asym-encrypt.xml#L23
       if [ -z "${JGROUPS_CLUSTER_PASSWORD}" ]; then
         local NL=$'\n'

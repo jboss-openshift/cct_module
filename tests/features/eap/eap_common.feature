@@ -133,6 +133,14 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='AUTH']
 
   @jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7 @jboss-eap-7-tech-preview @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  Scenario: Check jgroups AUTH protocol is disabled when using SYM_ENCRYPT and JGROUPS_CLUSTER_PASSWORD undefined
+    When container is started with env
+       | variable                                     | value                                  |
+       | JGROUPS_ENCRYPT_PROTOCOL                     | SYM_ENCRYPT                            |
+    Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='AUTH']
+     And container log should contain WARN No password defined for JGroups cluster. AUTH protocol will be disabled. Please define JGROUPS_CLUSTER_PASSWORD.
+
+  @jboss-eap-6/eap64-openshift @jboss-eap-7 @redhat-sso-7 @jboss-eap-7-tech-preview @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups encryption does not create invalid configuration when using SYM_ENCRYPT with encrypt secret undefined
     When container is started with env
        | variable                                     | value                                  |
