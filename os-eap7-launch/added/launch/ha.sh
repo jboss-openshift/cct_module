@@ -65,7 +65,7 @@ function validate_ping_protocol() {
 function configure_ha() {
   # Set HA args
   IP_ADDR=`hostname -i`
-  JBOSS_HA_ARGS="-b ${IP_ADDR} -bprivate ${IP_ADDR}"
+  JBOSS_HA_ARGS="-b ${JBOSS_HA_IP:-${IP_ADDR}} -bprivate ${JBOSS_HA_IP:-${IP_ADDR}}"
 
   init_node_name
 
