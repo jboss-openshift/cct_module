@@ -427,6 +427,7 @@
                     <!-- ##ACCESS_LOG_VALVE## -->
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
+                    <!-- ##FILTER_REFS## -->
                 </host>
             </server>
             <servlet-container name="default">
@@ -439,6 +440,7 @@
             <filters>
                 <response-header name="server-header" header-name="Server" header-value="JBoss-EAP/7"/>
                 <response-header name="x-powered-by-header" header-name="X-Powered-By" header-value="Undertow/1"/>
+                <!-- ##FILTER_RESPONSE_HEADERS## -->
             </filters>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:2.0">
