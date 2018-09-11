@@ -541,6 +541,7 @@
                     <!-- ##ACCESS_LOG_VALVE## -->
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
+                    <!-- ##FILTER_REFS## -->
                     <http-invoker security-realm="ApplicationRealm"/>
                 </host>
             </server>
@@ -554,6 +555,7 @@
             <filters>
                 <response-header name="server-header" header-name="Server" header-value="JBoss-EAP/7"/>
                 <response-header name="x-powered-by-header" header-name="X-Powered-By" header-value="Undertow/1"/>
+                <!-- ##FILTER_RESPONSE_HEADERS## -->
             </filters>
             <!-- ##HTTP_APPLICATION_SECURITY_DOMAINS## -->
         </subsystem>
