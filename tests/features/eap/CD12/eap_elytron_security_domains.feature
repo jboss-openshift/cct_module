@@ -1,4 +1,4 @@
-@jboss-eap-7-eap-cd-openshift-container
+@jboss-eap-7/eap-cd-openshift
 Feature: EAP Openshift Elytron security domains
 
   Scenario: check Elytron configuration
@@ -10,10 +10,10 @@ Feature: EAP Openshift Elytron security domains
       And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security on XPath //*[local-name()='elytron-integration']/*[local-name()='security-realms']/*[local-name()='elytron-realm']/@legacy-jaas-config
       And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security on XPath //*[local-name()='subsystem'][namespace-uri()='urn:jboss:domain:ejb3:5.0']/*[local-name()='application-security-domains']/*[local-name()='application-security-domain']/@name
       And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security on XPath //*[local-name()='subsystem'][namespace-uri()='urn:jboss:domain:ejb3:5.0']/*[local-name()='application-security-domains']/*[local-name()='application-security-domain']/@security-domain
-      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security on XPath //*[local-name()='subsystem'][namespace-uri()='urn:jboss:domain:undertow:4.0']/*[local-name()='application-security-domains']/*[local-name()='application-security-domain']/@name
-      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security-http on XPath //*[local-name()='subsystem'][namespace-uri()='urn:jboss:domain:undertow:4.0']/*[local-name()='application-security-domains']/*[local-name()='application-security-domain']/@http-authentication-factory
-      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value BASIC on XPath //*[local-name()='http-authentication-factory'][@name='application-security-http'][@security-domain='application-security']/*[local-name()='mechanism-configuration']/*[local-name()='mechanism'][1]/@mechanism-name
-      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value FORM on XPath //*[local-name()='http-authentication-factory'][@name='application-security-http'][@security-domain='application-security']/*[local-name()='mechanism-configuration']/*[local-name()='mechanism'][2]/@mechanism-name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security on XPath //*[local-name()='subsystem'][namespace-uri()='urn:jboss:domain:undertow:6.0']/*[local-name()='application-security-domains']/*[local-name()='application-security-domain']/@name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security-http on XPath //*[local-name()='subsystem'][namespace-uri()='urn:jboss:domain:undertow:6.0']/*[local-name()='application-security-domains']/*[local-name()='application-security-domain']/@http-authentication-factory
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value BASIC on XPath //*[local-name()='http-authentication-factory'][@name='application-http-authentication'][@security-domain='ApplicationDomain']/*[local-name()='mechanism-configuration']/*[local-name()='mechanism'][1]/@mechanism-name
+      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value FORM on XPath //*[local-name()='http-authentication-factory'][@name='application-http-authentication'][@security-domain='ApplicationDomain']/*[local-name()='mechanism-configuration']/*[local-name()='mechanism'][2]/@mechanism-name
       And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value application-security on XPath //*[local-name()='security-domain'][@name='application-security'][@default-realm='application-security']/*[local-name()='realm']/@name
 
 

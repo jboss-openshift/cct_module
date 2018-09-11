@@ -1,4 +1,4 @@
-@jboss-eap-7-eap-cd-openshift-container
+@jboss-eap-7/eap-cd-openshift
 Feature: EAP Openshift Elytron
   Scenario: Use Elytron for HTTPS
     When container is started with env
