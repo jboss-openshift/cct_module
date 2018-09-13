@@ -15,6 +15,7 @@ packages:
           - jboss-os
       install:
           - openssl
+          - nmap-ncat
 
 execute:
 - script: configure.sh
