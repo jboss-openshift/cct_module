@@ -22,23 +22,26 @@ import socket
 import sys
 
 # calculate the open ports
-try:
-  tcp_file = open("/proc/net/tcp6", "r")
-except IOError:
-  tcp_file = open("/proc/net/tcp", "r")
-tcp_lines = tcp_file.readlines()
-header = tcp_lines.pop(0)
-tcp_file.close()
-
 listening_ports = []
-for tcp_line in tcp_lines:
-  stripped = tcp_line.strip()
-  contents = stripped.split()
-  # Is the status listening?
-  if contents[3] == '0A':
-    netaddr = contents[1].split(":")
-    port = int(netaddr[1], 16)
-    listening_ports.append(port)
+inputs = ["/proc/net/tcp6", "/proc/net/tcp"]
+for input in inputs:
+  try:
+    tcp_file = open(input, "r")
+    tcp_lines = tcp_file.readlines()
+    header = tcp_lines.pop(0)
+    tcp_file.close()
+
+    for tcp_line in tcp_lines:
+      stripped = tcp_line.strip()
+      contents = stripped.split()
+      # Is the status listening?
+      if contents[3] == '0A':
+        netaddr = contents[1].split(":")
+        port = int(netaddr[1], 16)
+        listening_ports.append(port)
+
+  except IOError:
+   pass
 
 #parse the config file to retrieve the transport connectors
 xmldoc = xml.etree.ElementTree.parse("${CONFIG_FILE}")
