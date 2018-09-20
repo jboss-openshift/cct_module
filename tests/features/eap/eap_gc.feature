@@ -1,5 +1,5 @@
 @jboss-eap-6/eap64-openshift @jboss-eap-7 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-datagrid-6 @jboss-datagrid-7 @jboss-datavirt-6 @jboss-eap-7-tech-preview
-Feature: Openshift OpenJDK GC tests
+Feature: EAP Openshift OpenJDK GC tests
 
   Scenario: Check default GC configuration
     When container is ready
@@ -81,6 +81,22 @@ Feature: Openshift OpenJDK GC tests
       | mem_limit              | 1073741824        |
     Then container log should match regex ^ *JAVA_OPTS: *.* -Xms128m\s
       And container log should match regex ^ *JAVA_OPTS: *.* -Xmx512m\s
+
+  Scenario: CLOUD-2842 mem_limit greater than default limit
+    When container is started with args
+      | arg       | value                         |
+      | mem_limit | 6442450944                    |
+      | env_json  | {"JAVA_INITIAL_MEM_RATIO": 100.0, "JAVA_MAX_MEM_RATIO": 100.0} |
+    Then container log should match regex ^ *JAVA_OPTS: *.* -Xms6144m\s
+      And container log should match regex ^ *JAVA_OPTS: *.* -Xmx6144m\s
+
+  Scenario: CLOUD-2842 mem_limit less than default limit
+    When container is started with args
+      | arg       | value                         |
+      | mem_limit | 6442450944                    |
+      | env_json  | {"JAVA_INITIAL_MEM_RATIO": 50.0, "JAVA_MAX_MEM_RATIO": 100} |
+    Then container log should match regex ^ *JAVA_OPTS: *.* -Xms3072m\s
+      And container log should match regex ^ *JAVA_OPTS: *.* -Xmx6144m\s
 
   # CLOUD-459 (override default heap size)
   Scenario: CLOUD-459 Check for adjusted default heap size
