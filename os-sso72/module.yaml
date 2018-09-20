@@ -23,3 +23,16 @@ run:
       user: 185
       cmd:
           - "/opt/eap/bin/openshift-launch.sh"
+
+envs:
+# See os-sso/module.yaml for the description of SSO_ADMIN_USERNAME,
+# SSO_ADMIN_PASSWORD, SSO_SERVICE_USERNAME, and SSO_SERVICE_PASSWORD variables
+    - name: "SERVICE_WAIT_NAME"
+      example: "sso-mysql"
+      description: "Name of the OpenShift service, the RH-SSO pod should wait for to become reachable over network, prior starting the RH-SSO server. Not set by default."
+    - name: "SERVICE_WAIT_RETRY_MESSAGE"
+      example: "Waiting for the \"${SERVICE_WAIT_NAME}\" service to become reachable over network ..."
+      description: "Message to be displayed in connect-retry loop, in which the RH-SSO pod is waiting for the SERVICE_WAIT_NAME to become reachable over network. Defaults to 'Waiting for the \"${SERVICE_WAIT_NAME}\" service to become available ....' if the SERVICE_WAIT_NAME variable is set."
+    - name: "SERVICE_WAIT_INTRO_MESSAGE"
+      example: "Ensure a persistent volume is available for the \"${APPLICATION_NAME}-mysql-claim\" or a storage class is set."
+      description: "Message to be displayed prior starting the connect-retry loop, in which the RH-SSO pod is waiting for the SERVICE_WAIT_NAME to become reachable over network. Typically describes additional requirements in order the connect-retry loop of the RH-SSO pod successfully to finish. Not set by default."
