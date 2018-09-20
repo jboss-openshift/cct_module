@@ -83,7 +83,13 @@ initial_memory() {
     if [ "${ms}" -lt "${max_initial_memory}" ] ; then
       echo "-Xms${ms}m"
     else
-      echo "-Xms${max_initial_memory}m"
+      # check if JAVA_MAX_INITIAL_MEM is unset. If it is we need to check if ms > max_initial_memory and use the larger value
+      # instead of the default
+      if [ "x${JAVA_MAX_INITIAL_MEM}" = "x" ] && [ "${ms}" -gt "${max_initial_memory}" ]; then
+            echo "-Xms${ms}m"
+      else
+        echo "-Xms${max_initial_memory}m"
+      fi
     fi
   fi
 }
