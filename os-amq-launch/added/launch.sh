@@ -25,9 +25,9 @@ fi
 
 # Add proxy command line options
 source /opt/run-java/proxy-options
-options="$(proxy_options)"
-options="$(echo $options | sed 's|"|\\"|g')"
-ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS $options"
+ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS $(proxy_options)"
+opts_array=($ACTIVEMQ_OPTS)
+ACTIVEMQ_OPTS=$(printf "%q " ${opts_array[@]})
 
 # Add jolokia command line options
 cat <<EOF > $AMQ_HOME/bin/env

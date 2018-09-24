@@ -27,6 +27,8 @@ fi
 # Add proxy command line options
 source /opt/run-java/proxy-options
 ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS $(proxy_options)"
+opts_array=($ACTIVEMQ_OPTS)
+ACTIVEMQ_OPTS=$(printf "%q " ${opts_array[@]})
 
 function runMigration() {
     export ACTIVEMQ_DATA="$1"
