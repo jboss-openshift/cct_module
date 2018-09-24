@@ -7,6 +7,11 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
 fi
 
+function escape_catalina_opts() {
+  local opts=($CATALINA_OPTS)
+  CATALINA_OPTS=$(printf "%q " ${opts[@]})
+}
+
 CONFIGURE_SCRIPTS=(
   $JWS_HOME/bin/launch/configure_extensions.sh
   $JWS_HOME/bin/launch/passwd.sh
@@ -24,6 +29,7 @@ CONFIGURE_SCRIPTS=(
 source $JWS_HOME/bin/launch/configure.sh
 
 CATALINA_OPTS="${CATALINA_OPTS} ${JAVA_PROXY_OPTIONS}"
+escape_catalina_opts
 
 log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
