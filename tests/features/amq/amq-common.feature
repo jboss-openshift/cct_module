@@ -214,10 +214,11 @@ Feature: Openshift AMQ tests
 
   Scenario: check nonHttpProxy escaping
     When container is started with env
-       | variable                  | value           |
-       | NO_PROXY                  | patriots.com    |
+       | variable                  | value                 |
+       | NO_PROXY                  | patriots.com,127.*    |
     Then container log should contain INFO | Apache ActiveMQ 5.11.0.redhat-
-    And file /opt/amq/bin/env should contain -Dhttp.nonProxyHosts=patriots.com
+    And container log should contain -Dhttp.nonProxyHosts=patriots.com|127.*
+    And file /opt/amq/bin/env should contain -Dhttp.nonProxyHosts=patriots.com\|127.\*
   
   Scenario: check queue memory limit
     Given XML namespace amq:http://activemq.apache.org/schema/core
