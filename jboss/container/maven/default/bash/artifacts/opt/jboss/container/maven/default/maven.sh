@@ -1,6 +1,5 @@
 # common shell routines for use with maven
 source "$JBOSS_CONTAINER_UTIL_LOGGING_MODULE/logging.sh"
-source "$JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE/maven-repos.sh"
 
 # default settings.xml file
 __JBOSS_MAVEN_DEFAULT_SETTINGS_FILE="${HOME}/.m2/settings.xml"
@@ -105,7 +104,7 @@ function process_maven_settings_xml() {
   local settings="${1:-${__JBOSS_MAVEN_DEFAULT_SETTINGS_FILE}}"
   add_maven_proxy_settings "${settings}"
   add_maven_mirrors "${settings}"
-  configure_maven_repos "${settings}"
+  add_maven_repos "${settings}"
 }
 
 # add proxy configuration to settings.xml
@@ -155,11 +154,38 @@ function _add_maven_proxy() {
   fi
 }
 
+# Finds the environment variable  and returns its value if found.
+# Otherwise returns the default value if provided.
+#
+# Arguments:
+# $1 env variable name to check
+# $2 default value if environment variable was not set
 function _maven_find_env() {
   local var=${!1}
   echo "${var:-$2}"
 }
 
+# Finds the environment variable with the given prefix. If not found
+# the default value will be returned. If no prefix is provided will
+# rely on _maven_find_env
+#
+# Arguments
+#  - $1 prefix. Transformed to uppercase and replace - by _
+#  - $2 variable name. Prepended by "prefix_"
+#  - $3 default value if the variable is not defined
+function _maven_find_prefixed_env() {
+  local prefix=$1
+
+  if [[ -z $prefix ]]; then
+    _maven_find_env $2 $3
+  else
+    prefix=${prefix^^} # uppercase
+    prefix=${prefix//-/_} #replace - by _
+
+    local var_name=$prefix"_"$2
+    echo ${!var_name:-$3}
+  fi
+}
 # insert settings for mirrors/repository managers into settings.xml if supplied
 # internal function, use process_maven_settings_xml which applies all configuration
 function add_maven_mirrors() {
@@ -206,6 +232,169 @@ function _add_maven_mirror() {
 
   sed -i "s|<!-- ### configured mirrors ### -->|$xml|" "${settings}"
 
+}
+
+function add_maven_repos() {
+  local settings="${1}"
+
+  # set the local repository
+  local local_repo_xml="\n\
+  <localRepository>${MAVEN_LOCAL_REPO}</localRepository>"
+  sed -i "s|<!-- ### configured local repository ### -->|${local_repo_xml}|" "${settings}"
+
+  # single remote repository scenario: respect fully qualified url if specified, otherwise find and use service
+  local single_repo_url="${MAVEN_REPO_URL}"
+  if [ -n "$single_repo_url" ]; then
+    local single_repo_id=$(_maven_find_env "MAVEN_REPO_ID" "repo-$(_generate_random_id)")
+    add_maven_repo "$settings" "$single_repo_url" "$single_repo_id"
+  fi
+
+  # multiple remote repositories scenario: respect fully qualified url(s) if specified, otherwise find and use service(s); can be used together with "single repo scenario" above
+  local multi_repo_counter=1
+  IFS=',' read -a multi_repo_prefixes <<< ${MAVEN_REPOS}
+  for multi_repo_prefix in ${multi_repo_prefixes[@]}; do
+    local multi_repo_url=$(_maven_find_prefixed_env "${multi_repo_prefix}" "MAVEN_REPO_URL")
+    local multi_repo_id=$(_maven_find_prefixed_env "${multi_repo_prefix}" "MAVEN_REPO_ID" "repo${multi_repo_counter}-$(_generate_random_id)")
+    add_maven_repo "$settings" "$multi_repo_url" "$multi_repo_id" "$multi_repo_prefix"
+    multi_repo_counter=$((multi_repo_counter+1))
+  done
+}
+
+function add_maven_repo() {
+  local settings=$1
+  local repo_url=$2
+  local repo_id=$3
+  if [[ -z $4 ]]; then
+    local prefix="MAVEN"
+  else
+    local prefix="${4}_MAVEN"
+  fi
+
+  if [[ -z ${repo_url} ]]; then
+      local repo_service=$(_maven_find_prefixed_env "${prefix}" "REPO_SERVICE")
+      # host
+      local repo_host=$(_maven_find_prefixed_env "${prefix}" "REPO_HOST")
+      if [[ -z ${repo_host} ]]; then
+        repo_host=$(_maven_find_prefixed_env "${repo_service}" "SERVICE_HOST")
+      fi
+      if [[ ! -z ${repo_host} ]]; then
+        # protocol
+        local repo_protocol=$(_maven_find_prefixed_env "${prefix}" "REPO_PROTOCOL" "http")
+        # port
+        local repo_port=$(_maven_find_prefixed_env "${prefix}" "REPO_PORT")
+        if [ "${repo_port}" = "" ]; then
+          repo_port=$(_maven_find_prefixed_env "${repo_service}" "SERVICE_PORT" "8080")
+        fi
+        local repo_path=$(_maven_find_prefixed_env "${prefix}" "REPO_PATH")
+        # strip leading slash if exists
+        if [[ "${repo_path}" =~ ^/ ]]; then
+          repo_path="${repo_path:1:${#repo_path}}"
+        fi
+        # url
+        repo_url="${repo_protocol}://${repo_host}:${repo_port}/${repo_path}"
+      fi
+  fi
+  if [[ ! -z ${repo_url} ]]; then
+    _add_maven_repo_profile "${settings}" "${repo_id}" "${repo_url}" "${prefix}"
+    _add_maven_repo_server "${settings}" "${repo_id}" "${prefix}"
+  else
+    log_warning "Variable \"${prefix}_REPO_URL\" not set. Skipping maven repo setup for the prefix \"${prefix}\"."
+  fi
+}
+
+# private
+function _add_maven_repo_profile() {
+  local settings=$1
+  local repo_id=$2
+  local url=$3
+  local prefix=$4
+
+  local name=$(_maven_find_prefixed_env "${prefix}" "REPO_NAME" "${repo_id}")
+  local layout=$(_maven_find_prefixed_env "${prefix}" "REPO_LAYOUT" "default")
+  local releases_enabled=$(_maven_find_prefixed_env "${prefix}" "REPO_RELEASES_ENABLED" "true")
+  local releases_update_policy=$(_maven_find_prefixed_env "${prefix}" "REPO_RELEASES_UPDATE_POLICY" "always")
+  local releases_checksum_policy=$(_maven_find_prefixed_env "${prefix}" "REPO_RELEASES_CHECKSUM_POLICY" "warn")
+  local snapshots_enabled=$(_maven_find_prefixed_env "${prefix}" "REPO_SNAPSHOTS_ENABLED" "true")
+  local snapshots_update_policy=$(_maven_find_prefixed_env "${prefix}" "REPO_SNAPSHOTS_UPDATE_POLICY" "always")
+  local snapshots_checksum_policy=$(_maven_find_prefixed_env "${prefix}" "REPO_SNAPSHOTS_CHECKSUM_POLICY" "warn")
+
+  # configure the repository in a profile
+  local profile_id="${repo_id}-profile"
+  local xml="\n\
+  <profile>\n\
+    <id>${profile_id}</id>\n\
+    <repositories>\n\
+      <repository>\n\
+        <id>${repo_id}</id>\n\
+        <name>${name}</name>\n\
+        <url>${url}</url>\n\
+        <layout>${layout}</layout>\n\
+        <releases>\n\
+          <enabled>${releases_enabled}</enabled>\n\
+          <updatePolicy>${releases_update_policy}</updatePolicy>\n\
+          <checksumPolicy>${releases_checksum_policy}</checksumPolicy>\n\
+        </releases>\n\
+        <snapshots>\n\
+          <enabled>${snapshots_enabled}</enabled>\n\
+          <updatePolicy>${snapshots_update_policy}</updatePolicy>\n\
+          <checksumPolicy>${snapshots_checksum_policy}</checksumPolicy>\n\
+        </snapshots>\n\
+      </repository>\n\
+    </repositories>\n\
+  </profile>\n\
+  <!-- ### configured profiles ### -->"
+  sed -i "s|<!-- ### configured profiles ### -->|${xml}|" "${settings}"
+
+  # activate the configured profile
+  xml="\n\
+    <activeProfile>${profile_id}</activeProfile>\n\
+    <!-- ### active profiles ### -->"
+  sed -i "s|<!-- ### active profiles ### -->|${xml}|" "${settings}"
+}
+
+# private
+function _add_maven_repo_server() {
+  local settings=$1
+  local server_id=$2
+  local prefix=$3
+
+  local username=$(_maven_find_prefixed_env "$prefix" "REPO_USERNAME")
+  local password=$(_maven_find_prefixed_env "$prefix" "REPO_PASSWORD")
+  local private_key=$(_maven_find_prefixed_env "$prefix" "REPO_PRIVATE_KEY")
+  local passphrase=$(_maven_find_prefixed_env "$prefix" "REPO_PASSPHRASE")
+  local file_permissions=$(_maven_find_prefixed_env "$prefix" "REPO_FILE_PERMISSIONS")
+  local directory_permissions=$(_maven_find_prefixed_env "$prefix" "REPO_DIRECTORY_PERMISSIONS")
+
+  local xml="\n\
+    <server>\n\
+      <id>${server_id}</id>"
+  if [ "${username}" != "" -a "${password}" != "" ]; then
+    xml="${xml}\n\
+      <username>${username}</username>\n\
+      <password><![CDATA[${password}]]></password>"
+  fi
+  if [ "${private_key}" != "" -a "${passphrase}" != "" ]; then
+    xml="${xml}\n\
+      <privateKey>${private_key}</privateKey>\n\
+      <passphrase><![CDATA[${passphrase}]]></passphrase>"
+  fi
+  if [ "${file_permissions}" != "" ]; then
+    xml="${xml}\n\
+      <filePermissions>${file_permissions}</filePermissions>"
+  fi
+  if [ "${directory_permissions}" != "" ]; then
+    xml="${xml}\n\
+      <directoryPermissions>${directory_permissions}</directoryPermissions>"
+  fi
+  xml="${xml}\n\
+    </server>\n\
+    <!-- ### configured servers ### -->"
+  sed -i "s|<!-- ### configured servers ### -->|${xml}|" "${settings}"
+}
+
+# private
+function _generate_random_id() {
+  cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1
 }
 
 # The following functions are deprecated and provided solely for backward compatibility

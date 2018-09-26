@@ -4,15 +4,18 @@
   <repositories>
     <repository>
       <id>my_id</id>
+      <name>my_id</name>
       <url>https://my_url:9090/custom_path</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
       </releases>
       <snapshots>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
       </snapshots>
     </repository>
   </repositories>
