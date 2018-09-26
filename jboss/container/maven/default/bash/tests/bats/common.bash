@@ -1,19 +1,22 @@
-load $BATS_TEST_DIRNAME/../../../../tests/bats/common/xml_utils.bash
+CCT_MODULE_DIR="${BATS_TEST_DIRNAME}/../../../../../../.."
+
+load $CCT_MODULE_DIR/tests/bats/common/xml_utils.bash
 
 export JBOSS_HOME=$BATS_TMPDIR/jboss_home
 mkdir -p $JBOSS_HOME/bin/launch
-cp $BATS_TEST_DIRNAME/../../../../os-eap7-launch/added/launch/launch-common.sh $JBOSS_HOME/bin/launch
-cp $BATS_TEST_DIRNAME/../../../../os-logging/added/launch/logging.sh $JBOSS_HOME/bin/launch
+cp $CCT_MODULE_DIR/os-eap7-launch/added/launch/launch-common.sh $JBOSS_HOME/bin/launch
+cp $CCT_MODULE_DIR/jboss/container/util/logging/bash/artifacts/opt/jboss/container/util/logging/logging.sh $JBOSS_HOME/bin/launch
 
 export HOME=$BATS_TMPDIR/home
 export SETTINGS=$HOME/.m2/settings.xml
+export JBOSS_CONTAINER_UTIL_LOGGING_MODULE=$CCT_MODULE_DIR/jboss/container/util/logging/bash/artifacts/opt/jboss/container/util/logging
 
 mkdir -p $HOME/.m2
 
-source $BATS_TEST_DIRNAME/../../../added/launch/maven-repos.sh
+source $CCT_MODULE_DIR/jboss/container/maven/default/bash/artifacts/opt/jboss/container/maven/default/maven.sh
 
 setup() {
-  cp $BATS_TEST_DIRNAME/../../../../jboss-maven/added/jboss-settings.xml $HOME/.m2/settings.xml
+  cp $CCT_MODULE_DIR/jboss/container/maven/default/bash/artifacts/opt/jboss/container/maven/default/jboss-settings.xml $HOME/.m2/settings.xml
 }
 
 function assert_profile_xml() {

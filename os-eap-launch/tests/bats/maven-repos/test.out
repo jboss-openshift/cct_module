@@ -1,1 +1,0 @@
-/tmp/home/.m2/settings.xml //*[local-name()="server"][*[local-name()="id"]="id-repo-2"] /home/rromerom/workspaces/rhpam/cct_module/os-eap-launch/tests/bats/maven-repos/expectations/server_repo2.xml

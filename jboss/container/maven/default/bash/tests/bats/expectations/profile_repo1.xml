@@ -1,18 +1,21 @@
 <?xml version="1.0"?>
 <profile>
-  <id>my_id-profile</id>
+  <id>id_repo1-profile</id>
   <repositories>
     <repository>
-      <id>my_id</id>
-      <url>http://my_url:8080</url>
+      <id>id_repo1</id>
+      <name>id_repo1</name>
+      <url>http://repo1:8383/</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
       </releases>
       <snapshots>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
       </snapshots>
     </repository>
   </repositories>
