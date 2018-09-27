@@ -1,0 +1,8 @@
+schema_version: 1
+name: jboss.container.java.certs.bash
+version: '1.0'
+description: Trust runtime-supplied OpenShift/Kubernetes CA
+
+execute:
+- script: configure.sh
+  user: root
