@@ -135,12 +135,10 @@ function set_curl() {
 
 function enable_keycloak_deployments() {
   if [ -n "$SSO_OPENIDCONNECT_DEPLOYMENTS" ]; then
-    AUTO_DEPLOY_EXPLODED="true"
     explode_keycloak_deployments $SSO_OPENIDCONNECT_DEPLOYMENTS $OPENIDCONNECT
   fi
 
   if [ -n "$SSO_SAML_DEPLOYMENTS" ]; then
-    AUTO_DEPLOY_EXPLODED="true"
     explode_keycloak_deployments $SSO_SAML_DEPLOYMENTS $SAML
   fi
 }
@@ -155,6 +153,9 @@ function explode_keycloak_deployments() {
       unzip -o ${JBOSS_HOME}/standalone/deployments/${sso_deployment} -d ${JBOSS_HOME}/standalone/deployments/tmp
       rm -f ${JBOSS_HOME}/standalone/deployments/${sso_deployment}
       mv ${JBOSS_HOME}/standalone/deployments/tmp ${JBOSS_HOME}/standalone/deployments/${sso_deployment}
+      if [ ! -f ${JBOSS_HOME}/standalone/deployments/${sso_deployment}.dodeploy ]; then
+        touch ${JBOSS_HOME}/standalone/deployments/${sso_deployment}.dodeploy
+      fi
     fi
 
     if [ -f "${JBOSS_HOME}/standalone/deployments/${sso_deployment}/WEB-INF/web.xml" ]; then
@@ -223,9 +224,7 @@ function configure_subsystem() {
       web_xml=`read_web_dot_xml $f WEB-INF/web.xml`
       if [ -n "$web_xml" ]; then
         requested_auth_method=`echo $web_xml | xmllint --nowarning --xpath "string(//*[local-name()='auth-method'])" - | sed ':a;N;$!ba;s/\n//g' | tr -d '[:space:]'`
-
-        if [[ $requested_auth_method == "${auth_method}" ]]
-        then
+        if [[ $requested_auth_method == "${auth_method}" ]]; then
 
           if [ -z "$subsystem" ]; then
             subsystem="${keycloak_subsystem}"
@@ -436,10 +435,8 @@ function read_web_dot_xml {
   local result=
 
   if [ -d "$jarfile" ]; then
-    if [[ -n "$AUTO_DEPLOY_EXPLODED" && "$AUTO_DEPLOY_EXPLODED" == "true" ]] || [[ -n "$JAVA_OPTS_APPEND" && $JAVA_OPTS_APPEND == *"Xdebug"* ]]; then
-      if [ -e "${jarfile}/${filename}" ]; then
+    if [ -e "${jarfile}/${filename}" ]; then
         result=`cat ${jarfile}/${filename}`
-      fi
     fi
   else
     file_exists=`unzip -l "$jarfile" "$filename"`
