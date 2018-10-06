@@ -32,6 +32,17 @@ __DEFAULT_JAVA_MAX_MEM_RATIO=50
 __DEFAULT_JAVA_INITIAL_MEM_RATIO=25
 __DEFAULT_JAVA_MAX_INITIAL_MEM=4096
 
+if [ -f "${JBOSS_CONTAINER_OPENJDK_JDK_MODULE}/jvm-options" ]; then
+  source "${JBOSS_CONTAINER_OPENJDK_JDK_MODULE}/jvm-options"
+fi
+
+#internal
+_add_jvm_options() {
+  if [ -n "$(type -t openjdk_jvm_options)" ]; then
+    echo $(openjdk_jvm_options)
+  fi
+}
+
 initialize_container_limits() {
   # we can't run without limits
   source ${JBOSS_CONTAINER_JAVA_JVM_MODULE}/container-limits
@@ -124,9 +135,8 @@ gc_config() {
   local maxMetaspaceSize=${GC_MAX_METASPACE_SIZE:-100}
   local gcOptions="${GC_CONTAINER_OPTIONS:--XX:+UseParallelOldGC}"
 
-  echo "-XX:+UnlockExperimentalVMOptions "\
-       "-XX:+UseCGroupMemoryLimitForHeap "\
-       "${gcOptions}" \
+  echo "$(_add_jvm_options) "\
+       "${gcOptions} " \
        "-XX:MinHeapFreeRatio=${minHeapFreeRatio} "\
        "-XX:MaxHeapFreeRatio=${maxHeapFreeRatio} "\
        "-XX:GCTimeRatio=${timeRatio} "\

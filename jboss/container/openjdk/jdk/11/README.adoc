@@ -11,7 +11,7 @@
 :toc-placement!:
 :toclevels: 5
 
-Installs the JDK for OpenJDK 8.
+Installs the JDK for OpenJDK 11.
 
 toc::[]
 
@@ -21,9 +21,9 @@ The following labels will be defined on the image:
 
 org.jboss.container.product:: openjdk
 
-org.jboss.container.product.openjdk.version:: 1.8.0
+org.jboss.container.product.openjdk.version:: 11.0
 
-org.jboss.container.product.version:: 1.8.0
+org.jboss.container.product.version:: 11.0
 
 == Environment Variables
 
@@ -36,10 +36,9 @@ The following environment variables are used to configure the functionality prov
 The following environment variables will be configured on the image:
 |=======================================================================
 |Name |Value
-|JAVA_HOME |/usr/lib/jvm/java-1.8.0
+|JAVA_HOME |/usr/lib/jvm/java-11
 |JAVA_VENDOR |openjdk
-|JAVA_VERSION |1.8.0
-|JBOSS_CONTAINER_OPENJDK_JDK_MODULE |/opt/jboss/container/openjdk/jdk
+|JAVA_VERSION |11.0
 |=======================================================================
 
 == Resources
@@ -51,7 +50,7 @@ No additional resources will be installed through this module.
 
 The following RPMs will be installed by this module:
     
-* java-1.8.0-openjdk-devel
+* java-11-openjdk-devel
 
 === RPM Package Repositories
 No additional RPM package repositories are required to install listed RPMs.
