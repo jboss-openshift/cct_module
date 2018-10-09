@@ -28,6 +28,23 @@ clear_filter_env() {
   unset ${prefix}_FILTER_RESPONSE_HEADER_VALUE
 }
 
+# check to see if no already defined FILTER_RESPONSE_HEADERS_MARKER tag
+# this is used in the case where no default filters are defined, so we don't
+# have an empty <filters/> element in the config, or expect it to be there
+has_filter_placeholder_tag() {
+    if grep -q '<!-- ##HTTP_FILTERS_MARKER## -->' "${CONFIG_FILE}"
+    then
+        echo "true"
+    else
+       echo "false"
+    fi
+}
+
+# <!-- ##HTTP_FILTERS_MARKER## -->
+insert_filter_tag() {
+    sed -i "s|<!-- ##HTTP_FILTERS_MARKER## -->|<filters><!-- ##FILTER_RESPONSE_HEADERS## --></filters>|" $CONFIG_FILE
+}
+
 inject_filters() {
   # Add extensions from envs
   if [ -n "$FILTERS" ]; then
@@ -60,6 +77,11 @@ inject_filter() {
     log_warning
     log_warning "The $prefix filter WILL NOT be configured."
     continue
+  fi
+
+  # we may have the comment as marker, but no existing filters, if thats the case insert the <filters></filters> skeleton now.
+  if [ "true" = $(has_filter_placeholder_tag) ]; then
+    insert_filter_tag
   fi
 
   local filterRef=$(generate_filter_ref "$refName")
