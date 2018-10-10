@@ -369,7 +369,11 @@ function initJdbcRecoveryMarkerProperties() {
       ;;
   esac
 
-  JDBC_RECOVERY_MARKER_COMMAND="java -jar $JBOSS_HOME/jboss-modules.jar -mp $JBOSS_HOME/modules/ io.narayana.openshift-recovery -y ${JDBC_RECOVERY_DB_TYPE} -o ${JDBC_RECOVERY_DB_HOST} -p ${JDBC_RECOVERY_DB_PORT} -d ${JDBC_RECOVERY_DATABASE} -u ${JDBC_RECOVERY_USER} -s ${JDBC_RECOVERY_PASSWORD} -t ${JDBC_RECOVERY_TABLE} -c"
+  LOGGING_PROPERTIES="-Djava.util.logging.config.file=$(dirname ${BASH_SOURCE[0]})/logging.properties"
+  # do not reduce logging when debug is enabled
+  [ "x${SCRIPT_DEBUG}" = "xtrue" ] && LOGGING_PROPERTIES=""
+
+  JDBC_RECOVERY_MARKER_COMMAND="java $LOGGING_PROPERTIES -jar $JBOSS_HOME/jboss-modules.jar -mp $JBOSS_HOME/modules/ io.narayana.openshift-recovery -y ${JDBC_RECOVERY_DB_TYPE} -o ${JDBC_RECOVERY_DB_HOST} -p ${JDBC_RECOVERY_DB_PORT} -d ${JDBC_RECOVERY_DATABASE} -u ${JDBC_RECOVERY_USER} -s ${JDBC_RECOVERY_PASSWORD} -t ${JDBC_RECOVERY_TABLE} -c"
   # creating the database schema
   ${JDBC_RECOVERY_MARKER_COMMAND} create
 }
