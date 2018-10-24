@@ -15,6 +15,7 @@ function clearDatasourceEnv() {
   unset ${prefix}_TX_ISOLATION
   unset ${prefix}_MIN_POOL_SIZE
   unset ${prefix}_MAX_POOL_SIZE
+  unset ${prefix}_IS_SAME_RM_OVERRIDE
   unset ${prefix}_JTA
   unset ${prefix}_NONXA
   unset ${prefix}_DRIVER
@@ -244,7 +245,7 @@ function generate_external_datasource() {
     fi
   fi
 
-  if [ -n "$min_pool_size" ] || [ -n "$max_pool_size" ]; then
+  if [ -n "$min_pool_size" ] || [ -n "$max_pool_size" ] || [ -n "$is_same_rm_override" ]; then
     if [ -n "$NON_XA_DATASOURCE" ] && [ "$NON_XA_DATASOURCE" = "true" ]; then
        ds="$ds
              <pool>"
@@ -261,6 +262,13 @@ function generate_external_datasource() {
       ds="$ds
              <max-pool-size>$max_pool_size</max-pool-size>"
     fi
+
+    # CLOUD-2903: For Oracle XA Datasources, this configuration is required
+    if [ -n "$is_same_rm_override" ]; then
+      ds="$ds
+            <is-same-rm-override>$is_same_rm_override</is-same-rm-override>"
+    fi
+
     if [ -n "$NON_XA_DATASOURCE" ] && [ "$NON_XA_DATASOURCE" = "true" ]; then
       ds="$ds
              </pool>"
@@ -470,6 +478,9 @@ function inject_datasource() {
 
   # max pool size environment variable name format: [NAME]_[DATABASE_TYPE]_MAX_POOL_SIZE
   max_pool_size=$(find_env "${prefix}_MAX_POOL_SIZE")
+
+  # is same rm override environment variable name format: [NAME]_[DATABASE_TYPE]_IS_SAME_RM_OVERRIDE
+  is_same_rm_override=$(find_env "${prefix}_IS_SAME_RM_OVERRIDE")
 
   # jta environment variable name format: [NAME]_[DATABASE_TYPE]_JTA
   jta=$(find_env "${prefix}_JTA" true)
