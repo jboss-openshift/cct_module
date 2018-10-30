@@ -1,7 +1,7 @@
-@jboss-eap-7 @redhat-sso-7/sso71-openshift @jboss-eap-7-tech-preview
+@redhat-sso-7/sso71-openshift 
 Feature: EAP 7 Openshift resource adapters
 
-  @jboss-eap-7
+  
   Scenario:   Scenario: CLOUD-2455, test tracking configuration
     When container is started with env
       | variable                                | value                                                        |
@@ -30,7 +30,7 @@ Feature: EAP 7 Openshift resource adapters
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value activemq-rar.rar on XPath //*[local-name()='resource-adapter']/@id
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value activemq-rar.rar on XPath //*[local-name()='resource-adapter']/*[local-name()='archive']
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value org.apache.activemq.ra.ActiveMQManagedConnectionFactory on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/@class-name
-     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:/ConnectionFactory on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/@jndi-name
+     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:/ConnectionFactory on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/jndi-name
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 1 on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/*[local-name()='xa-pool']/*[local-name()='min-pool-size']
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 5 on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/*[local-name()='xa-pool']/*[local-name()='max-pool-size']
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/*[local-name()='xa-pool']/*[local-name()='prefill']
@@ -38,7 +38,7 @@ Feature: EAP 7 Openshift resource adapters
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value org.apache.activemq.command.ActiveMQTopic on XPath //*[local-name()='resource-adapter']/*[local-name()='admin-objects']/*[local-name()='admin-object']/@class-name
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/@tracking
 
-  @jboss-eap-7
+  
   Scenario: CLOUD-2455, test tracking configuration
     When container is started with env
       | variable                         | value                                                        |
@@ -65,7 +65,7 @@ Feature: EAP 7 Openshift resource adapters
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value EntirePool on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/*[local-name()='pool']/*[local-name()='flush-strategy']
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value false on XPath //*[local-name()='resource-adapter']/*[local-name()='connection-definitions']/*[local-name()='connection-definition']/@tracking
 
-  @jboss-eap-7
+  
   Scenario: CLOUD-2455, test tracking configuration
     When container is started with env
       | variable                      | value               |

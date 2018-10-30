@@ -1,4 +1,4 @@
-@jboss-eap-7 @jboss-eap-tech-preview @redhat-sso-7/sso71-openshift
+@redhat-sso-7/sso71-openshift
 Feature: EAP 7 Openshift datasources
 
   Scenario: CLOUD-2068, test timer datasource refresh-interval
@@ -22,7 +22,6 @@ Feature: EAP 7 Openshift datasources
     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test-TEST_part on XPath //*[local-name()='database-data-store']/@partition
     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 60000 on XPath //*[local-name()='database-data-store']/@refresh-interval
 
-  @jboss-eap-7 @jboss-eap-tech-preview
   Scenario: CLOUD-2068, test timer datasource refresh-interval
     When container is started with env
       | variable                 | value                                  |
@@ -43,7 +42,6 @@ Feature: EAP 7 Openshift datasources
     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test-TEST_part on XPath //*[local-name()='database-data-store']/@partition
     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value -1 on XPath //*[local-name()='database-data-store']/@refresh-interval
 
-  @jboss-eap-7 @jboss-eap-tech-preview
   Scenario: Test background-validation configuration with custom background-validation-milis value
     When container is started with env
       | variable                                  | value                |
