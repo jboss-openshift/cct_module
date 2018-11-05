@@ -12,8 +12,7 @@ chmod 777 \
 	/etc/pki/ca-trust/source/anchors \
 	/etc/pki/ca-trust/extracted/pem
 
-# XXX this script needs to be copied to wherever the runtime scripts go
-# trust-ose-cert.sh
-cp "${ARTIFACTS_DIR}/trust-ose-cert.sh" /opt/jboss
-chmod +x /opt/jboss/trust-ose-cert.sh
-# temp path
+d=/opt/jboss/container/java/certs
+mkdir -p "$d"
+cp "${ARTIFACTS_DIR}/trust-ose-cert.sh" "$d"
+chmod +x "$d/trust-ose-cert.sh"

@@ -5,3 +5,6 @@ source "${JBOSS_CONTAINER_UTIL_LOGGING_MODULE}/logging.sh"
 function s2i_core_env_init_hook() {
   S2I_TARGET_DATA_DIR="${S2I_TARGET_DATA_DIR:-${JAVA_DATA_DIR:-/deployments/data}}"
 }
+
+# Trust OpenShift CA, if provided
+/opt/jboss/container/java/certs/trust-ose-cert.sh

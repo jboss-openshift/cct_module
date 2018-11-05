@@ -19,3 +19,4 @@ modules:
   - name: jboss.container.hawkular.bash
   - name: jboss.container.jolokia.bash
   - name: jboss.container.util.logging.bash
+  - name: jboss.container.java.certs.bash

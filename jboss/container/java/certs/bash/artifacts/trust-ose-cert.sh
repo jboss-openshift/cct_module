@@ -2,8 +2,8 @@
 set -u
 set -e
 
-cp /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
-	/etc/pki/ca-trust/source/anchors/
-/usr/bin/update-ca-trust
-
-
+ca=/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+if test -r "$ca" ; then
+    cp "$ca" /etc/pki/ca-trust/source/anchors/
+    /usr/bin/update-ca-trust
+fi
