@@ -3,6 +3,11 @@ name: jboss.container.java.certs.bash
 version: '1.0'
 description: Trust runtime-supplied OpenShift/Kubernetes CA
 
+envs:
+- name: JAVA_DISABLE_TRUST_OPENSHIFT_CA
+  example: true
+  description: When defined, the container will not automatically trust a CA certificate provided by OpenShift at run-time.
+
 execute:
 - script: configure.sh
   user: root
