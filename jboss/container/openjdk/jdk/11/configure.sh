@@ -15,3 +15,11 @@ fi
 if [ -n "$(yum list installed java-1.8.0-openjdk |grep java-1.8.0-openjdk)" ]; then
     rpm -e --nodeps java-1.8.0-openjdk
 fi
+
+JAVA_SECURITY_FILE=/usr/lib/jvm/java/conf/security/java.security
+SECURERANDOM=securerandom.source
+if grep -q "^$SECURERANDOM=.*" $JAVA_SECURITY_FILE; then
+    sed -i "s|^$SECURERANDOM=.*|$SECURERANDOM=file:/dev/urandom|" $JAVA_SECURITY_FILE
+else
+    echo $SECURERANDOM=file:/dev/urandom >> $JAVA_SECURITY_FILE
+fi
