@@ -12,3 +12,5 @@ chmod ug+x ${ARTIFACTS_DIR}/opt/jboss/container/openjdk/jdk/*
 pushd ${ARTIFACTS_DIR}
 cp -pr * /
 popd
+
+echo securerandom.source=file:/dev/urandom >> /usr/lib/jvm/java/jre/lib/security/java.security
