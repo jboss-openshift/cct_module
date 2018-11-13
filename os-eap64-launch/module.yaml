@@ -8,7 +8,7 @@ modules:
   - name: jboss.container.maven.default.bash
   - name: os-eap-launch
   - name: os-eap-node-name
-  - name: os-partition-txnrecovery
+  - name: os-eap-txnrecovery
   - name: os-eap-migration
 
 execute:

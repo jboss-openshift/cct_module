@@ -7,7 +7,7 @@ execute:
   user: '185'
 
 artifacts:
-- path: txn-recovery-marker-jdbc-common-1.1.1.Final-redhat-00001.jar
-  md5: 3f6ec0ef9beb614fb20e1d065be0b99d
-- path: txn-recovery-marker-jdbc-hibernate5-1.1.1.Final-redhat-00001.jar
-  md5: 023d13315de9beade60f337b9a3d801b
+- path: txn-recovery-marker-jdbc-common-1.1.2.Final-redhat-00001.jar
+  md5: 252aa2b4bcded8e5bf8a7087ad7bbbeb
+- path: txn-recovery-marker-jdbc-hibernate5-1.1.2.Final-redhat-00001.jar
+  md5: cd68ad886a759d21f8dd0cb7646601ee
