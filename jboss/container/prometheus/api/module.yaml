@@ -1,0 +1,19 @@
+schema_version: 1
+
+name: jboss.container.prometheus.api
+version: '1.0'
+description: ^
+  Defines environment variables used for configuring the Prometheus Java agent.
+  Modules providing support for configuring Prometheus should use the variables
+  listed within this module to configure Prometheus appropriately.
+
+envs:
+- name: AB_PROMETHEUS_ENABLE
+  description: Enable the use of the Prometheus agent
+  example: true
+- name: AB_PROMETHEUS_JMX_EXPORTER_PORT
+  description: Port to use for the Prometheus JMX Exporter.
+  example: 9799
+- name: AB_PROMETHEUS_JMX_EXPORTER_CONFIG
+  description: Path to configuration to use for the Prometheus JMX Exporter
+  example: /path/to/my/jmx-exporter-config.yaml

@@ -1,0 +1,27 @@
+#!/bin/sh
+# ==============================================================================
+# Configure JVM options for Prometheus Agent
+#
+# Usage: JAVA_OPTS="$JAVA_OPTS $(source ${JBOSS_CONTAINER_PROMETHEUS_MODULE}/prometheus-opts && get_prometheus_opts)"
+#
+# Env Vars respected:
+#
+# AB_PROMETHEUS_ENABLE: Enable the use of the Prometheus agent.
+#
+# AB_PROMETHEUS_JMX_EXPORTER_PORT: Port to use for the Prometheus JMX Exporter.
+#   Defaults to 9799.
+#
+# AB_PROMETHEUS_JMX_EXPORTER_CONFIG: Path to configuration to use for the
+#   Prometheus JMX Exporter.  Defaults to:
+#   /opt/jboss/container/prometheus/etc/jmx-exporter-config.yaml
+#
+
+source "$JBOSS_CONTAINER_UTIL_LOGGING_MODULE/logging.sh"
+
+# echo's a complete -javaagent option based on the above variables.
+function get_prometheus_opts() {
+    if [ "${AB_PROMETHEUS_ENABLE^^}" = "TRUE" ]; then
+        echo "-javaagent:${JBOSS_CONTAINER_PROMETHEUS_MODULE}/jmx_prometheus_javaagent.jar=${AB_PROMETHEUS_JMX_EXPORTER_PORT:-9799}:${AB_PROMETHEUS_JMX_EXPORTER_CONFIG:-/opt/jboss/container/prometheus/etc/jmx-exporter-config.yaml}"
+    fi
+    echo ""
+}

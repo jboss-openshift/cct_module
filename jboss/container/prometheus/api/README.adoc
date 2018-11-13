@@ -6,12 +6,12 @@
 
 
 
-= link:./module.yaml[jboss.container.java.s2i.bash]
+= link:./module.yaml[jboss.container.prometheus.api]
 :toc:
 :toc-placement!:
 :toclevels: 5
 
-Customization of common Maven S2I for Java S2I image.
+^ Defines environment variables used for configuring the Prometheus Java agent. Modules providing support for configuring Prometheus should use the variables listed within this module to configure Prometheus appropriately.
 
 toc::[]
 
@@ -25,13 +25,14 @@ The following environment variables are used to configure the functionality prov
 
 |=======================================================================
 |Name |Description |Example
+|AB_PROMETHEUS_ENABLE |Enable the use of the Prometheus agent |True
+|AB_PROMETHEUS_JMX_EXPORTER_CONFIG |Path to configuration to use for the Prometheus JMX Exporter |/path/to/my/jmx-exporter-config.yaml
+|AB_PROMETHEUS_JMX_EXPORTER_PORT |Port to use for the Prometheus JMX Exporter. |9799
 |=======================================================================
 
 The following environment variables will be configured on the image:
 |=======================================================================
 |Name |Value
-|JBOSS_CONTAINER_JAVA_S2I_MODULE |/opt/jboss/container/java/s2i
-|S2I_SOURCE_DEPLOYMENTS_FILTER |*.jar
 |=======================================================================
 
 == Resources
@@ -48,20 +49,7 @@ No additional RPM package repositories are required to install listed RPMs.
 == Modules
 
 === Included Modules
-
-The following modules will be installed with this module:
-
-link:../../../../../jboss/container/hawkular/bash/README.adoc[jboss.container.hawkular.bash]
-
-link:../../../../../jboss/container/java/run/bash/README.adoc[jboss.container.java.run.bash]
-
-link:../../../../../jboss/container/jolokia/bash/README.adoc[jboss.container.jolokia.bash]
-
-link:../../../../../jboss/container/maven/s2i/bash/README.adoc[jboss.container.maven.s2i.bash]
-
-link:../../../../../jboss/container/prometheus/bash/README.adoc[jboss.container.prometheus.bash]
-
-link:../../../../../jboss/container/util/logging/bash/README.adoc[jboss.container.util.logging.bash]
+No additional modules will be installed through this module.
 
 === Module Repositories
 No module repositories defined.

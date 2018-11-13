@@ -14,8 +14,18 @@ s2i_core_env_init
 # XXX: Not sure why we need to setup maven, but this was part of the old s2i-setup script, so...
 source "${JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE}/scl-enable-maven"
 
-# Always include jolokia-opts, which can be empty if switched off via env
-export JAVA_OPTS="${JAVA_OPTS:-${JAVA_OPTIONS}} $(${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia-opts) $(source ${JBOSS_CONTAINER_HAWKULAR_MODULE}/hawkular-opts && get_hawkular_opts)"
+JAVA_OPTS="${JAVA_OPTS:-${JAVA_OPTIONS}}"
+if [ -f "${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia-opts" ]; then
+    # Always include jolokia-opts, which can be empty if switched off via env
+    JAVA_OPTS="${JAVA_OPTS} $(${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia-opts)"
+fi
+if [ -f "${JBOSS_CONTAINER_HAWKULAR_MODULE}/hawkular-opts" ]; then
+    JAVA_OPTS="${JAVA_OPTS} $(source ${JBOSS_CONTAINER_HAWKULAR_MODULE}/hawkular-opts && get_hawkular_opts)"
+fi
+if [ -f "${JBOSS_CONTAINER_PROMETHEUS_MODULE}/prometheus-opts" ]; then
+    JAVA_OPTS="${JAVA_OPTS} $(source ${JBOSS_CONTAINER_PROMETHEUS_MODULE}/prometheus-opts && get_prometheus_opts)"
+fi
+export JAVA_OPTS
 export JAVA_OPTIONS="$JAVA_OPTS"
 
 if [ -f "${S2I_TARGET_DEPLOYMENTS_DIR}/bin/run.sh" ]; then

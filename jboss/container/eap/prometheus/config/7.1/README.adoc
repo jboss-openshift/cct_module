@@ -6,12 +6,12 @@
 
 
 
-= link:./module.yaml[jboss.container.java.s2i.bash]
+= link:./module.yaml[jboss.container.eap.prometheus.config]
 :toc:
 :toc-placement!:
 :toclevels: 5
 
-Customization of common Maven S2I for Java S2I image.
+Provides Prometheus JMX Exporter configuration for use with EAP 7.1
 
 toc::[]
 
@@ -30,8 +30,6 @@ The following environment variables are used to configure the functionality prov
 The following environment variables will be configured on the image:
 |=======================================================================
 |Name |Value
-|JBOSS_CONTAINER_JAVA_S2I_MODULE |/opt/jboss/container/java/s2i
-|S2I_SOURCE_DEPLOYMENTS_FILTER |*.jar
 |=======================================================================
 
 == Resources
@@ -51,17 +49,7 @@ No additional RPM package repositories are required to install listed RPMs.
 
 The following modules will be installed with this module:
 
-link:../../../../../jboss/container/hawkular/bash/README.adoc[jboss.container.hawkular.bash]
-
-link:../../../../../jboss/container/java/run/bash/README.adoc[jboss.container.java.run.bash]
-
-link:../../../../../jboss/container/jolokia/bash/README.adoc[jboss.container.jolokia.bash]
-
-link:../../../../../jboss/container/maven/s2i/bash/README.adoc[jboss.container.maven.s2i.bash]
-
-link:../../../../../jboss/container/prometheus/bash/README.adoc[jboss.container.prometheus.bash]
-
-link:../../../../../jboss/container/util/logging/bash/README.adoc[jboss.container.util.logging.bash]
+link:../../../../../jboss/container/eap/prometheus/agent/README.adoc[jboss.container.eap.prometheus.agent]
 
 === Module Repositories
 No module repositories defined.
