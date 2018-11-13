@@ -1,7 +1,7 @@
 schema_version: 1
-name: os-partition-txnrecovery
+name: os-eap-txnrecovery
 version: '1.0'
-description: Lock-free os-partition script package.
+description: Transaction recovery migration pod script package.
 execute:
 - script: install_as_root.sh
 packages:

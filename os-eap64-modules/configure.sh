@@ -5,7 +5,7 @@ SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 SOURCES_DIR=/tmp/artifacts
 VERSION="1.0.3.Final-redhat-1"
-VERSION_TXN_MARKER="1.1.1.Final-redhat-00001"
+VERSION_TXN_MARKER="1.1.2.Final-redhat-00001"
 
 # Add new "openshift" layer
 # includes module definitions for OpenShift PING and OAuth

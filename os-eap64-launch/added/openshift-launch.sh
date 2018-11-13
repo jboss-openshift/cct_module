@@ -22,14 +22,26 @@ function init_data_dir() {
   fi
 }
 
+
 if [ "${SPLIT_DATA^^}" = "TRUE" ]; then
+  # SPLIT_DATA defines shared volume for multiple pods mounted at partitioned_data where server saves data 
+  #  migration pod is started to supervise the shared volume and cleaning it
   source /opt/partition/partitionPV.sh
 
   DATA_DIR="${JBOSS_HOME}/standalone/partitioned_data"
 
-  partitionPV "${DATA_DIR}" "${SPLIT_LOCK_TIMEOUT:-30}"
+  startApplicationServer "${DATA_DIR}" "${SPLIT_LOCK_TIMEOUT:-30}"
+elif [ -n "${TX_DATABASE_PREFIX_MAPPING}" ]; then
+  # TX_DATABASE_PREFIX_MAPPING defines to save object store data into database
+  #  migration pod for to clean in-doubt transactions is started, saving data to the same database
+  source /opt/partition/partitionPV.sh
+
+  DATA_DIR="${JBOSS_HOME}/standalone/data"
+
+  startApplicationServer "${DATA_DIR}" "${SPLIT_LOCK_TIMEOUT:-30}"
 else
   source $JBOSS_HOME/bin/launch/configure.sh
+  # no migration pod is run
 
   log_info "Running $JBOSS_IMAGE_NAME image, version $JBOSS_IMAGE_VERSION"
 
