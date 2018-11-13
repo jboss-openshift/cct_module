@@ -1,0 +1,11 @@
+schema_version: 1
+name: jboss.container.eap.prometheus.config
+version: '6.4'
+description: Provides Prometheus JMX Exporter configuration for use with EAP 6.4
+
+modules:
+  install:
+  - name: jboss.container.eap.prometheus.agent
+
+execute:
+- script: configure.sh
