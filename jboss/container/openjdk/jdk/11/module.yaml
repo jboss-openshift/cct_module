@@ -5,11 +5,11 @@ description: "Installs the JDK for OpenJDK 11."
 version: "11"
 
 labels:
-- name: "org.jboss.container.product"
+- name: "org.jboss.product"
   value: "openjdk"
-- name: "org.jboss.container.product.version"
+- name: "org.jboss.product.version"
   value: "11.0"
-- name: "org.jboss.container.product.openjdk.version"
+- name: "org.jboss.product.openjdk.version"
   value: "11.0"
 
 envs:
