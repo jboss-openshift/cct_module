@@ -1,4 +1,5 @@
 
+# this used to generate extra JVM option flags, but they are no longer necessary
 function openjdk_jvm_options() {
-    echo "-XX:+UnlockExperimentalVMOptions "
+    echo
 }
