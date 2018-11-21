@@ -20,7 +20,7 @@ Feature: OpenShift SSO tests
   Scenario: check for keycloak datasource
     Given XML namespaces
       | prefix | url                           |
-      | ns     | urn:jboss:domain:datasources:4.0 |
+      | ns     | urn:jboss:domain:datasources:5.0 |
     When container is ready
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/KeycloakDS on XPath //ns:datasource/@jndi-name    
 
@@ -70,10 +70,9 @@ Feature: OpenShift SSO tests
          | username             | admin                     |
          | password             | admin                     |
          | expected_status_code | 401                       |
-         | expected_phrase      | Bearer                    |
 
   Scenario: check nonHttpProxy escaping
     When container is started with env
        | variable                  | value           |
        | NO_PROXY                  | patriots.com    |
-    Then container log should contain http.nonProxyHosts = "patriots.com"
+    Then container log should contain http.nonProxyHosts = patriots.com
