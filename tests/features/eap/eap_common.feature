@@ -60,7 +60,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
     When container is ready
     Then container log should contain -javaagent:/opt/jboss/container/jolokia/jolokia.jar=config=/opt/jboss/container/jolokia/etc/jolokia.properties
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: jgroups-encrypt
     When container is started with env
        | variable                                     | value                                  |
@@ -80,7 +80,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
      # Make sure the SYM_ENCRYPT protocol is specified before pbcast.NAKACK for tcp stack
      And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value pbcast.NAKACK on XPath //ns:stack[@name='tcp']/ns:protocol[@type='SYM_ENCRYPT']/following-sibling::*[1]/@type
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   # https://issues.jboss.org/browse/CLOUD-295
   # https://issues.jboss.org/browse/CLOUD-336
   Scenario: Check if jgroups is secure
@@ -89,7 +89,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
        | JGROUPS_CLUSTER_PASSWORD | asdfasdf |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='AUTH']
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7 @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups AUTH protocol is disabled when using SYM_ENCRYPT and JGROUPS_CLUSTER_PASSWORD undefined
     When container is started with env
        | variable                                     | value                                  |
@@ -148,14 +148,14 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
        | JGROUPS_ENCRYPT_PASSWORD                     | mykeystorepass                         |
     Then container log should contain WARN Detected partial JGroups encryption configuration, the communication within the cluster WILL NOT be encrypted.
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups encryption requires AUTH protocol to be set when using ASYM_ENCRYPT protocol
     When container is started with env
        | variable                                     | value                                   |
        | JGROUPS_ENCRYPT_PROTOCOL                     | ASYM_ENCRYPT                            |
     Then container log should contain WARN No password defined for JGroups cluster. AUTH protocol is required when using JGroups ASYM_ENCRYPT cluster traffic encryption protocol.
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups encryption issues a warning when using ASYM_ENCRYPT with JGROUPS_ENCRYPT_SECRET defined
     When container is started with env
        | variable                                     | value                                   |
@@ -163,7 +163,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
        | JGROUPS_ENCRYPT_SECRET                       | jdg_jgroups_encrypt_secret              |
     Then container log should contain WARN The specified JGroups SYM_ENCRYPT JCEKS keystore definition will be ignored when using ASYM_ENCRYPT.
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups encryption issues a warning when using ASYM_ENCRYPT with JGROUPS_ENCRYPT_NAME defined
     When container is started with env
        | variable                                     | value                                   |
@@ -171,7 +171,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
        | JGROUPS_ENCRYPT_NAME                         | jboss                                   |
     Then container log should contain WARN The specified JGroups SYM_ENCRYPT JCEKS keystore definition will be ignored when using ASYM_ENCRYPT.
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups encryption issues a warning when using ASYM_ENCRYPT with JGROUPS_ENCRYPT_PASSWORD defined
     When container is started with env
        | variable                                     | value                                   |
@@ -179,7 +179,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
        | JGROUPS_ENCRYPT_PASSWORD                     | mykeystorepass                          |
     Then container log should contain WARN The specified JGroups SYM_ENCRYPT JCEKS keystore definition will be ignored when using ASYM_ENCRYPT.
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups encryption issues a warning when using ASYM_ENCRYPT with JGROUPS_ENCRYPT_KEYSTORE_DIR defined
     When container is started with env
        | variable                                     | value                                   |
@@ -187,7 +187,7 @@ Feature: Openshift EAP common tests (EAP and EAP derived images)
        | JGROUPS_ENCRYPT_KEYSTORE_DIR                 | /etc/jgroups-encrypt-secret-volume      |
     Then container log should contain WARN The specified JGroups SYM_ENCRYPT JCEKS keystore definition will be ignored when using ASYM_ENCRYPT.
 
-  @redhat-sso-7  @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
+  @redhat-sso-7/sso72-openshift @jboss-datavirt-6/datavirt63-openshift @jboss-datavirt-6/datavirt64-openshift
   Scenario: Check jgroups encryption issues a warning when using ASYM_ENCRYPT with JGROUPS_ENCRYPT_KEYSTORE file defined
     When container is started with env
        | variable                                     | value                                   |
