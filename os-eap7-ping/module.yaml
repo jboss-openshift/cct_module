@@ -25,11 +25,11 @@ envs:
   description: "Clustering labels selector."
 
 artifacts:
-- path: openshift-ping-common-1.2.1.Final-redhat-1.jar
-  md5: 7a6db2d84d9c6326363522f97f2d0f05
-- path: openshift-ping-dns-1.2.1.Final-redhat-1.jar
-  md5: fbd94724882e9ad41d1c4db52875b8d4
-- path: openshift-ping-kube-1.2.1.Final-redhat-1.jar
-  md5: adb78556f8d3b0f22da6d6e5d446d059
+- path: openshift-ping-common-1.2.3.Final-redhat-1.jar
+  md5: 2722e17d2b230184572b9e6539195c4d
+- path: openshift-ping-dns-1.2.3.Final-redhat-1.jar
+  md5: a87fd933f56ef7619d9ca676e7a3d208
+- path: openshift-ping-kube-1.2.3.Final-redhat-1.jar
+  md5: 3c8e75aad63eeb5379530d1ee76a4122
 - path: oauth-20100527.jar
   md5: 91c7c70579f95b7ddee95b2143a49b41
