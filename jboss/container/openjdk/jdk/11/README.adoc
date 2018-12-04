@@ -19,11 +19,11 @@ toc::[]
 
 The following labels will be defined on the image:
 
-org.jboss.container.product:: openjdk
+org.jboss.product:: openjdk
 
-org.jboss.container.product.openjdk.version:: 11.0
+org.jboss.product.openjdk.version:: 11.0
 
-org.jboss.container.product.version:: 11.0
+org.jboss.product.version:: 11.0
 
 == Environment Variables
 
@@ -61,7 +61,7 @@ No additional RPM package repositories are required to install listed RPMs.
 
 The following modules will be installed with this module:
 
-link:../../../../jboss/container/openjdk/base/README.adoc[jboss.container.openjdk.base]
+link:../../../../jboss/container/user/README.adoc[jboss.container.user]
 
 === Module Repositories
 No module repositories defined.
