@@ -19,6 +19,8 @@ envs:
   value: "openjdk"
 - name: "JAVA_VERSION"
   value: "11.0"
+- name: JBOSS_CONTAINER_OPENJDK_JDK_MODULE
+  value: /opt/jboss/container/openjdk/jdk
 
 packages:
   install:
