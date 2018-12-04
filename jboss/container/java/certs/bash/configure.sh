@@ -16,3 +16,6 @@ d=/opt/jboss/container/java/certs
 mkdir -p "$d"
 cp "${ARTIFACTS_DIR}/trust-ose-cert.sh" "$d"
 chmod +x "$d/trust-ose-cert.sh"
+
+ln -s /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt \
+        /etc/pki/ca-trust/source/anchors/ose-service-ca.crt
