@@ -1,4 +1,0 @@
-#!/bin/sh
-set -ue
-source "$JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE"/maven.sh
-s2i_save_build_artifacts
