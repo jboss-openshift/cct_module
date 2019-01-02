@@ -202,9 +202,9 @@ function add_maven_mirrors() {
 
   IFS=',' read -a maven_mirror_prefixes <<< ${MAVEN_MIRRORS}
   for maven_mirror_prefix in ${maven_mirror_prefixes[@]}; do
-    local mirror_id=$(_maven_find_env "${maven_mirror_prefix}_MAVEN_MIRROR_ID" "mirror${counter}")
-    local mirror_url=$(_maven_find_env "${maven_mirror_prefix}_MAVEN_MIRROR_URL")
-    local mirror_of=$(_maven_find_env "${maven_mirror_prefix}_MAVEN_MIRROR_OF" "external:*")
+    local mirror_id=$(_maven_find_prefixed_env "${maven_mirror_prefix}" "MAVEN_MIRROR_ID" "mirror${counter}")
+    local mirror_url=$(_maven_find_prefixed_env "${maven_mirror_prefix}" "MAVEN_MIRROR_URL")
+    local mirror_of=$(_maven_find_prefixed_env "${maven_mirror_prefix}" "MAVEN_MIRROR_OF" "external:*")
 
     if [ -z "${mirror_url}" ]; then
       log_warning "Variable \"${maven_mirror_prefix}_MAVEN_MIRROR_URL\" not set. Skipping maven mirror setup for the prefix \"${maven_mirror_prefix}\"."
