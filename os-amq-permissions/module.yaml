@@ -1,6 +1,0 @@
-schema_version: 1
-name: os-amq-permissions
-version: '1.0'
-description: Legacy os-amq-permissions script package.
-execute:
-- script: install.sh
