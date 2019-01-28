@@ -15,7 +15,8 @@ execute:
 - script: backward_compatibility.sh
 
 artifacts:
-- path: hawkular-javaagent-1.0.1.Final-redhat-2-shaded.jar
+- name: hawkular-javaagent
+  target: hawkular-javaagent-1.0.1.Final-redhat-2-shaded.jar
   md5: f97f623e5b614a7b6d1eb5ff7158027b
 
 modules:

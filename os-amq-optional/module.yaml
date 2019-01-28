@@ -15,7 +15,9 @@ envs:
   example: my-project
 
 artifacts:
-- path: openshift-activemq-plugin-1.2.1.Final-redhat-1.jar
+- name: openshift-activemq-plugin
+  target: openshift-activemq-plugin-1.2.1.Final-redhat-1.jar
   md5: e250016affe0990f04b92cc9cea7578e
-- path: jboss-dmr-1.2.2.Final-redhat-1.jar
+- name: jboss-dmr
+  target: jboss-dmr-1.2.2.Final-redhat-1.jar
   md5: 8df4cbf6f39c3bce21de16ad708084d5
