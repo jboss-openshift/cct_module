@@ -13,7 +13,7 @@ LOG=/tmp/liveness-log
 COUNT=30
 SLEEP=1
 DEBUG_SCRIPT=false
-PROBE_IMPL="probe.eap.dmr.EapProbe probe.jdg.jolokia.JdgProbe"
+PROBE_IMPL="probe.datagrid.dmr.DatagridProbe"
 
 if [ $# -gt 0 ] ; then
     COUNT=$1
