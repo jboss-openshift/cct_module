@@ -28,7 +28,7 @@ function maven_s2i_custom_binary_build() {
     binary_dir="${S2I_SOURCE_DIR}"
   fi
   log_info "Copying binaries from ${binary_dir} to ${S2I_TARGET_DEPLOYMENTS_DIR} ..."
-  rsync -l --out-format='%n' "${binary_dir}"/ "${S2I_TARGET_DEPLOYMENTS_DIR}"
+  rsync -rl --out-format='%n' "${binary_dir}"/ "${S2I_TARGET_DEPLOYMENTS_DIR}"
 }
 
 function maven_s2i_deploy_artifacts_override() {
