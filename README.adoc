@@ -1,19 +1,58 @@
 = Cloud Enablement module
 
-This repository serves as a temporary public link:https://github.com/concrt/concreate[Concreate] module for building JBoss Openshift container images. This repository is an enhanced copy of shell scripts used to build JBoss images for OpenShift.
+This is a repository of link:http://cekit.io[Cekit] modules, shared by a number
+of related link:https://openshift.org[OpenShift] container images.
+
+== Update process
+
+Releases of this repository are coordinated over a four-week sprint cycle,
+divided into three weeks of development and one week of testing/release
+preparation. Sprint cycles overlap by one week: the first week of development
+coincides with the testing/release phase of the previous sprint. A reference
+(branch or tag) is created for each Sprint during the testing/release phase.
+
+Examples of the schedule for recent sprints:
+
+ * Sprint-28
+   - Development began 19 November 2018
+   - Testing/release began 10 December 2018
+   - Sprint closed 16 December 2018
+
+== Images using these modules
+
+If you are using these modules, please add your image to this list!
+
+ * https://github.com/jboss-container-images/jboss-amq-6-openshift-image[jboss-amq-6-openshift-image]
+ * https://github.com/jboss-container-images/jboss-bpmsuite-7-openshift-image[jboss-bpmsuite-7-openshift-image]
+ * https://github.com/jboss-container-images/jboss-datagrid-6-openshift-image[jboss-datagrid-6-openshift-image]
+ * https://github.com/jboss-container-images/jboss-datagrid-7-openshift-image[jboss-datagrid-7-openshift-image]
+ * https://github.com/jboss-container-images/jboss-datavirt-6-openshift-image[jboss-datavirt-6-openshift-image]
+ * https://github.com/jboss-container-images/jboss-eap-6-openshift-image[jboss-eap-6-openshift-image]
+ * https://github.com/jboss-container-images/jboss-eap-7-image[jboss-eap-7-image]
+ * https://github.com/jboss-container-images/jboss-eap-7-openshift-image[jboss-eap-7-openshift-image]
+ * https://github.com/jboss-container-images/jboss-kieserver-6-openshift-image[jboss-kieserver-6-openshift-image]
+ * https://github.com/jboss-container-images/jboss-webserver-3-image[jboss-webserver-3-image]
+ * https://github.com/jboss-container-images/jboss-webserver-3-openshift-image[jboss-webserver-3-openshift-image]
+ * https://github.com/jboss-container-images/jboss-webserver-5-image[jboss-webserver-5-image]
+ * https://github.com/jboss-container-images/jboss-webserver-5-openshift-image[jboss-webserver-5-openshift-image]
+ * https://github.com/jboss-container-images/openjdk[openjdk]
+ * https://github.com/jboss-container-images/redhat-openjdk-18-openshift-image[redhat-openjdk-18-openshift-image]
+ * https://github.com/jboss-container-images/redhat-sso-7-openshift-image[redhat-sso-7-openshift-image]
+ * https://github.com/jboss-container-images/rhba-7-openshift-image[rhba-7-openshift-image]
+ * https://github.com/jboss-container-images/rhdm-7-openshift-image[rhdm-7-openshift-image]
+ * https://github.com/jboss-container-images/rhpam-7-openshift-image[rhpam-7-openshift-image]
 
 == FAQ
 
 === Why the name?
 
-*cct* (container configuration tool) was the name of a precursor tool to *concreate*. This module bundle was originally created for use with *cct*, hence *cct_module*, but has outlived it.
-
-=== Temporary?
-
-We are in the process of refactoring the modules. The end-goal is likely to be splitting this repository up into separate modules aligned by product.
+*cct* (container configuration tool) was the name of a precursor tool to
+*cekit*. This module bundle was originally created for use with *cct*,
+hence *cct_module*, but has outlived it.
 
 == See also
 
- * https://github.com/jboss-container-images[Red Hat Middleware Container Images]
+ * http://cekit.io[Cekit]
+ * https://github.com/jboss-container-images[Red Hat Middleware OpenShift Container Images]
  * http://registry.access.redhat.com/[Red Hat Container Catalog] 
  * https://www.openshift.com/[Red Hat OpenShift]
