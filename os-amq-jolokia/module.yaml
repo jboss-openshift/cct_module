@@ -1,6 +1,0 @@
-schema_version: 1
-name: os-amq-jolokia
-version: '1.0'
-description: Legacy os-amq-jolokia script package.
-execute:
-- script: install.sh

@@ -1,7 +1,0 @@
-schema_version: 1
-name: os-amq-s2i
-version: '1.0'
-description: Legacy os-amq-s2i script package.
-modules:
-  install:
-  - name: jboss.container.amq.s2i.bash
