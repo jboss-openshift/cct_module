@@ -1,6 +1,0 @@
-schema_version: 1
-name: os-amq-secure-mgmt-console
-version: '1.0'
-description: Legacy os-amq-secure-mgmt-console script package.
-execute:
-- script: install.sh
