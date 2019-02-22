@@ -17,3 +17,6 @@ run:
       user: 185
       cmd:
           - "/opt/eap/bin/openshift-launch.sh"
+
+# See os-sso/module.yaml for the description of SSO_ADMIN_USERNAME,
+# SSO_ADMIN_PASSWORD, SSO_SERVICE_USERNAME, and SSO_SERVICE_PASSWORD variables
