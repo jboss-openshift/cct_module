@@ -11,8 +11,6 @@ modules:
   - name: os-eap-migration
 
 packages:
-      repositories:
-          - jboss-os
       install:
           - openssl
 
