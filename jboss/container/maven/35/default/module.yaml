@@ -1,6 +1,6 @@
 schema_version: 1
 name: jboss.container.maven.35.bash
-version: '1.0'
+version: '3.5'
 description: Provides Maven v3.5 capabilities to an image.
 
 labels:
