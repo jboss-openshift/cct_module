@@ -12,6 +12,7 @@ packages:
   - unzip
   - tar
   - rsync
+  - shadow-utils # groupadd
 
 execute:
 - script: configure.sh
