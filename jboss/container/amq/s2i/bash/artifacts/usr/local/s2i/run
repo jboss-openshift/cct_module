@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec $AMQ_HOME/bin/launch.sh
