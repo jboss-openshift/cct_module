@@ -14,16 +14,12 @@ cp -pr * /
 popd
 
 # maven pulls in jdk8, so we need to remove them if another jdk is the default
-if ! $(ls -la /etc/alternatives/java |grep -q "java-1\.8\.0"); then
-    if [ -n "$(rpm -q java-1.8.0-openjdk-devel |grep java-1.8.0-openjdk-devel)" ]; then
-        rpm -e --nodeps java-1.8.0-openjdk-devel
-    fi
-
-    if [ -n "$(rpm -q java-1.8.0-openjdk-headless |grep java-1.8.0-openjdk-headless)" ]; then
-        rpm -e --nodeps java-1.8.0-openjdk-headless
-    fi
-
-    if [ -n "$(rpm -q java-1.8.0-openjdk |grep java-1.8.0-openjdk)" ]; then
-        rpm -e --nodeps java-1.8.0-openjdk
-    fi
+if ! readlink /etc/alternatives/java | grep -q "java-1\.8\.0"; then
+    for pkg in java-1.8.0-openjdk-devel \
+               java-1.8.0-openjdk-headless \
+               java-1.8.0-openjdk; do
+        if rpm -q "$pkg"; then
+            rpm -e --nodeps "$pkg"
+        fi
+    done
 fi
