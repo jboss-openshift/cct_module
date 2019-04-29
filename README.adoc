@@ -24,8 +24,6 @@ If you are using these modules, please add your image to this list!
 
  * https://github.com/jboss-container-images/jboss-amq-6-openshift-image[jboss-amq-6-openshift-image]
  * https://github.com/jboss-container-images/jboss-bpmsuite-7-openshift-image[jboss-bpmsuite-7-openshift-image]
- * https://github.com/jboss-container-images/jboss-datagrid-6-openshift-image[jboss-datagrid-6-openshift-image]
- * https://github.com/jboss-container-images/jboss-datagrid-7-openshift-image[jboss-datagrid-7-openshift-image]
  * https://github.com/jboss-container-images/jboss-datavirt-6-openshift-image[jboss-datavirt-6-openshift-image]
  * https://github.com/jboss-container-images/jboss-eap-6-openshift-image[jboss-eap-6-openshift-image]
  * https://github.com/jboss-container-images/jboss-eap-7-image[jboss-eap-7-image]

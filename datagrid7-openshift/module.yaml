@@ -1,7 +1,0 @@
-schema_version: 1
-name: datagrid7-openshift
-version: '1.0'
-description: Legacy datagrid7-openshift script package.
-execute:
-- script: configure.sh
-  user: '185'
