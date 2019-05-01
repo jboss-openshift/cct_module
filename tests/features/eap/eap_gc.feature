@@ -1,4 +1,4 @@
-@jboss-decisionserver-6 @jboss-processserver-6 @jboss @jboss @jboss-datavirt-6 
+@jboss-decisionserver-6 @jboss-processserver-6 @jboss-datavirt-6 
 Feature: Openshift OpenJDK GC tests
 
   Scenario: Check default GC configuration
