@@ -8,4 +8,4 @@ ADDED_DIR=${SCRIPT_DIR}/added
 # Link mysql java driver from rpm
 ln -s /usr/share/java/mysql-connector-java.jar $JWS_HOME/lib/mysql-connector-java.jar
 ln -s /usr/share/java/postgresql-jdbc.jar $JWS_HOME/lib/postgresql-jdbc.jar
-ln -s /opt/rh/rh-mongodb32/root/usr/share/java/mongo-java-driver/mongo.jar $JWS_HOME/lib/mongo.jar
+ln -s /opt/rh/rh-mongodb36/root/usr/share/java/mongo-java-driver/mongo.jar $JWS_HOME/lib/mongo.jar
