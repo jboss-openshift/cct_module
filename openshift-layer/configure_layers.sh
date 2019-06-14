@@ -36,6 +36,11 @@ for module in "${MODULES[@]}"; do
 
       for jar_file in $source_dir/$module/*.jar; do
 
+        # make sure the source exists
+        if [ ! -f ${jar_file} ]; then
+          continue;
+        fi
+
         jar_name=$(basename "$jar_file")
 
         # Find the first position of the integer preceded by a minus (-) sign
