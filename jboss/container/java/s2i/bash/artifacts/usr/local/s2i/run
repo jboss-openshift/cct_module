@@ -19,9 +19,6 @@ if [ -f "${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia-opts" ]; then
     # Always include jolokia-opts, which can be empty if switched off via env
     JAVA_OPTS="${JAVA_OPTS} $(${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia-opts)"
 fi
-if [ -f "${JBOSS_CONTAINER_HAWKULAR_MODULE}/hawkular-opts" ]; then
-    JAVA_OPTS="${JAVA_OPTS} $(source ${JBOSS_CONTAINER_HAWKULAR_MODULE}/hawkular-opts && get_hawkular_opts)"
-fi
 if [ -f "${JBOSS_CONTAINER_PROMETHEUS_MODULE}/prometheus-opts" ]; then
     JAVA_OPTS="${JAVA_OPTS} $(source ${JBOSS_CONTAINER_PROMETHEUS_MODULE}/prometheus-opts && get_prometheus_opts)"
 fi
