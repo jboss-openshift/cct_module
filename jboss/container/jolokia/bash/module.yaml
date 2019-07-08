@@ -8,14 +8,14 @@ description: ^
 
 labels:
 - name: io.fabric8.s2i.version.jolokia
-  value: "1.5.0-redhat-1"
+  value: "1.6.2-redhat-00002"
 
 envs:
 - name: JBOSS_CONTAINER_JOLOKIA_MODULE
   value: /opt/jboss/container/jolokia
 # variable overrides/defaults
 - name: JOLOKIA_VERSION
-  value: "1.5.0"
+  value: "1.6.2"
 - name: AB_JOLOKIA_PASSWORD_RANDOM
   value: "true"
 - name: AB_JOLOKIA_AUTH_OPENSHIFT
@@ -31,9 +31,9 @@ execute:
 - script: backward_compatibility.sh
 
 artifacts:
-#- name: jolokia-jvm-agent.jar
-- url: https://maven.repository.redhat.com/ga/org/jolokia/jolokia-jvm/1.5.0.redhat-1/jolokia-jvm-1.5.0.redhat-1-agent.jar
-  md5: d31c6b1525e6d2d24062ef26a9f639a8
+- target: jolokia-jvm-1.6.2.redhat-00002-agent.jar
+  name: jolokia-jvm-1.6.2.redhat-00002-agent.jar
+  md5: 760f2fbaf6b142192f3cee2c99bfcbf8
 
 modules:
   install:
