@@ -48,6 +48,9 @@ envs:
 - name: GC_ADAPTIVE_SIZE_POLICY_WEIGHT
   description: The weighting given to the current GC time versus previous GC times.
   example: "90"
+- name: GC_METASPACE_SIZE
+  description: The initial metaspace size.
+  example: "20"
 - name: GC_MAX_METASPACE_SIZE
   description: The maximum metaspace size.
   example: "100"
