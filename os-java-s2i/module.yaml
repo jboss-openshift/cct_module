@@ -1,8 +1,0 @@
-schema_version: 1
-name: os-java-s2i
-version: '1.0'
-description: Legacy os-java-s2i script package.
-
-modules:
-  install:
-  - name: jboss.container.java.s2i.bash
