@@ -1,9 +1,0 @@
-schema_version: 1
-
-name: os-java-jolokia
-version: '1.0'
-description: Legacy os-java-jolokia script package.
-
-modules:
-  install:
-  - name: jboss.container.jolokia.bash
