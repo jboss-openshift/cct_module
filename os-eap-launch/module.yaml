@@ -6,8 +6,6 @@ execute:
 - script: configure.sh
   user: '185'
 packages:
-      repositories:
-          - jboss-os
       install:
           - hostname
 envs:
