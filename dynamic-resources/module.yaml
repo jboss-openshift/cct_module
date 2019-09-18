@@ -4,7 +4,7 @@ version: '1.0'
 description: Legacy dynamic-resources script package.
 modules:
   install:
-  - name: os-java-run
+  - name: jboss.container.java.jvm.bash
 execute:
 - script: install.sh
 envs:
