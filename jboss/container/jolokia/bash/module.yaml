@@ -31,8 +31,8 @@ execute:
 - script: backward_compatibility.sh
 
 artifacts:
-- target: jolokia-jvm-1.6.2.redhat-00002-agent.jar
-  name: jolokia-jvm-1.6.2.redhat-00002-agent.jar
+- name: jolokia-jvm
+  target: jolokia-jvm-1.6.2.redhat-00002-agent.jar
   md5: 760f2fbaf6b142192f3cee2c99bfcbf8
 
 modules:
