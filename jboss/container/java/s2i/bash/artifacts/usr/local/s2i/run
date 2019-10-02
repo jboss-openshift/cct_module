@@ -11,8 +11,11 @@ source "${JBOSS_CONTAINER_JAVA_S2I_MODULE}/s2i-core-hooks"
 # Global S2I variable setup
 s2i_core_env_init
 
-# XXX: Not sure why we need to setup maven, but this was part of the old s2i-setup script, so...
-source "${JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE}/scl-enable-maven"
+# CLOUD-3387: RHEL7-based images enable maven in the runtime environment. This
+# is not needed for RHEL8-based images.
+if test -r "${JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE}/scl-enable-maven"; then
+    source "${JBOSS_CONTAINER_MAVEN_DEFAULT_MODULE}/scl-enable-maven"
+fi
 
 JAVA_OPTS="${JAVA_OPTS:-${JAVA_OPTIONS}}"
 if [ -f "${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia-opts" ]; then
