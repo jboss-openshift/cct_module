@@ -1,0 +1,7 @@
+schema_version: 1
+name: jboss.container.java.rm-openjdk
+version: '1.0'
+description: Remove OpenJDK 1.8
+
+execute:
+- script: configure.sh
