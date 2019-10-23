@@ -13,5 +13,18 @@ pushd ${ARTIFACTS_DIR}
 cp -pr * /
 popd
 
-# XXX still needed?
-# echo securerandom.source=file:/dev/urandom >> /usr/lib/jvm/java/jre/lib/security/java.security
+# Set this JDK as the alternative in use
+_arch="$(uname -i)"
+alternatives --set java java-1.8.0-openj9.${_arch}
+alternatives --set javac java-1.8.0-openj9.${_arch}
+alternatives --set java_sdk_openj9 java-1.8.0-openj9.${_arch}
+alternatives --set jre_openj9 java-1.8.0-openj9.${_arch}
+
+# Update securerandom.source for quicker starts (must be done after removing jdk 8, or it will hit the wrong files)
+JAVA_SECURITY_FILE=/usr/lib/jvm/java/jre/lib/security/java.security
+SECURERANDOM=securerandom.source
+if grep -q "^$SECURERANDOM=.*" $JAVA_SECURITY_FILE; then
+    sed -i "s|^$SECURERANDOM=.*|$SECURERANDOM=file:/dev/urandom|" $JAVA_SECURITY_FILE
+else
+    echo $SECURERANDOM=file:/dev/urandom >> $JAVA_SECURITY_FILE
+fi
