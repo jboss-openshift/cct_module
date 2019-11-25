@@ -8,9 +8,9 @@ labels:
 - name: "org.jboss.product"
   value: "openjdk"
 - name: "org.jboss.product.version"
-  value: "11"
+  value: "11.0"
 - name: "org.jboss.product.openjdk.version"
-  value: "11"
+  value: "11.0"
 
 envs:
 - name: "JAVA_HOME"
@@ -18,7 +18,7 @@ envs:
 - name: "JAVA_VENDOR"
   value: "AdoptOpenJDK"
 - name: "JAVA_VERSION"
-  value: "11"
+  value: "11.0"
 
 packages:
   install:
