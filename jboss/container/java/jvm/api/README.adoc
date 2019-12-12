@@ -30,6 +30,7 @@ The following environment variables are used to configure the functionality prov
 |GC_ADAPTIVE_SIZE_POLICY_WEIGHT |The weighting given to the current GC time versus previous GC times. |90
 |GC_CONTAINER_OPTIONS |specify Java GC to use. The value of this variable should contain the necessary JRE command-line options to specify the required GC, which will override the default of `-XX:+UseParallelOldGC`. |-XX:+UseG1GC
 |GC_MAX_HEAP_FREE_RATIO |Maximum percentage of heap free after GC to avoid shrinking. |40
+|GC_METASPACE_SIZE |The initial metaspace size. |20
 |GC_MAX_METASPACE_SIZE |The maximum metaspace size. |100
 |GC_MIN_HEAP_FREE_RATIO |Minimum percentage of heap free after GC to avoid expansion. |20
 |GC_TIME_RATIO |Specifies the ratio of the time spent outside the garbage collection (for example, the time spent for application execution) to the time spent in the garbage collection. |4
