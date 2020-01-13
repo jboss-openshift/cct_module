@@ -1,6 +1,8 @@
 @openjdk
 @redhat/openjdk-8-rhel7
 @openj9
+@ubi8/openjdk-8
+@ubi8/openjdk-11
 Feature: Prometheus agent tests
 
   Scenario: Verify API and defaults
