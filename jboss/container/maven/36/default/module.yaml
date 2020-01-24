@@ -13,10 +13,6 @@ envs:
 - name: MAVEN_VERSION
   value: "3.6"
 
-packages:
-  install:
-  - maven
-
 execute:
 - script: configure.sh
 
