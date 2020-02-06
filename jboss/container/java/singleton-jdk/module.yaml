@@ -1,0 +1,7 @@
+schema_version: 1
+name: jboss.container.java.singleton-jdk
+version: '1.0'
+description: Ensures only a single JDK version is installed
+
+execute:
+- script: configure.sh
