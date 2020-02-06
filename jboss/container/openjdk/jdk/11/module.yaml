@@ -8,9 +8,9 @@ labels:
 - name: "org.jboss.product"
   value: "openjdk"
 - name: "org.jboss.product.version"
-  value: "11.0"
+  value: "11"
 - name: "org.jboss.product.openjdk.version"
-  value: "11.0"
+  value: "11"
 
 envs:
 - name: "JAVA_HOME"
@@ -18,7 +18,7 @@ envs:
 - name: "JAVA_VENDOR"
   value: "openjdk"
 - name: "JAVA_VERSION"
-  value: "11.0"
+  value: "11"
 - name: JBOSS_CONTAINER_OPENJDK_JDK_MODULE
   value: /opt/jboss/container/openjdk/jdk
 
