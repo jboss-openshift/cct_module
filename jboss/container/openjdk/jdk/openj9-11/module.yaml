@@ -16,7 +16,7 @@ envs:
 - name: "JAVA_HOME"
   value: "/usr/lib/jvm/jre-11-openj9"
 - name: "JAVA_VENDOR"
-  value: "AdoptOpenJDK"
+  value: "openj9"
 - name: "JAVA_VERSION"
   value: "11.0"
 
