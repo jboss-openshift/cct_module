@@ -16,7 +16,3 @@ envs:
 packages:
   install:
   - maven
-
-execute:
-- script: configure.sh
-
