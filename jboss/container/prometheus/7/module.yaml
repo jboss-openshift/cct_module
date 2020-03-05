@@ -1,7 +1,7 @@
 schema_version: 1
 
 name: jboss.container.prometheus
-version: '1.0'
+version: '7'
 description: ^
   Provides support for configuring Prometheus.  Basic usage is
   JAVA_OPTS="$JAVA_OPTS $(source $JBOSS_CONTAINER_PROMETHEUS_MODULE/prometheus-opts; get_prometheus_opts)"
