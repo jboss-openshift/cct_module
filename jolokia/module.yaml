@@ -1,7 +1,0 @@
-schema_version: 1
-name: jolokia
-version: '1.0'
-description: Legacy jolokia script package.
-execute:
-- script: configure.sh
-  user: '185'
