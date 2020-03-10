@@ -88,5 +88,5 @@ if [ -z "${AB_JOLOKIA_OFF+x}" ]; then
     AB_JOLOKIA_CONFIG="${JBOSS_CONTAINER_JOLOKIA_MODULE}/etc/jolokia.properties"
     write_jolokia_properties "$AB_JOLOKIA_CONFIG"
   fi
-  echo "-javaagent:${JBOSS_CONTAINER_JOLOKIA_MODULE}/jolokia.jar=config=${AB_JOLOKIA_CONFIG}"
+  echo "-javaagent:/usr/share/java/jolokia-jvm-agent/jolokia-jvm.jar=config=${AB_JOLOKIA_CONFIG}"
 fi
