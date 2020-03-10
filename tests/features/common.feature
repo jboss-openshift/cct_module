@@ -1,13 +1,6 @@
 
 Feature: Openshift common tests
 
-  @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6
-  Scenario: Check jolokia port is available
-    When container is ready
-    Then check that port 8778 is open
-    Then inspect container
-       | path                    | value       |
-       | /Config/ExposedPorts    | 8778/tcp    |
 
   # CLOUD-1017: Option to enable script debugging
   @jboss-kieserver-6 @jboss-decisionserver-6 @jboss-processserver-6 @jboss-webserver-3/webserver30-tomcat7-openshift @jboss-webserver-3/webserver31-tomcat7-openshift @jboss-webserver-3/webserver30-tomcat8-openshift @jboss-webserver-3/webserver31-tomcat8-openshift @jboss-amq-6 @jboss-datavirt-6 @redhat-sso-7
