@@ -58,6 +58,7 @@ ports:
 
 execute:
 - script: configure.sh
+- script: backward_compatibility.sh
 
 packages:
   install:
