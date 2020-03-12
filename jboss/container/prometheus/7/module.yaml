@@ -21,6 +21,7 @@ envs:
 
 execute:
 - script: configure.sh
+- script: backwards_compatibility.sh
 
 artifacts:
 - name: jmx_prometheus_javaagent
