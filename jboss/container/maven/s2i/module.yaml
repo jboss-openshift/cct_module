@@ -1,9 +1,9 @@
 schema_version: 1
-name: jboss.container.maven.s2i.api
+name: jboss.container.maven.s2i
 version: '1.0'
 description: ^
-  Defines environment variables and labels used by Maven s2i.  Modules
-  implementing Maven S2I should use these variables accordingly.
+  Provides s2i capabilities built around Maven.
+  Defines environment variables and labels used by Maven s2i.
 
 envs:
 - name: MAVEN_S2I_ARTIFACT_DIRS
@@ -18,10 +18,19 @@ envs:
     mvn $MAVEN_S2I_GOALS.  Defaults to **package**
   example: package install
 
+- name: JBOSS_CONTAINER_MAVEN_S2I_MODULE
+  value: /opt/jboss/container/maven/s2i
+
 # Deprecated environment variables
 - name: ARTIFACT_DIR
   description: Deprecated by **MAVEN_S2I_ARTIFACT_DIRS**.
 
+execute:
+- script: configure.sh
+
 modules:
   install:
   - name: jboss.container.s2i.core.api
+  - name: jboss.container.s2i.core.bash
+  - name: jboss.container.maven.default.bash
+  - name: jboss.container.util.logging.bash
