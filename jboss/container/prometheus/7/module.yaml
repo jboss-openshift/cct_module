@@ -1,7 +1,7 @@
 schema_version: 1
 
-name: jboss.container.prometheus.bash
-version: '1.0'
+name: jboss.container.prometheus
+version: '7'
 description: ^
   Provides support for configuring Prometheus.  Basic usage is
   JAVA_OPTS="$JAVA_OPTS $(source $JBOSS_CONTAINER_PROMETHEUS_MODULE/prometheus-opts; get_prometheus_opts)"
@@ -9,19 +9,21 @@ description: ^
 envs:
 - name: JBOSS_CONTAINER_PROMETHEUS_MODULE
   value: /opt/jboss/container/prometheus
+- name: AB_PROMETHEUS_ENABLE
+  description: Enable the use of the Prometheus agent
+  example: true
 - name: AB_PROMETHEUS_JMX_EXPORTER_PORT
-  value: 9799
+  description: Port to use for the Prometheus JMX Exporter.
+  example: 9799
 - name: AB_PROMETHEUS_JMX_EXPORTER_CONFIG
   value: /opt/jboss/container/prometheus/etc/jmx-exporter-config.yaml
+  description: Path to configuration to use for the Prometheus JMX Exporter
 
 execute:
 - script: configure.sh
+- script: backwards_compatibility.sh
 
 artifacts:
 - name: jmx_prometheus_javaagent
   target: jmx_prometheus_javaagent-0.3.1.redhat-00006.jar
   md5: 620d5c068e4ca408ad99c244f8706fce
-
-modules:
-  install:
-  - name: jboss.container.prometheus.api

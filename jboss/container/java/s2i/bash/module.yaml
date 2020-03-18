@@ -17,5 +17,5 @@ modules:
   - name: jboss.container.maven.s2i.bash
   - name: jboss.container.java.run.bash
   - name: jboss.container.jolokia
-  - name: jboss.container.prometheus.bash
+  - name: jboss.container.prometheus
   - name: jboss.container.util.logging.bash
