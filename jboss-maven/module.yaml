@@ -5,5 +5,5 @@ description: Legacy Maven module
 
 modules:
   install:
-  - name: jboss.container.maven.default.bash
+  - name: jboss.container.maven.default
 

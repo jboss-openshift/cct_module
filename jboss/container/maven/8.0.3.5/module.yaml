@@ -1,7 +1,7 @@
 schema_version: 1
-name: jboss.container.maven.35.bash
-version: '3.5scl'
-description: Provides Maven v3.5 capabilities to an image via SCL
+name: jboss.container.maven
+version: '8.0.3.5'
+description: Provides Maven v3.5 capabilities to an image.
 
 labels:
 - name: io.fabric8.s2i.version.maven
@@ -13,9 +13,6 @@ envs:
 - name: MAVEN_VERSION
   value: "3.5"
 
-execute:
-- script: configure.sh
-
 packages:
   install:
-  - rh-maven35
+  - maven

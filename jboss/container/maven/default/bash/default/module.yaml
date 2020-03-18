@@ -18,5 +18,6 @@ modules:
   install:
   - name: jboss.container.maven.api
   - name: jboss.container.java.jvm.bash
-  - name: jboss.container.maven.35.bash
+  - name: jboss.container.maven
+    version: 8.0.3.5
   - name: jboss.container.util.logging.bash
