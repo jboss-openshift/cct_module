@@ -1,6 +1,6 @@
 schema_version: 1
-name: jboss.container.maven.36.bash
-version: '3.6'
+name: jboss.container.maven
+version: '8.2.3.6'
 description: Provides Maven v3.6 capabilities to an image.
 
 labels:

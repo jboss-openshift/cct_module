@@ -5,4 +5,4 @@ description: Legacy s2i-common script package.
 
 modules:
   install:
-  - name: jboss.container.maven.default.bash
+  - name: jboss.container.maven.default

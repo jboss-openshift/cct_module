@@ -13,10 +13,10 @@ export JBOSS_CONTAINER_UTIL_LOGGING_MODULE=$CCT_MODULE_DIR/jboss/container/util/
 
 mkdir -p $HOME/.m2
 
-source $CCT_MODULE_DIR/jboss/container/maven/default/bash/artifacts/opt/jboss/container/maven/default/maven.sh
+source $CCT_MODULE_DIR/jboss/container/maven/default/artifacts/opt/jboss/container/maven/default/maven.sh
 
 setup() {
-  cp $CCT_MODULE_DIR/jboss/container/maven/default/bash/artifacts/opt/jboss/container/maven/default/jboss-settings.xml $HOME/.m2/settings.xml
+  cp $CCT_MODULE_DIR/jboss/container/maven/default/artifacts/opt/jboss/container/maven/default/jboss-settings.xml $HOME/.m2/settings.xml
 }
 
 function assert_profile_xml() {
