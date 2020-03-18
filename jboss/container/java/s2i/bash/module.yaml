@@ -14,7 +14,7 @@ execute:
 
 modules:
   install:
-  - name: jboss.container.maven.s2i.bash
+  - name: jboss.container.maven.s2i
   - name: jboss.container.java.run.bash
   - name: jboss.container.jolokia
   - name: jboss.container.prometheus
