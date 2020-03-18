@@ -15,8 +15,10 @@ pushd ${ARTIFACTS_DIR}
 cp -pr * /
 popd
 
+MAVEN_VERSION_SQUASHED=${MAVEN_VERSION/./}
+
 # pull in specific maven version to serve as default
-ln -s /opt/jboss/container/maven/35/* /opt/jboss/container/maven/default
+ln -s /opt/jboss/container/maven/${MAVEN_VERSION_SQUASHED}/* /opt/jboss/container/maven/default
 chown -h jboss:root /opt/jboss/container/maven/default/*
 
 # install default settings.xml file in user home
