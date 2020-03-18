@@ -1,16 +1,19 @@
 schema_version: 1
 
-name: jboss.container.jolokia.api
-version: '1.0'
+name: jboss.container.jolokia
+version: '8.2'
 description: ^
-  Defines environment variables used for configuring Jolokia.  Modules
-  providing support for configuring Jolokia should use the variables listed
-  within this module to configure Jolokia appropriately.
+  Provides support for configuring Jolokia.  Basic usage is
+  opts="$JBOSS_CONTAINER_JOLOKIA_MODULE/jolokia-opts"
+
+labels:
+- name: io.fabric8.s2i.version.jolokia
+  value: "1.6.2-redhat-00002"
 
 envs:
 - name: JOLOKIA_VERSION
   description: Version of Jolokia being used.
-  example: "1.5.0"
+  value: "1.6.2"
 - name: AB_JOLOKIA_PASSWORD_RANDOM
   description: Determines if a random AB_JOLOKIA_PASSWORD be generated. Set to **true** to generate random password. Generated value will be written to `/opt/jolokia/etc/jolokia.pw`.
   value: "true"
@@ -47,4 +50,16 @@ envs:
 - name: AB_JOLOKIA_OPTS
   description: Additional options to be appended to the agent configuration. They should be given in the format `key=value,key=value,...`.
   example: "backlog=20"
+- name: JBOSS_CONTAINER_JOLOKIA_MODULE
+  value: /opt/jboss/container/jolokia
 
+ports:
+- value: 8778
+
+execute:
+- script: configure.sh
+- script: backward_compatibility.sh
+
+packages:
+  install:
+    - jolokia-jvm-agent
