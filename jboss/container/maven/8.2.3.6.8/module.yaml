@@ -1,0 +1,18 @@
+schema_version: 1
+name: jboss.container.maven
+# Version scheme: RHEL major . RHEL minor . Maven major . Maven minor . JDK version
+version: '8.2.3.6.8'
+description: Provides Maven v3.6 capabilities to an image.
+
+labels:
+- name: io.fabric8.s2i.version.maven
+  value: "3.6"
+
+envs:
+- name: JBOSS_CONTAINER_MAVEN_36_MODULE
+  value: /opt/jboss/container/maven/36/
+- name: MAVEN_VERSION
+  value: "3.6"
+
+execute:
+- script: configure.sh
