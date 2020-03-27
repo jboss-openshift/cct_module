@@ -1,0 +1,8 @@
+schema_version: 1
+name: jboss.container.dnf
+version: '1.0'
+description: installs dnf
+
+packages:
+  install:
+    - dnf
