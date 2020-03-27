@@ -1,0 +1,7 @@
+schema_version: 1
+name: jboss.container.microdnf-bz-workaround
+version: '1.0'
+description: workaround for BZ #1769831
+
+execute:
+- script: configure.sh
