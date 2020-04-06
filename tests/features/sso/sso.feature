@@ -58,7 +58,7 @@ Feature: OpenShift SSO tests
   # CLOUD-769
   Scenario: test jolokia started
     When container is ready
-    Then container log should contain -javaagent:/opt/jboss/container/jolokia/jolokia.jar=config=/opt/jboss/container/jolokia/etc/jolokia.properties
+    Then container log should contain -javaagent:/usr/share/java/jolokia-jvm-agent/jolokia-jvm.jar=config=/opt/jboss/container/jolokia/etc/jolokia.properties
      And available container log should not contain java.net.BindException
 
   Scenario: Test REST API is available and secure

@@ -9,7 +9,7 @@ Feature: Openshift tomcat basic tests
          | property        | value                                                                          |
          | port            | 8080                                                                           | 
          | expected_phrase | If you're seeing this, you've successfully installed Tomcat. Congratulations   |
-    And container log should contain Command line argument: -javaagent:/opt/jboss/container/jolokia/jolokia.jar=config=/opt/jboss/container/jolokia/etc/jolokia.properties
+    And container log should contain Command line argument: -javaagent:/usr/share/java/jolokia-jvm-agent/jolokia-jvm.jar=config=/opt/jboss/container/jolokia/etc/jolokia.properties
     And container log should contain Command line argument: -Dfoo=test_for_me
 
   Scenario: Ensure that the manager webapp is secure
