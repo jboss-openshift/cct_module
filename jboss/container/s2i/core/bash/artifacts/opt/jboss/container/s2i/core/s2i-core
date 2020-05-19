@@ -145,16 +145,15 @@ function s2i_core_process_image_mounts() {
 }
 
 function s2i_core_cleanup() {
+  if [ -n "$(find ${S2I_SOURCE_DIR} -maxdepth 0 -type d ! -empty 2> /dev/null)" ]; then
+    log_info "Cleaning up source directory (${S2I_SOURCE_DIR})"
+    rm -rf ${S2I_SOURCE_DIR}
+  fi
   if [ "${S2I_ENABLE_INCREMENTAL_BUILDS,,}" == "true" ]; then
     return 0
   fi
   if [ -n "$(find ${S2I_ARTIFACTS_DIR} -maxdepth 0 -type d ! -empty 2> /dev/null)" ]; then
     log_info "Cleaning up artifacts directory (${S2I_ARTIFACTS_DIR})"
     rm -rf ${S2I_ARTIFACTS_DIR}
-  fi
-
-  if [ -n "$(find ${S2I_SOURCE_DIR} -maxdepth 0 -type d ! -empty 2> /dev/null)" ]; then
-    log_info "Cleaning up source directory (${S2I_SOURCE_DIR})"
-    rm -rf ${S2I_SOURCE_DIR}
   fi
 }
