@@ -13,7 +13,7 @@
 #                         (i.e. -Xms).  Defaults to 25 (i.e -Xms=-Xmx/4).
 # JAVA_MAX_INITIAL_MEM: The maximum value of the initial heap size, defaults to 4G.
 # JAVA_MAX_MEM_RATIO: Ratio use to calculate a default maximum Memory, in percent.
-#                     E.g. the default value "50" implies that 50% of the Memory
+#                     E.g. the default value "80" implies that 80% of the Memory
 #                     given to the container is used as the maximum heap memory with
 #                     '-Xmx'. It is a heuristic and should be better backed up with real
 #                     experiments and measurements.
@@ -28,7 +28,7 @@
 # the absolute values
 #
 
-__DEFAULT_JAVA_MAX_MEM_RATIO=50
+__DEFAULT_JAVA_MAX_MEM_RATIO=80
 __DEFAULT_JAVA_INITIAL_MEM_RATIO=25
 __DEFAULT_JAVA_MAX_INITIAL_MEM=4096
 
