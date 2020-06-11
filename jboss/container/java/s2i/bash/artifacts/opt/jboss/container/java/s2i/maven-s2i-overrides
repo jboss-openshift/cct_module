@@ -32,10 +32,7 @@ function maven_s2i_custom_binary_build() {
 }
 
 function maven_s2i_deploy_artifacts_override() {
-  if [ ${#MAVEN_S2I_ARTIFACT_DIRS} -eq 1 -a -d "${S2I_SOURCE_DIR}/${MAVEN_S2I_ARTIFACT_DIRS[0]}/hawt-app" ]; then
-    cp -r "${S2I_SOURCE_DIR}/${MAVEN_S2I_ARTIFACT_DIRS[0]}/hawt-app"/* "${S2I_TARGET_DEPLOYMENTS_DIR}"
-    return $?
-  elif [ -n "${ARTIFACT_COPY_ARGS}" ]; then
+  if [ -n "${ARTIFACT_COPY_ARGS}" ]; then
     log_warning "ARTIFACT_COPY_ARGS is deprecated.  Please use S2I_SOURCE_DEPLOYMENTS_FILTER to specify artifact types and MAVEN_S2I_ARTIFACT_DIRS to specify the build output directories to copy from."
     if [ ! -d "${S2I_TARGET_DEPLOYMENTS_DIR}" ]; then
       log_info "S2I_TARGET_DEPLOYMENTS_DIR does not exist, creating ${S2I_TARGET_DEPLOYMENTS_DIR}"
