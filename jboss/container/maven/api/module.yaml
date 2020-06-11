@@ -8,8 +8,8 @@ description: ^
 
 envs:
 - name: MAVEN_ARGS
-  description: Arguments to use when calling Maven, replacing the default `package hawt-app:build -DskipTests -e`. Please be sure to run the `hawt-app:build` goal (when not already bound to the `package` execution phase), otherwise the startup scripts won't work.
-  example: "-e -Popenshift -DskipTests -Dcom.redhat.xpaas.repo.redhatga package"
+  description: Arguments to use when calling Maven, replacing the default. To append additional arguments, see `MAVEN_ARGS_APPEND`.
+  example: "-e -Popenshift -DskipTests -Dcom.redhat.xpaas.repo.redhatga -Dfabric8.skip=true"
 - name: MAVEN_ARGS_APPEND
   description: Additional Maven arguments.
   example: "-X -am -pl"
