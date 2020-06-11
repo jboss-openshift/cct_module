@@ -16,8 +16,6 @@
 #   /opt/jboss/container/prometheus/etc/jmx-exporter-config.yaml
 #
 
-source "$JBOSS_CONTAINER_UTIL_LOGGING_MODULE/logging.sh"
-
 # echo's a complete -javaagent option based on the above variables.
 function get_prometheus_opts() {
     if [ "${AB_PROMETHEUS_ENABLE^^}" = "TRUE" ]; then
