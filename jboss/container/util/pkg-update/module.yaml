@@ -1,0 +1,7 @@
+schema_version: 1
+name: jboss.container.util.pkg-update
+version: '1.0'
+description: "Perform a package manager update."
+
+execute:
+- script: execute.sh
