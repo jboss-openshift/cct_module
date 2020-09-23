@@ -1,8 +1,6 @@
 # Tests for jboss/container/jolokia
 Feature: Openshift OpenJDK Jolokia tests
 
-  @openjdk
-  @redhat-openjdk-18
   @openj9
   Scenario: Check Environment variable is correct
     Given s2i build https://github.com/jboss-openshift/openshift-quickstarts from undertow-servlet
