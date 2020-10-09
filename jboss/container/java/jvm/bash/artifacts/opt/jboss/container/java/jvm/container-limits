@@ -47,6 +47,8 @@ container_memory() {
   local max_mem_unbounded="$(max_unbounded)"
   if [ -r "${mem_file}" ]; then
     local max_mem="$(cat ${mem_file})"
+    # note that this may return a value that is the maximum 64-bit signed integer, rounded to the nearest page (by dropping the last bits).
+    # When this occurs, the comparision with MemTotal in /proc/meminfo will result it no value being returned.
     if [ ${max_mem} -lt ${max_mem_unbounded} ]; then
       echo "${max_mem}"
     fi
