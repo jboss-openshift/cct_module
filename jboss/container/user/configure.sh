@@ -8,3 +8,7 @@ set -e
 groupadd -r jboss -g 185 && useradd -u 185 -r -g root -G jboss -m -d /home/jboss -s /sbin/nologin -c "JBoss user" jboss
 chmod ug+rwX /home/jboss
 chmod 664 /etc/passwd
+##we create an empty known_hosts global if the user forgot to pass the known-hosts with the id_rsa
+mkdir /etc/ssh/
+>/etc/ssh/known_hosts
+chmod 664 /etc/ssh/known_hosts
