@@ -16,3 +16,13 @@ popd
 mkdir -p /deployments/data \
  && chmod -R "ug+rwX" /deployments/data \
  && chown -R jboss:root /deployments/data
+
+# OPENJDK-100: turn off negative DNS caching
+if [ -w ${JAVA_HOME}/jre/lib/security/java.security ]; then
+    # JDK8 location
+    javasecurity="${JAVA_HOME}/jre/lib/security/java.security"
+else
+    # JDK11 location
+    javasecurity="${JAVA_HOME}/conf/security/java.security"
+fi
+sed -i 's/\(networkaddress.cache.negative.ttl\)=[0-9]\+$/\1=0/' "$javasecurity"
