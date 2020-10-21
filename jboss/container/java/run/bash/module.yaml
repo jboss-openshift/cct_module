@@ -56,3 +56,4 @@ modules:
   install:
   - name: jboss.container.java.jvm.bash
   - name: jboss.container.util.logging.bash
+  - name: jboss.container.openjdk.jdk
