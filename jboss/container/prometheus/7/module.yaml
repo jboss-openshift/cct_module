@@ -25,5 +25,5 @@ execute:
 
 artifacts:
 - name: jmx_prometheus_javaagent
-  target: jmx_prometheus_javaagent-0.3.1.redhat-00006.jar
-  md5: 620d5c068e4ca408ad99c244f8706fce
+  target: jmx_prometheus_javaagent-0.3.2.redhat-00003.jar
+  md5: 8b3af39995b113baf35e53468bad7aae
