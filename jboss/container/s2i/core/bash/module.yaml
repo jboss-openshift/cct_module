@@ -13,3 +13,7 @@ execute:
 modules:
   install:
   - name: jboss.container.s2i.core.api
+
+packages:
+  install:
+  - findutils
