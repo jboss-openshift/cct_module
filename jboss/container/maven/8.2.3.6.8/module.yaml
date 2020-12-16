@@ -14,5 +14,10 @@ envs:
 - name: MAVEN_VERSION
   value: "3.6"
 
-execute:
-- script: configure.sh
+modules:
+  install:
+  - name: jboss.container.maven.module
+
+packages:
+  install:
+  - maven-openjdk8

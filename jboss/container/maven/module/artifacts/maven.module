@@ -1,0 +1,5 @@
+[maven]
+name=maven
+stream=3.6
+profiles=
+state=enabled
