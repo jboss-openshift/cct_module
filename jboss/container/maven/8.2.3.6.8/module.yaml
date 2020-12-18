@@ -21,3 +21,6 @@ modules:
 packages:
   install:
   - maven-openjdk8
+
+execute:
+- script: configure.sh
