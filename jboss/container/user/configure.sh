@@ -7,4 +7,3 @@ set -e
 # on RHEL which makes it safe to use.
 groupadd -r jboss -g 185 && useradd -u 185 -r -g root -G jboss -m -d /home/jboss -s /sbin/nologin -c "JBoss user" jboss
 chmod ug+rwX /home/jboss
-chmod 664 /etc/passwd
