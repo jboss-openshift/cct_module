@@ -48,12 +48,24 @@ envs:
 - name: JAVA_ARGS
   description: Arguments passed to the `java` application.
 
+- name: LD_PRELOAD
+  value: libnss_wrapper.so
+- name: NSS_WRAPPER_PASSWD
+  value: /home/jboss/passwd
+- name: NSS_WRAPPER_GROUP
+  value: /etc/group
+
 execute:
 - script: configure.sh
 - script: backward_compatibility.sh
 
 modules:
   install:
+  - name: jboss.container.user
   - name: jboss.container.java.jvm.bash
   - name: jboss.container.util.logging.bash
   - name: jboss.container.openjdk.jdk
+
+packages:
+  install:
+  - nss_wrapper
