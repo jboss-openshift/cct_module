@@ -16,7 +16,7 @@ cp -pr * /
 popd
 
 # pull in specific maven version to serve as default
-ln -s /opt/jboss/container/maven/35/* /opt/jboss/container/maven/default
+ln -s /opt/jboss/container/maven/36/* /opt/jboss/container/maven/default
 chown -h jboss:root /opt/jboss/container/maven/default/*
 
 # install default settings.xml file in user home
