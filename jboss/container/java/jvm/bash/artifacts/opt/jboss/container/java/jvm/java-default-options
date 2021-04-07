@@ -135,16 +135,22 @@ gc_config() {
   local maxHeapFreeRatio=${GC_MAX_HEAP_FREE_RATIO:-20}
   local timeRatio=${GC_TIME_RATIO:-4}
   local adaptiveSizePolicyWeight=${GC_ADAPTIVE_SIZE_POLICY_WEIGHT:-90}
-  local maxMetaspaceSize=${GC_MAX_METASPACE_SIZE:-100}
+  local maxMetaspaceSize
   local gcOptions="${GC_CONTAINER_OPTIONS:--XX:+UseParallelOldGC}"
   # for compat reasons we don't set a default value for metaspaceSize
   local metaspaceSize
 
+  if [ -n "${GC_MAX_METASPACE_SIZE}" ]; then
+    maxMetaspaceSize=${GC_MAX_METASPACE_SIZE}
+  fi
+
   if [ -n "${GC_METASPACE_SIZE}" ]; then
     metaspaceSize=${GC_METASPACE_SIZE}
-    # clamp the max size of metaspaceSize to be <= maxMetaspaceSize
-    if [ "${metaspaceSize}" -gt "${maxMetaspaceSize}" ]; then
-      metaspaceSize=${maxMetaspaceSize}
+    if [ -n "${maxMetaspaceSize}" ]; then
+      # clamp the max size of metaspaceSize to be <= maxMetaspaceSize
+      if [ "${metaspaceSize}" -gt "${maxMetaspaceSize}" ]; then
+        metaspaceSize=${maxMetaspaceSize}
+      fi
     fi
   fi
 
@@ -154,7 +160,9 @@ gc_config() {
   allOptions+="-XX:MaxHeapFreeRatio=${maxHeapFreeRatio} "
   allOptions+="-XX:GCTimeRatio=${timeRatio} "
   allOptions+="-XX:AdaptiveSizePolicyWeight=${adaptiveSizePolicyWeight} "
-  allOptions+="-XX:MaxMetaspaceSize=${maxMetaspaceSize}m "
+  if [ -n "${maxMetaspaceSize}" ]; then
+    allOptions+="-XX:MaxMetaspaceSize=${maxMetaspaceSize}m "
+  fi
   if [ -n "${metaspaceSize}" ]; then
     allOptions+="-XX:MetaspaceSize=${metaspaceSize}m "
   fi
