@@ -16,7 +16,11 @@ cp -pr * /
 popd
 
 # pull in specific maven version to serve as default
-ln -s /opt/jboss/container/maven/36/* /opt/jboss/container/maven/default
+for f in /opt/jboss/container/maven/36/*; do
+    if test -f "$f"; then
+        ln -s "$f" /opt/jboss/container/maven/default;
+    fi;
+done
 chown -h jboss:root /opt/jboss/container/maven/default/*
 
 # install default settings.xml file in user home
