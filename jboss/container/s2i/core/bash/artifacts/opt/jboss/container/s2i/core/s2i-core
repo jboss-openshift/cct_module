@@ -32,6 +32,7 @@ function s2i_core_env_init() {
   S2I_TARGET_DATA_DIR="${S2I_TARGET_DATA_DIR:-${JAVA_DATA_DIR:-${DATA_DIR:-${S2I_TARGET_DEPLOYMENTS_DIR}}}}"
   S2I_IMAGE_SOURCE_MOUNTS="${S2I_IMAGE_SOURCE_MOUNTS:-${CUSTOM_INSTALL_DIRECTORIES}}"
   S2I_ENABLE_INCREMENTAL_BUILDS="${S2I_ENABLE_INCREMENTAL_BUILDS:-true}"
+  S2I_DELETE_SOURCE="${S2I_DELETE_SOURCE:-true}"
   
   s2i_core_env_backward_compatibility
 }
@@ -145,9 +146,11 @@ function s2i_core_process_image_mounts() {
 }
 
 function s2i_core_cleanup() {
-  if [ -n "$(find ${S2I_SOURCE_DIR} -maxdepth 0 -type d ! -empty 2> /dev/null)" ]; then
-    log_info "Cleaning up source directory (${S2I_SOURCE_DIR})"
-    rm -rf ${S2I_SOURCE_DIR}
+  if [ "${S2I_DELETE_SOURCE,,}" == "true" ]; then
+    if [ -n "$(find ${S2I_SOURCE_DIR} -maxdepth 0 -type d ! -empty 2> /dev/null)" ]; then
+      log_info "Cleaning up source directory (${S2I_SOURCE_DIR})"
+      rm -rf ${S2I_SOURCE_DIR}
+    fi
   fi
   if [ "${S2I_ENABLE_INCREMENTAL_BUILDS,,}" == "true" ]; then
     return 0
