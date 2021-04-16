@@ -95,9 +95,14 @@ envs:
 
 - name: S2I_ENABLE_INCREMENTAL_BUILDS
   description: ^
-    Do not remove source and intermediate build files so they can be saved for
+    Do not remove intermediate build files so they can be saved for
     use with future builds.  Defaults to true.
   example: "true"
+  
+  - name: S2I_DELETE_SOURCE
+  description: ^
+    Delete source files at the end of build.  Defaults to true.
+  example: "false"
 
 # deprecated
 - name: APP_DATADIR
