@@ -1,0 +1,7 @@
+schema_version: 1
+name: jboss.container.util.ubi-clean
+version: '1.0'
+description: Remove a set of non-UBI RPMs (see OPENJDK-407)
+
+execute:
+- script: configure.sh
