@@ -59,6 +59,8 @@ for module in "${MODULES[@]}"; do
 
         # Link relevant jar
         ln -s "$jar_file" $OPENSHIFT_LAYER_PATH/$module/$jar_name
+        chown -R jboss:root $JBOSS_HOME/$module
+        chmod -R g+rwX $JBOSS_HOME/$module
 
         # Update the file name in module.xml
         sed -i "s/##$var##/$jar_name/g" "$OPENSHIFT_LAYER_PATH/$module/module.xml"
@@ -73,5 +75,5 @@ for module in "${MODULES[@]}"; do
 done
 
 cp -p "$ADDED_DIR/modules/layers.conf" "$JBOSS_HOME/modules/"
-chown -R jboss:root $JBOSS_HOME
-chmod -R g+rwX $JBOSS_HOME
+chown -R jboss:root $JBOSS_HOME/modules/layers.conf
+chmod -R g+rwX $JBOSS_HOME/modules/layers.conf
