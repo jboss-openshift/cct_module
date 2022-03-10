@@ -8,12 +8,12 @@ description: ^
 
 labels:
 - name: io.fabric8.s2i.version.jolokia
-  value: "1.6.2-redhat-00002"
+  value: "1.7.1.redhat-00001"
 
 envs:
 - name: JOLOKIA_VERSION
   description: Version of Jolokia being used.
-  value: "1.6.2"
+  value: "1.7.1"
 - name: AB_JOLOKIA_PASSWORD_RANDOM
   description: Determines if a random AB_JOLOKIA_PASSWORD be generated. Set to **true** to generate random password. Generated value will be written to `/opt/jolokia/etc/jolokia.pw`.
   value: "true"
@@ -62,5 +62,5 @@ execute:
 
 artifacts:
 - name: jolokia-jvm
-  target: jolokia-jvm-1.6.2.redhat-00002-agent.jar
-  md5: 760f2fbaf6b142192f3cee2c99bfcbf8
+  target: jolokia-jvm-1.7.1.redhat-00001-agent.jar
+  md5: d97687fe4abef717735c3c1f4faf5f9b
