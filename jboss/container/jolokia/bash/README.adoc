@@ -19,7 +19,7 @@ toc::[]
 
 The following labels will be defined on the image:
 
-io.fabric8.s2i.version.jolokia:: 1.5.0-redhat-1
+io.fabric8.s2i.version.jolokia:: 1.7.1.redhat-00001
 
 == Environment Variables
 
@@ -36,7 +36,7 @@ The following environment variables will be configured on the image:
 |AB_JOLOKIA_HTTPS |true
 |AB_JOLOKIA_PASSWORD_RANDOM |true
 |JBOSS_CONTAINER_JOLOKIA_MODULE |/opt/jboss/container/jolokia
-|JOLOKIA_VERSION |1.5.0
+|JOLOKIA_VERSION |1.7.1
 |=======================================================================
 
 == Resources
@@ -44,10 +44,10 @@ The following environment variables will be configured on the image:
 The following resources will be included through this module:
 |=======================================================================
 |Name |Location |Checksum
-|jolokia-jvm-1.5.0.redhat-1-agent.jar 
-|https://maven.repository.redhat.com/ga/org/jolokia/jolokia-jvm/1.5.0.redhat-1/jolokia-jvm-1.5.0.redhat-1-agent.jar 
+|jolokia-jvm-1.7.1.redhat-00001-agent.jar
+|https://maven.repository.redhat.com/ga/org/jolokia/jolokia-jvm/1.7.1.redhat-00001/jolokia-jvm-1.7.1.redhat-00001.jar
 a|
-md5:: d31c6b1525e6d2d24062ef26a9f639a8
+md5:: d97687fe4abef717735c3c1f4faf5f9b
 
 sha1:: 
 

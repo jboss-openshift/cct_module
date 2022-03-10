@@ -32,8 +32,8 @@ execute:
 
 artifacts:
 - name: jolokia-jvm
-  target: jolokia-jvm-1.6.2.redhat-00002-agent.jar
-  md5: 760f2fbaf6b142192f3cee2c99bfcbf8
+  target: jolokia-jvm-1.7.1.redhat-00001-agent.jar
+  md5: d97687fe4abef717735c3c1f4faf5f9b
 
 modules:
   install:
