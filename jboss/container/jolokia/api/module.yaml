@@ -10,7 +10,7 @@ description: ^
 envs:
 - name: JOLOKIA_VERSION
   description: Version of Jolokia being used.
-  example: "1.5.0"
+  example: "1.7.1"
 - name: AB_JOLOKIA_PASSWORD_RANDOM
   description: Determines if a random AB_JOLOKIA_PASSWORD be generated. Set to **true** to generate random password. Generated value will be written to `/opt/jolokia/etc/jolokia.pw`.
   value: "true"
