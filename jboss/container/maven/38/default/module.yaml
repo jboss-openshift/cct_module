@@ -9,7 +9,7 @@ labels:
 
 envs:
 - name: JBOSS_CONTAINER_MAVEN_38_MODULE
-  value: /opt/jboss/container/maven/36/
+  value: /opt/jboss/container/maven/38/
 - name: MAVEN_VERSION
   value: "3.8"
 
