@@ -19,8 +19,8 @@ execute:
 
 artifacts:
 - name: jmx_prometheus_javaagent
-  target: jmx_prometheus_javaagent-0.3.2.redhat-00003.jar
-  md5: 8b3af39995b113baf35e53468bad7aae
+  target: jmx_prometheus_javaagent-0.3.2.redhat-00005.jar
+  md5: 2cd8f7055b99fff305a74b0581e8ecd3
 
 modules:
   install:
