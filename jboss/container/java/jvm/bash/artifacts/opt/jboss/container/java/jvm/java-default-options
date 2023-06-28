@@ -66,7 +66,7 @@ max_memory() {
     return
   fi
 
-  # Check for the 'real memory size' and caluclate mx from a ratio
+  # Check for the 'real memory size' and calculate mx from a ratio
   # given (default is 50%)
   if [ "x$CONTAINER_MAX_MEMORY" != x ]; then
     local max_mem="${CONTAINER_MAX_MEMORY}"
@@ -98,13 +98,18 @@ initial_memory() {
     local max_ratio=${JAVA_MAX_MEM_RATIO:-${__DEFAULT_JAVA_MAX_MEM_RATIO}}
     local initial_ratio=${JAVA_INITIAL_MEM_RATIO:-${__DEFAULT_JAVA_INITIAL_MEM_RATIO}}
     local ms=$(echo "${max_mem} ${max_ratio} ${initial_ratio} 1048576" | awk '{printf "%d\n" , ($1*(($2*$3)/10000))/$4 + 0.5}')
-    local max_initial_memory=${JAVA_MAX_INITIAL_MEM:-${__DEFAULT_JAVA_MAX_INITIAL_MEM}}
+
+    # since CONTAINER_MAX_MEMORY is available (set by cgroups /sys/fs/cgroup/memory/memory.limit_in_bytes) then use that as the default)
+    local cmm=$(echo "${CONTAINER_MAX_MEMORY} 1048576" | awk '{printf "%d\n" , ($1/$2) + 0.5}')
+    local max_initial_memory=${JAVA_MAX_INITIAL_MEM:-${cmm}}
+
     if [ "${ms}" -lt "${max_initial_memory}" ] ; then
       echo "-Xms${ms}m"
     else
       echo "-Xms${max_initial_memory}m"
     fi
   fi
+  # otherwise no default value is returned
 }
 
 # Switch on diagnostics except when switched off
