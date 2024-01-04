@@ -1,0 +1,24 @@
+schema_version: 1
+name: os-sso73
+version: '1.0'
+description: Legacy os-sso73 script package.
+
+modules:
+  install:
+  - name: os-eap-launch
+  - name: os-eap7-launch
+  - name: os-eap-migration
+
+packages:
+      repositories:
+          - jboss-os
+      install:
+          - openssl
+
+execute:
+- script: configure.sh
+
+run:
+      user: 185
+      cmd:
+          - "/opt/eap/bin/openshift-launch.sh"
