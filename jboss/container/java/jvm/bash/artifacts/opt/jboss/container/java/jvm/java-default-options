@@ -119,14 +119,14 @@ cpu_core_tunning() {
   # If none are set, just return.
   local core_limit=${JAVA_CORE_LIMIT:-${CONTAINER_CORE_LIMIT}}
   if [ "x$core_limit" = "x0" -o "x$core_limit" = "x" ]; then
-    return
-    else
-        if [ "x$CONTAINER_CORE_LIMIT" != "x" ] && [ $core_limit -gt $CONTAINER_CORE_LIMIT ]; then
-                core_limit=$CONTAINER_CORE_LIMIT
-        fi
-         echo "-XX:ParallelGCThreads=${core_limit} " \
-              "-Djava.util.concurrent.ForkJoinPool.common.parallelism=${core_limit} "\
-              "-XX:CICompilerCount=2"
+      return
+  else
+      if [ "x$CONTAINER_CORE_LIMIT" != "x" ] && [ $core_limit -gt $CONTAINER_CORE_LIMIT ]; then
+          core_limit=$CONTAINER_CORE_LIMIT
+      fi
+      echo "-XX:ParallelGCThreads=${core_limit} " \
+           "-Djava.util.concurrent.ForkJoinPool.common.parallelism=${core_limit} "\
+           "-XX:CICompilerCount=2"
   fi
 }
 
